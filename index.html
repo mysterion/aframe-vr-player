@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/aframe-vr-player/static/vr.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="/aframe-vr-player/static/aframe-v1.5.0.min.js"></script>
+
+  <title>vrp</title>
+  <script type="module" crossorigin src="/aframe-vr-player/static/index-D-PcVzMR.js"></script>
+</head>
+
+<body>
+  <input type="file" id="fileInput" style="display: none;">
+
+  <a-scene background="color: grey" setup>
+    <a-assets>
+      <img id="asset-vp-play" src="static/play.png">
+      <img id="asset-vp-pause" src="static/pause.png">
+      <img id="asset-vp-stop" src="static/stop.png">
+      <img id="asset-vp-seek-forward" src="static/seek-forward.png">
+      <img id="asset-vp-seek-backward" src="static/seek-backward.png">
+      <img id="asset-vp-hide-ui" src="static/hide-ui.png">
+      <img id="asset-vp-open-file" src="static/open-file.png">
+      <img id="asset-vp-voli" src="static/vol-incr.png">
+      <img id="asset-vp-vold" src="static/vol-decr.png">
+      <img id="asset-back" src="static/back.png">
+      <img id="asset-loading" src="static/loading.gif">
+      <img id="asset-up" src="static/up.png">
+      <img id="asset-hide-files" src="static/hide-files-ui.png">
+      <img id="asset-folder" src="static/folder.png">
+      <img id="asset-movie-icon" src="static/movie.png">
+      <img id="asset-unknown" src="static/unknown.png">
+      <img id="asset-refresh" src="static/refresh.png">
+    </a-assets>
+
+    <!-- <a-entity environment="preset: starry"></a-entity> -->
+
+    <video id="video" src="static/sample.mp4"></video>
+    <!-- camera stuff -->
+    <a-entity id="cameraRig" position="0 0 0">
+      <!-- camera-wrapper rotates around camera-rig for recenter -->
+      <a-entity id="camRecenter" geometry="primitive: sphere; radius: 10; segmentsWidth: 8; segmentsHeight: 8"
+        material="opacity: 0; side: back" data-raycastable>
+        <a-entity id="cameraWrapper">
+          <!-- camera rotation controlled by vrheadset/mousekeyboard -->
+          <a-entity id="camera" camera look-controls wasd-controls stereocam="eye:left">
+
+            <!-- cursor stuff -->
+            <a-cursor id="cursor" raycaster="objects: [data-raycastable]" fuse="false"
+              geometry="primitive: ring; radiusInner: 0.005; radiusOuter: 0.0075;" material="color: white;"
+              position="0 0 -1.4">
+              <a-entity geometry="primitive: circle; radius: 0.0075;" material="color: teal">
+              </a-entity>
+            </a-cursor>
+          </a-entity>
+        </a-entity>
+      </a-entity>
+    </a-entity>
+
+    <!-- video player -->
+    <a-entity id="leftEye" geometry="primitive:sphere; radius: 100; segmentsWidth: 32; segmentsHeight: 32;"
+      material="shader: flat; src: #video; side: back;" stereosphere="eye:both; side:left; mode:180SbsEq;">
+    </a-entity>
+    <a-entity id="rightEye" geometry="primitive:sphere; radius: 100; segmentsWidth: 32; segmentsHeight: 32;"
+      material="shader: flat; src: #video; side: back;" stereosphere="eye:right; side:right; mode:180SbsEq;"
+      visible="false">
+    </a-entity>
+
+    <!-- video player ui -->
+    <a-entity id="controls" position="0 -1 1.5" rotation="0 0 0">
+      <a-entity id="timeline" geometry="primitive: plane; width: 4; height: 0.4" position="0 1.5 -5"
+        material="color: #333" video-controls timeline-listen data-raycastable></a-entity>
+      <a-entity id="timelineBg" geometry="primitive: plane; width: 4.05; height: 0.425" position="0 1.5 -5.01"
+        material="color: #3e3e3e"></a-entity>
+      <a-entity id="seek" geometry="primitive: box; width: 0.05; height: 0.425; depth: 0.01" position="0 1.5 -5"
+        material="color: #4CC3D9"></a-entity>
+
+      <a-entity id="videoText" position="0 1.8 -5.1" geometry="primitive:plane; width:1.5; height: 0.15"
+        text="value: 00:00:00/00:00:00; width:2; align:center" material="color: #333; opacity: 0.5"></a-entity>
+
+      <a-entity id="hover" geometry="primitive: box; width: 0.04; height: 0.425; depth: 0.02" position="0 1.5 -5"
+        material="color: #00FF00" visible="false">
+        <a-text id="hover-text" value="00:00:00" position="0 0.3 0" align="center"></a-text>
+      </a-entity>
+      <a-image id="openFileBtn" src="#asset-vp-open-file" position="-1 1 -5" scale="0.4 0.4 1"
+        data-raycastable></a-image>
+      <a-image id="hideFilesBtn" src="#asset-hide-files" position="-1 1 -5" scale="0.4 0.4 1" visible="false"></a-image>
+
+      <a-image id="seekBackwardBtn" src="#asset-vp-seek-backward" position="-0.5 1 -5" scale="0.4 0.4 1"
+        data-raycastable></a-image>
+
+      <a-image id="pausePlayBtn" src="#asset-vp-play" position="0 1 -5" scale="0.4 0.4 1" data-raycastable></a-image>
+
+      <a-image id="seekForwardBtn" src="#asset-vp-seek-forward" position="0.5 1 -5" scale="0.4 0.4 1"
+        data-raycastable></a-image>
+      <a-image id="hideUiBtn" src="#asset-vp-hide-ui" position="1 1 -5" scale="0.4 0.4 1" data-raycastable></a-image>
+      <a-image id="volDecrBtn" src="#asset-vp-vold" position="-0.4 0.5 -5" scale="0.4 0.4 1" data-raycastable></a-image>
+      <a-image id="volIncrBtn" src="#asset-vp-voli" position="0.4 0.5 -5" scale="0.4 0.4 1" data-raycastable></a-image>
+      <a-text align="center" id="volumeTxt" value="100%" width="3" position="0 0.5 -5"
+        material="color: #333; opacity: 0.5"></a-text>
+
+      <a-text align="center" id="toggleMode" value="180 SBS EQR" width="3" position="0 0 -5"
+        material="color: #3337; opacity: 0.5" geometry="primitive:plane; width:1; height: 0.2"
+        data-raycastable></a-text>
+      <a-entity id="files" position="0 1.5 -5" visible="false" rotation="25 0 0" scale="1.5 1.5 1">
+        <a-entity id="filesList">
+          <a-entity id="loader" visible="false" position="0 2 0" scale="1 1 1"
+            geometry="primitive: plane; width: 6; height: 3" rotation="20 0 0" material="color: teal">
+            <a-image src="#asset-loading" position="0 0 1" scale="0.3 0.3 1">
+              <a-text value="loading" align="center" position="0 -0.6 0"></a-text>
+            </a-image>
+
+          </a-entity>
+          <a-entity id="loaded" visible="false" position="0 2 0" scale="1 1 1"
+            geometry="primitive: plane; width: 6; height: 3" rotation="20 0 0" material="color: teal">
+
+          </a-entity>
+        </a-entity>
+      </a-entity>
+
+    </a-entity>
+
+
+  </a-scene>
+</body>
+
+</html>
