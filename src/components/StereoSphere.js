@@ -1,11 +1,12 @@
-// mode=180SbsEq,180SbsFish
+// mode=180SbsEq,SbsFish
 // eye=left,right,both
 AFRAME.registerComponent('stereosphere', {
 
     schema: {
         eye: { type: 'string', default: 'left' },
         mode: { type: 'string', default: '180SbsEq' },
-        side: { type: 'string', default: 'left' }
+        side: { type: 'string', default: 'left' },
+        fishFov: { type: 'int', default: 180 }
     },
 
     update: function (oldData) {
@@ -28,7 +29,12 @@ AFRAME.registerComponent('stereosphere', {
             }
             uvAttribute.needsUpdate = true;
             object3D.geometry = geometry
-        } else if (data.mode === "180SbsFish") {
+        } else if (data.mode === "SbsFish") {
+            let fov = Math.PI
+            if (data.fishFov) {
+                let afov = data.fishFov - 180
+                fov += (Math.PI / 180) * afov
+            }
             let og = this.el.getAttribute("geometry")
             let geometry = new THREE.SphereGeometry(og.radius || 100, og.segmentsWidth || 32, og.segmentsHeight || 32)
             let t = { repeat: { x: 0.5, y: 1 }, offset: { x: 0, y: 0 } }
@@ -46,7 +52,7 @@ AFRAME.registerComponent('stereosphere', {
 
                 const theta = 2 * Math.PI * u;
                 const phi = Math.PI * v;
-                const r = phi / Math.PI;
+                const r = phi / fov;
 
                 const newU = 0.5 + r * Math.cos(theta)
                 const newV = 0.5 + r * Math.sin(theta)

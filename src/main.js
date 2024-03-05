@@ -2,6 +2,7 @@ import './components/TimelineListener.js'
 import './components/Setup.js'
 import './components/StereoSphere.js'
 import './components/StereoCam.js'
+import './components/ButtonHighlight.js'
 import { toTime } from './components/TimelineListener.js';
 import { openSingleFile, setUpSingleFileOpen } from './UI/openSingleFile.js';
 import { isLoading, showFiles } from './UI/renderFiles.js';
@@ -78,8 +79,20 @@ export const videoModes = [
     },
     {
         "text": "180 SBS FISH", "fn": () => {
-            GS.leftEye.setAttribute("stereosphere", "mode: 180SbsFish;")
-            GS.rightEye.setAttribute("stereosphere", "mode: 180SbsFish;")
+            GS.leftEye.setAttribute("stereosphere", "mode: SbsFish; fishFov: 180")
+            GS.rightEye.setAttribute("stereosphere", "mode: SbsFish; fishFov: 180")
+        }
+    },
+    {
+        "text": "190 SBS FISH", "fn": () => {
+            GS.leftEye.setAttribute("stereosphere", "mode: SbsFish; fishFov: 190")
+            GS.rightEye.setAttribute("stereosphere", "mode: SbsFish; fishFov: 190")
+        }
+    },
+    {
+        "text": "200 SBS FISH", "fn": () => {
+            GS.leftEye.setAttribute("stereosphere", "mode: SbsFish; fishFov: 200")
+            GS.rightEye.setAttribute("stereosphere", "mode: SbsFish; fishFov: 200")
         }
     }
 ]
@@ -183,15 +196,11 @@ function setupVideo() {
     // seekforward, backward
 
     seekForwardBtn.addEventListener("click", (e) => {
-        GS.leftEye.setAttribute('stereosphere', { mode: '180SbsEq' })
-        GS.rightEye.setAttribute('stereosphere', { mode: '180SbsEq' })
-        // video.currentTime += 15
+        video.currentTime += 15
     })
 
     seekBackwardBtn.addEventListener("click", (e) => {
-        GS.leftEye.setAttribute('stereosphere', { mode: '180SbsFish' })
-        GS.rightEye.setAttribute('stereosphere', { mode: '180SbsFish' })
-        // video.currentTime -= 15
+        video.currentTime -= 15
     })
 
     volumeTxt.setAttribute("value", `${Math.round(video.volume * 100)}%`)

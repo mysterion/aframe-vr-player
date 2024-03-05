@@ -3,6 +3,7 @@ import { GS } from "../main"
 const LISTING_URL = `${import.meta.env.VITE_LISTING_URL}`
 const FILE_GET_URL = `${import.meta.env.VITE_FILE_GET_URL}`
 const itemLimit = 8
+const space = -0.23
 
 // State
 const S = {
@@ -14,13 +15,13 @@ const S = {
     }
 }
 
-function createIcon(src, p, position, scale) {
+function createIcon(src, parent, position, scale) {
     let el = document.createElement("a-image")
     el.setAttribute("src", src)
     el.setAttribute("position", position)
     el.setAttribute("background-color", "blue")
     el.setAttribute("scale", scale)
-    p.appendChild(el)
+    parent.appendChild(el)
 }
 
 function showLoader(boo) {
@@ -65,6 +66,7 @@ function insertFolderUI(path) {
     refreshBtn.setAttribute("scale", "0.2 0.2 1")
     refreshBtn.setAttribute("position", `-0.4 ${p.height / 2 - 0.5} 0.02`)
     refreshBtn.setAttribute("data-raycastable", "")
+    refreshBtn.setAttribute("button-highlight", "")
     refreshBtn.addEventListener("click", () => {
         fetchFiles(path)
     })
@@ -76,6 +78,7 @@ function insertFolderUI(path) {
     backBtn.setAttribute("scale", "0.2 0.2 1")
     backBtn.setAttribute("position", `0.4 ${p.height / 2 - 0.5} 0.02`)
     backBtn.setAttribute("data-raycastable", "")
+    backBtn.setAttribute("button-highlight", "")
     backBtn.addEventListener("click", () => {
         fetchFiles(path.substr(0, path.lastIndexOf('/')))
     })
@@ -88,8 +91,9 @@ function insertFolderUI(path) {
             filesUpBtn.setAttribute("scale", "0.2 0.2 1")
             filesUpBtn.setAttribute("position", `-1.2 0.725 0.02`)
             filesUpBtn.setAttribute("data-raycastable", "")
+            filesUpBtn.setAttribute("button-highlight", "")
             filesUpBtn.addEventListener("click", () => {
-                S.offset[path].files -= 1
+                S.offset[path].files -= itemLimit / 2
                 renderFiles(path)
             })
             GS.loaded.appendChild(filesUpBtn)
@@ -98,10 +102,11 @@ function insertFolderUI(path) {
             let filesDownBtn = document.createElement("a-image")
             filesDownBtn.setAttribute("src", "#asset-up")
             filesDownBtn.setAttribute("scale", "0.2 -0.2 1")
-            filesDownBtn.setAttribute("position", `-1.2 ${0.725 + (itemLimit * -0.23) - 0.22} 0.02`)
+            filesDownBtn.setAttribute("position", `-1.2 ${0.725 + (itemLimit * space) + (space - 0.01)} 0.02`)
             filesDownBtn.setAttribute("data-raycastable", "")
+            filesDownBtn.setAttribute("button-highlight", "")
             filesDownBtn.addEventListener("click", () => {
-                S.offset[path].files += 1
+                S.offset[path].files += itemLimit / 2
                 renderFiles(path)
             })
             GS.loaded.appendChild(filesDownBtn)
@@ -115,8 +120,9 @@ function insertFolderUI(path) {
             foldersUpBtn.setAttribute("scale", "0.2 0.2 1")
             foldersUpBtn.setAttribute("position", `1.2 0.725 0.02`)
             foldersUpBtn.setAttribute("data-raycastable", "")
+            foldersUpBtn.setAttribute("button-highlight", "")
             foldersUpBtn.addEventListener("click", () => {
-                S.offset[path].folders -= 1
+                S.offset[path].folders -= itemLimit / 2
                 renderFiles(path)
             })
             GS.loaded.appendChild(foldersUpBtn)
@@ -125,10 +131,11 @@ function insertFolderUI(path) {
             let foldersDownBtn = document.createElement("a-image")
             foldersDownBtn.setAttribute("src", "#asset-up")
             foldersDownBtn.setAttribute("scale", "0.2 -0.2 1")
-            foldersDownBtn.setAttribute("position", `1.2 ${0.725 + (itemLimit * -0.23) - 0.22} 0.02`)
+            foldersDownBtn.setAttribute("position", `1.2 ${0.725 + (itemLimit * space) + (space - 0.01)} 0.02`)
             foldersDownBtn.setAttribute("data-raycastable", "")
+            foldersDownBtn.setAttribute("button-highlight", "")
             foldersDownBtn.addEventListener("click", () => {
-                S.offset[path].folders += 1
+                S.offset[path].folders += itemLimit / 2
                 renderFiles(path)
             })
             GS.loaded.appendChild(foldersDownBtn)
@@ -144,22 +151,26 @@ async function renderFiles(url) {
 
     // files 
     let initialPosition = 0.5
-    let space = -0.23
     for (let i = S.offset[url].files; i < S.offset[url].files + itemLimit; i++) {
         if (i < S.files.length) {
-            let el = document.createElement("a-text")
-            el.setAttribute("value", S.files[i].replace(/^.*[\\/]/, '').substring(0, 40))
-            el.setAttribute("geometry", "primitive:plane; width:2; height: 0.2")
+            let el = document.createElement("a-plane")
+            el.setAttribute("geometry", "width:2; height: 0.2")
             el.setAttribute("material", "color: #801D9F;")
             el.setAttribute("position", `-1.2 ${initialPosition} 0.01`)
-            el.setAttribute("align", "center")
-            el.setAttribute("width", "2")
             el.setAttribute("data-raycastable", "")
+            el.setAttribute("button-highlight", "")
             el.onclick = () => {
                 GS.video.src = FILE_GET_URL + url + "/" + S.files[i]
                 GS.video.play()
                 console.log("playing : ", GS.video.src)
             }
+
+            let text = document.createElement("a-text")
+            text.setAttribute("value", S.files[i].replace(/^.*[\\/]/, '').substring(0, 40))
+            text.setAttribute("align", "center")
+            text.setAttribute("width", "2")
+
+            el.appendChild(text)
             GS.loaded.appendChild(el)
             initialPosition += space
         }
@@ -169,18 +180,23 @@ async function renderFiles(url) {
     initialPosition = 0.5
     for (let i = S.offset[url].folders; i < S.offset[url].folders + itemLimit; i++) {
         if (i < S.folders.length) {
-            let el = document.createElement("a-text")
-            el.setAttribute("value", S.folders[i].replace(/^.*[\\/]/, ''))
-            el.setAttribute("geometry", "primitive:plane; width:2; height: 0.2")
+            let el = document.createElement("a-plane")
+            el.setAttribute("geometry", "width:2; height: 0.2")
             el.setAttribute("material", "color: #C39807;")
             el.setAttribute("position", `1.2 ${initialPosition} 0.01`)
-            el.setAttribute("align", "center")
-            el.setAttribute("width", "2")
             el.setAttribute("data-raycastable", "")
+            el.setAttribute("button-highlight", "")
             el.onclick = () => {
                 fetchFiles(url + "/" + S.folders[i])
                 console.log("going : ", url + "/" + S.folders[i])
             }
+
+            let text = document.createElement("a-text")
+            text.setAttribute("value", S.folders[i].replace(/^.*[\\/]/, ''))
+            text.setAttribute("align", "center")
+            text.setAttribute("width", "2")
+
+            el.appendChild(text)
             GS.loaded.appendChild(el)
             initialPosition += space
         }

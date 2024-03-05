@@ -83,26 +83,31 @@
         material="color: #00FF00" visible="false">
         <a-text id="hover-text" value="00:00:00" position="0 0.3 0" align="center"></a-text>
       </a-entity>
-      <a-image id="openFileBtn" src="#asset-vp-open-file" position="-1 1 -5" scale="0.4 0.4 1"
-        data-raycastable></a-image>
-      <a-image id="hideFilesBtn" src="#asset-hide-files" position="-1 1 -5" scale="0.4 0.4 1" visible="false"></a-image>
+      <a-image id="openFileBtn" src="#asset-vp-open-file" position="-1 1 -5" scale="0.4 0.4 1" data-raycastable
+        button-highlight></a-image>
+      <a-image id="hideFilesBtn" src="#asset-hide-files" position="-1 1 -5" scale="0.4 0.4 1" visible="false"
+        button-highlight></a-image>
 
       <a-image id="seekBackwardBtn" src="#asset-vp-seek-backward" position="-0.5 1 -5" scale="0.4 0.4 1"
-        data-raycastable></a-image>
+        data-raycastable button-highlight></a-image>
 
-      <a-image id="pausePlayBtn" src="#asset-vp-play" position="0 1 -5" scale="0.4 0.4 1" data-raycastable></a-image>
+      <a-image id="pausePlayBtn" src="#asset-vp-play" position="0 1 -5" scale="0.4 0.4 1" data-raycastable
+        button-highlight></a-image>
 
-      <a-image id="seekForwardBtn" src="#asset-vp-seek-forward" position="0.5 1 -5" scale="0.4 0.4 1"
-        data-raycastable></a-image>
-      <a-image id="hideUiBtn" src="#asset-vp-hide-ui" position="1 1 -5" scale="0.4 0.4 1" data-raycastable></a-image>
-      <a-image id="volDecrBtn" src="#asset-vp-vold" position="-0.4 0.5 -5" scale="0.4 0.4 1" data-raycastable></a-image>
-      <a-image id="volIncrBtn" src="#asset-vp-voli" position="0.4 0.5 -5" scale="0.4 0.4 1" data-raycastable></a-image>
+      <a-image id="seekForwardBtn" src="#asset-vp-seek-forward" position="0.5 1 -5" scale="0.4 0.4 1" data-raycastable
+        button-highlight></a-image>
+      <a-image id="hideUiBtn" src="#asset-vp-hide-ui" position="1 1 -5" scale="0.4 0.4 1" data-raycastable
+        button-highlight></a-image>
+      <a-image id="volDecrBtn" src="#asset-vp-vold" position="-0.4 0.5 -5" scale="0.4 0.4 1" data-raycastable
+        button-highlight></a-image>
+      <a-image id="volIncrBtn" src="#asset-vp-voli" position="0.4 0.5 -5" scale="0.4 0.4 1" data-raycastable
+        button-highlight></a-image>
       <a-text align="center" id="volumeTxt" value="100%" width="3" position="0 0.5 -5"
         material="color: #333; opacity: 0.5"></a-text>
 
       <a-text align="center" id="toggleMode" value="180 SBS EQR" width="3" position="0 0 -5"
-        material="color: #3337; opacity: 0.5" geometry="primitive:plane; width:1; height: 0.2"
-        data-raycastable></a-text>
+        material="color: #FFF; opacity: 0.5" geometry="primitive:plane; width:1; height: 0.2" data-raycastable
+        button-highlight></a-text>
       <a-entity id="files" position="0 1.5 -5" visible="false" rotation="25 0 0" scale="1.5 1.5 1">
         <a-entity id="filesList">
           <a-entity id="loader" visible="false" position="0 2 0" scale="1 1 1"
