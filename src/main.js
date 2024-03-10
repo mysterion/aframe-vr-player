@@ -17,6 +17,10 @@ import './components/dialog/Settings.js'
 import './components/dialog/Loading.js'
 import './components/dialog/Utils.js'
 
+// components:settings
+import './components/settings/ResumeVideo.js'
+import './components/settings/ApplySettings.js'
+
 // buttons
 import './components/buttons/btnOpenFile.js'
 import './components/buttons/btnPausePlay.js'

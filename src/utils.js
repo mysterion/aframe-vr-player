@@ -12,3 +12,7 @@ export function toTime(seconds) {
     date.setSeconds(seconds);
     return date.toISOString().substr(11, 8);
 }
+
+export function getFileName(link) {
+    return link.replace(/^.*[\\/]/, '')
+}

@@ -5,7 +5,6 @@ AFRAME.registerComponent('stereocam', {
     },
 
     init: function () {
-        console.log("initalized stereocam")
         this.layer_changed = false;
     },
 

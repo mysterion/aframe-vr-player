@@ -9,7 +9,6 @@ AFRAME.registerComponent('cursor-util', {
         this.cursorChild.setAttribute('geometry', 'primitive: circle; radius: 0.0075;')
         this.cursorChild.setAttribute('material', 'color: teal')
         el.removeAttribute('geometry')
-        console.log('initialized cursor-util')
         this.checkVR()
         el.sceneEl.addEventListener('enter-vr', AFRAME.utils.bind(this.checkVR, this))
         el.sceneEl.addEventListener('exit-vr', AFRAME.utils.bind(this.checkVR, this))

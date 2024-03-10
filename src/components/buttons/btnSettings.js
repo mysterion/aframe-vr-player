@@ -1,4 +1,3 @@
-import { C_FILES } from "../dialog/Files";
 import { C_SETTINGS } from "../dialog/Settings";
 
 AFRAME.registerComponent('btn-settings', {
@@ -27,6 +26,6 @@ AFRAME.registerComponent('btn-settings', {
                 dialog.object3D.visible = true
             }
         })
-        el.click()
+        // el.click()
     },
 });

@@ -1,3 +1,5 @@
+import { getFileName } from '../../utils'
+
 const LISTING_URL = `${import.meta.env.VITE_LISTING_URL}`
 const FILE_GET_URL = `${import.meta.env.VITE_FILE_GET_URL}`
 export const C_FILES = 'dialog-files'
@@ -182,7 +184,7 @@ function renderFiles(el, url, files, folders, offset) {
             }
 
             let text = document.createElement("a-text")
-            text.setAttribute("value", files[i].replace(/^.*[\\/]/, '').substring(0, 40))
+            text.setAttribute("value", getFileName(files[i]).substring(0, 40))
             text.setAttribute("align", "center")
             text.setAttribute("width", "2")
 
@@ -208,7 +210,7 @@ function renderFiles(el, url, files, folders, offset) {
             }
 
             let text = document.createElement("a-text")
-            text.setAttribute("value", folders[i].replace(/^.*[\\/]/, ''))
+            text.setAttribute("value", getFileName(folders[i]))
             text.setAttribute("align", "center")
             text.setAttribute("width", "2")
 
