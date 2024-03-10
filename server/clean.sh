@@ -1,1 +1,1 @@
-rm -rf build/ dist/
+rm -rf build/ dist/ templates/

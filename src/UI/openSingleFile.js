@@ -1,5 +1,3 @@
-import { GS } from "../main";
-
 function handleFileSelect(event) {
     const fileInput = event.target;
     const file = fileInput.files[0];
@@ -15,6 +13,3 @@ export const openSingleFile = () => {
 export const setUpSingleFileOpen = () => {
     GS.fileInput.addEventListener('change', handleFileSelect);
 }
-
-
-
