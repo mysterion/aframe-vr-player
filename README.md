@@ -5,8 +5,18 @@ Play VR videos right from the browser.
 ### Online
 Use the online version on your web browser. Choose the video with file picker. 
 
-### CLI (Coming soon)
-use the cli version to launch an instance directly from your PC.
+### CLI
+1) Choose the `videos` folder and launch an instance on your PC.
+2) Make sure your device and PC are connected on the same wifi/network
+3) go to the URL specified on the cli (192.168.X.X) on web browser of your device(I recommend Chrome on cardboard)
+4) Accept SSL certificate and enjoy
+
+NOTE: You can generate your own SSL certificates using: 
+`openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365`
+make sure to keep `cert.pem` & `key.pem` on the same folder as the app
+OR
+you can generate it online: https://www.cryptool.org/en/cto/openssl
+
 
 ## Development
 ```
