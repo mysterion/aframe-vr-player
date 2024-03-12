@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 
 - Added settings ui
 - More compact files ui
+- Video resume & save settings(on browser)
+- Mouse controls on non-vr mode
+- Added settings options: save presets, default presets, resume video
 
 ### 🚜 Refactor
 
@@ -16,6 +19,10 @@ All notable changes to this project will be documented in this file.
 ### Build
 
 - Update script
+
+### Wip
+
+- Filesystem api
 
 ## [1.0] - 2024-03-05
 
