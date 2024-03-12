@@ -12,9 +12,13 @@ Use the online version on your web browser. Choose the video with file picker.
 4) Accept SSL certificate and enjoy
 
 NOTE: You can generate your own SSL certificates using: 
+
 `openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365`
+
 make sure to keep `cert.pem` & `key.pem` on the same folder as the app
+
 OR
+
 you can generate it online: https://www.cryptool.org/en/cto/openssl
 
 
