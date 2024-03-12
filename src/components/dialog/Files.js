@@ -1,4 +1,6 @@
+import { E } from '../../main'
 import { getFileName } from '../../utils'
+import { C_VID_STATE } from '../VideoState'
 
 const LISTING_URL = `${import.meta.env.VITE_LISTING_URL}`
 const FILE_GET_URL = `${import.meta.env.VITE_FILE_GET_URL}`
@@ -166,7 +168,6 @@ function renderFiles(el, url, files, folders, offset) {
 
     let offsetFiles = offset[url]?.files ?? 0
     let offsetFolders = offset[url]?.folders ?? 0
-    const video = document.getElementById('video')
 
     // files 
     let pos = initialPosition
@@ -179,8 +180,11 @@ function renderFiles(el, url, files, folders, offset) {
             tile.setAttribute("clickable", "")
             tile.setAttribute("button-highlight", "")
             tile.onclick = () => {
-                video.src = FILE_GET_URL + url + "/" + files[i]
-                video.play()
+                let src = FILE_GET_URL + url + "/" + files[i]
+                E.ascene.setAttribute(C_VID_STATE, {
+                    src: src,
+                    fileName: getFileName(src)
+                })
             }
 
             let text = document.createElement("a-text")

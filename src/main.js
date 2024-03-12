@@ -18,7 +18,7 @@ import './components/dialog/Loading.js'
 import './components/dialog/Utils.js'
 
 // components:settings
-import './components/settings/ResumeVideo.js'
+import './components/settings/ApplySettingsVideo.js'
 import './components/settings/ApplySettings.js'
 
 // buttons
@@ -30,3 +30,22 @@ import './components/buttons/btnVol.js'
 import './components/buttons/btnHideControls.js'
 import './components/buttons/btnSettings.js'
 
+if (import.meta.env.VITE_WEB) {
+    function handleFileSelect(event) {
+        const fileInput = event.target;
+        const file = fileInput.files[0];
+        const video = document.getElementById('video')
+        if (file) {
+            video.src = URL.createObjectURL(file)
+        }
+    }
+
+    document.getElementById('fileInput').addEventListener('change', handleFileSelect)
+}
+
+export const E = {
+    ascene: document.querySelector('a-scene'),
+    leftEye: document.getElementById('leftEye'),
+    rightEye: document.getElementById('rightEye'),
+    video: document.getElementById('video'),
+}

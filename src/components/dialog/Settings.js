@@ -1,4 +1,5 @@
-import { videoModes } from "../ToggleMode"
+import { E } from "../../main"
+import { videoPresets } from "../VideoState"
 
 import { C_APPLY_SETTINGS } from "../settings/ApplySettings"
 
@@ -36,8 +37,8 @@ function selectionModeTgl(el, y) {
     el.appendChild(tile)
 }
 
-function defaultPresetTgl(el, y) {
-    var id = 0
+function defaultPresetTgl(el, y, val) {
+    var id = val
 
     let tile = document.createElement("a-plane")
     tile.setAttribute("geometry", "width:2; height: 0.2")
@@ -46,23 +47,28 @@ function defaultPresetTgl(el, y) {
     tile.setAttribute("clickable", "")
     tile.setAttribute("button-highlight", "")
 
-
     let text = document.createElement("a-text")
-    text.setAttribute("value", videoModes[id].text)
+    text.setAttribute("value", videoPresets[id].text)
     text.setAttribute("align", "center")
     text.setAttribute("width", "2")
 
     tile.appendChild(text)
     tile.onclick = () => {
-        text.setAttribute("value", videoModes[(++id) % videoModes.length].text)
+        id = (id + 1) % videoPresets.length
+        text.setAttribute("value", videoPresets[id].text)
+        console.log(id)
+        E.ascene.setAttribute(C_APPLY_SETTINGS, {
+            defaultPreset: id
+        })
+
     }
 
     el.appendChild(tile)
 }
 
-function savePresetChk(el, y) {
-    var i = 0
-    var vars = ["OFF", "ON"]
+function savePresetChk(el, y, val) {
+    var vars = [false, true]
+    var i = vars.indexOf(val)
 
     let tile = document.createElement("a-plane")
     tile.setAttribute("geometry", "width:2; height: 0.2")
@@ -73,20 +79,24 @@ function savePresetChk(el, y) {
 
 
     let text = document.createElement("a-text")
-    text.setAttribute("value", vars[0])
+    text.setAttribute("value", val ? "ON" : "OFF")
     text.setAttribute("align", "center")
     text.setAttribute("width", "2")
 
     tile.appendChild(text)
     tile.onclick = () => {
-        text.setAttribute("value", vars[++i % vars.length])
+        let newVal = vars[++i % vars.length]
+        text.setAttribute("value", newVal ? "ON" : "OFF")
+        E.ascene.setAttribute(C_APPLY_SETTINGS, {
+            savePreset: newVal
+        })
     }
 
     el.appendChild(tile)
 }
 
 function resumeVideoChk(el, y, val) {
-    var vars = ["OFF", "ON"]
+    var vars = [false, true]
     var i = vars.indexOf(val)
 
     let tile = document.createElement("a-plane")
@@ -97,7 +107,7 @@ function resumeVideoChk(el, y, val) {
     tile.setAttribute("button-highlight", "")
 
     let text = document.createElement("a-text")
-    text.setAttribute("value", vars[i])
+    text.setAttribute("value", val ? "ON" : "OFF")
     text.setAttribute("align", "center")
     text.setAttribute("width", "2")
 
@@ -105,7 +115,7 @@ function resumeVideoChk(el, y, val) {
 
     tile.addEventListener('click', () => {
         let newVal = vars[++i % vars.length]
-        text.setAttribute("value", newVal)
+        text.setAttribute("value", newVal ? "ON" : "OFF")
         ascene.setAttribute(C_APPLY_SETTINGS, {
             resumeVideo: newVal
         })
@@ -191,8 +201,8 @@ function seekTimeTgl(el, y) {
 
 const settings = [
     // { name: "select mode", render: selectionModeTgl },
-    // { name: "default preset", render: defaultPresetTgl },
-    // { name: "save preset for video", render: savePresetChk },
+    { name: "default preset", render: defaultPresetTgl, storeKey: 'defaultPreset' },
+    { name: "save preset for video", render: savePresetChk, storeKey: 'savePreset' },
     { name: "resume video", render: resumeVideoChk, storeKey: 'resumeVideo' },
     // { name: "ui position", render: uiPosTgl },
     // { name: "default eye", render: defaultEyeTgl },
@@ -252,10 +262,6 @@ function renderSettings(el, offset) {
     insertSettingsUI(el, offset)
 
     let currentSettings = ascene.getAttribute(C_APPLY_SETTINGS)
-    // let e = document.createElement('a-text')
-    // e.setAttribute('value', 'hello settings')
-    // e.setAttribute('align', 'center')
-    // el.appendChild(e)
     let pos = initialPosition
     for (let i = offset; i < offset + itemLimit; i++) {
         if (i < settings.length) {
