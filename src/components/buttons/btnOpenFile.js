@@ -1,9 +1,5 @@
 import { C_FILES } from "../dialog/Files";
 
-async function ok() {
-    const h = await window.showOpenFilePicker()
-}
-
 AFRAME.registerComponent('btn-open-file', {
     schema: {
 
@@ -13,11 +9,6 @@ AFRAME.registerComponent('btn-open-file', {
         let el = this.el
         let dialog = document.getElementById('dialog')
         el.addEventListener('click', () => {
-            if (import.meta.env.VITE_WEB) {
-                ok()
-                // document.getElementById('fileInput').click()
-                return
-            }
             if (dialog.hasAttribute(C_FILES)) {
                 if (dialog.object3D.visible) {
                     if (dialog.getAttribute('dialog-utils').screen === C_FILES) {

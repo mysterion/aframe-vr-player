@@ -1,5 +1,7 @@
+import { del } from 'idb-keyval'
 import { E } from '../../main'
 import { getFileName } from '../../utils'
+import { getFolderFromFS } from '../../web/filesystem'
 import { C_VID_STATE } from '../VideoState'
 
 const LISTING_URL = `${import.meta.env.VITE_LISTING_URL}`
@@ -20,13 +22,19 @@ function createIcon(src, parent, position, scale) {
 }
 
 async function fetchFiles(el, url) {
-    // TODO: implement filesystem api for WEB build
     el.setAttribute('dialog-loading', '')
-    let res = await fetch(LISTING_URL + "/" + url)
-    let { files, folders } = await res.json()
-    // TODO: add error handling screen
+    if (import.meta.env.VITE_WEB) {
+        let { files, folders, fileHandles } = await getFolderFromFS(url)
+        this.fileHandles = fileHandles
+        el.setAttribute(C_FILES, { filesFolders: { files, folders } })
+    } else {
+        let res = await fetch(LISTING_URL + "/" + url)
+        let { files, folders } = await res.json()
+        el.setAttribute(C_FILES, { filesFolders: { files, folders } })
+
+    }
+    // TODO: add error handling screen for web and server builds
     el.removeAttribute('dialog-loading')
-    el.setAttribute(C_FILES, { filesFolders: { files, folders } })
 }
 
 
@@ -55,7 +63,7 @@ function insertFolderUI(el, url, files, folders, offset) {
     refreshBtn.setAttribute("clickable", "")
     refreshBtn.setAttribute("button-highlight", "")
     refreshBtn.addEventListener("click", () => {
-        fetchFiles(el, url)
+        this.fetchFiles(el, url)
     })
     el.appendChild(refreshBtn)
 
@@ -158,6 +166,28 @@ function insertFolderUI(el, url, files, folders, offset) {
             el.appendChild(foldersDownBtn)
         }
     }
+
+    if (import.meta.env.VITE_WEB) {
+        let tile = document.createElement("a-plane")
+        tile.setAttribute("geometry", "width:2; height: 0.2")
+        tile.setAttribute("material", "color: #2F9F1D;")
+        tile.setAttribute("position", `0 1.3 0.01`)
+        tile.setAttribute("clickable", "")
+        tile.setAttribute("button-highlight", "")
+        tile.onclick = async () => {
+            await del('fs')
+            this.fetchFiles(this.el, '')
+            el.setAttribute(C_FILES, { reRender: 'rerender' })
+        }
+
+        let text = document.createElement("a-text")
+        text.setAttribute("value", "Choose Another Directory")
+        text.setAttribute("align", "center")
+        text.setAttribute("width", "2")
+
+        tile.appendChild(text)
+        el.appendChild(tile)
+    }
 }
 
 
@@ -179,12 +209,16 @@ function renderFiles(el, url, files, folders, offset) {
             tile.setAttribute("position", `-1.2 ${pos} 0.01`)
             tile.setAttribute("clickable", "")
             tile.setAttribute("button-highlight", "")
-            tile.onclick = () => {
+            tile.onclick = async () => {
                 let src = FILE_GET_URL + url + "/" + files[i]
+                if (import.meta.env.VITE_WEB) {
+                    src = URL.createObjectURL(await this.fileHandles[i].getFile())
+                }
                 E.ascene.setAttribute(C_VID_STATE, {
                     src: src,
-                    fileName: getFileName(src)
+                    fileName: files[i]
                 })
+
             }
 
             let text = document.createElement("a-text")
@@ -224,7 +258,7 @@ function renderFiles(el, url, files, folders, offset) {
         }
     }
 
-    insertFolderUI(el, url, files, folders, offset)
+    this.insertFolderUI(el, url, files, folders, offset)
 }
 
 AFRAME.registerComponent(C_FILES, {
@@ -277,6 +311,10 @@ AFRAME.registerComponent(C_FILES, {
         el.setAttribute('material', 'color: teal')
         el.setAttribute('dialog-utils', { 'screen': C_FILES })
         el.object3D.visible = true
+
+        this.fetchFiles = AFRAME.utils.bind(fetchFiles, this)
+        this.insertFolderUI = AFRAME.utils.bind(insertFolderUI, this)
+        this.renderFiles = AFRAME.utils.bind(renderFiles, this)
     },
 
     update: function (od) {
@@ -288,9 +326,9 @@ AFRAME.registerComponent(C_FILES, {
             return
         }
         if (d.url !== od.url) {
-            fetchFiles(this.el, d.url)
+            this.fetchFiles(this.el, d.url)
         } else {
-            renderFiles(el, d.url, d.filesFolders.files, d.filesFolders.folders, d.offset)
+            this.renderFiles(el, d.url, d.filesFolders.files, d.filesFolders.folders, d.offset)
         }
     },
 
