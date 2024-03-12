@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [1.1] - 2024-03-12
 
 ### 🚀 Features
 
@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Video resume & save settings(on browser)
 - Mouse controls on non-vr mode
 - Added settings options: save presets, default presets, resume video
+- [**breaking**] Added folder access for web build
 
 ### 🚜 Refactor
 
