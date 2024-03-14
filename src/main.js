@@ -21,6 +21,12 @@ import './components/dialog/Utils.js'
 import './components/settings/ApplySettingsVideo.js'
 import './components/settings/ApplySettings.js'
 
+// components:env
+import './components/env/EnvManager.js'
+import './components/env/Equirectangular.js'
+import './components/env/Fisheye.js'
+
+
 // buttons
 import './components/buttons/btnOpenFile.js'
 import './components/buttons/btnPausePlay.js'
@@ -45,7 +51,6 @@ if (import.meta.env.VITE_WEB) {
 
 export const E = {
     ascene: document.querySelector('a-scene'),
-    leftEye: document.getElementById('leftEye'),
-    rightEye: document.getElementById('rightEye'),
     video: document.getElementById('video'),
+    env: document.getElementById('env')
 }

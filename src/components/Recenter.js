@@ -1,11 +1,10 @@
-import { ControlsHidden, ControlsShown } from "../systems/Controls";
+import { ControlsHidden, ControlsShown, E_Controls } from "../systems/Controls";
 
 AFRAME.registerComponent('recenter', {
     schema: {},
 
     init: function () {
         var el = this.el
-        const rightEye = document.getElementById('rightEye')
         this.camera = document.getElementById('camera')
         this.recenterCamera = false
         this.controlsVisible = true
@@ -18,19 +17,17 @@ AFRAME.registerComponent('recenter', {
             this.recenterCamera = false
         })
 
-        el.sceneEl.addEventListener(ControlsHidden, () => {
-            this.controlsVisible = false
-        })
-
-        el.sceneEl.addEventListener(ControlsShown, () => {
-            this.controlsVisible = true
+        el.sceneEl.addEventListener(E_Controls, (e) => {
+            if (e.detail === ControlsHidden)
+                this.controlsVisible = false
+            else if (e.detail === ControlsShown)
+                this.controlsVisible = true
         })
 
         el.addEventListener("click", (e) => {
             if (e.detail.intersectedEl !== el) return;
             if (!this.controlsVisible) {
                 el.sceneEl.systems.controls.showControls()
-                rightEye.setAttribute('visible', false)
                 return
             }
             if (this.recenterCamera) {

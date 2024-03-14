@@ -16,3 +16,14 @@ export function toTime(seconds) {
 export function getFileName(link) {
     return link.replace(/^.*[\\/]/, '')
 }
+
+export function createElement(tagName = 'a-entity', attributes = {}, children = []) {
+    const el = document.createElement(tagName)
+    for (let key in attributes) {
+        el.setAttribute(key, attributes[key])
+    }
+    if (children.length > 0) {
+        el.append(...children)
+    }
+    return el
+}

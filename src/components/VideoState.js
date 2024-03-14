@@ -1,30 +1,17 @@
 import { E } from "../main"
+import { PRESET } from "./env/EnvManager"
 
 export const C_VID_STATE = 'video-state'
 
 export const videoPresets = [
     {
         "text": "180 SBS EQR", "fn": () => {
-            leftEye.setAttribute("stereosphere", "mode: 180SbsEq;")
-            rightEye.setAttribute("stereosphere", "mode: 180SbsEq;")
+            E.env.setAttribute('env-manager', { mode: PRESET.EQ_180_SBS })
         }
     },
     {
         "text": "180 SBS FISH", "fn": () => {
-            leftEye.setAttribute("stereosphere", "mode: SbsFish; fishFov: 180")
-            rightEye.setAttribute("stereosphere", "mode: SbsFish; fishFov: 180")
-        }
-    },
-    {
-        "text": "190 SBS FISH", "fn": () => {
-            leftEye.setAttribute("stereosphere", "mode: SbsFish; fishFov: 190")
-            rightEye.setAttribute("stereosphere", "mode: SbsFish; fishFov: 190")
-        }
-    },
-    {
-        "text": "200 SBS FISH", "fn": () => {
-            leftEye.setAttribute("stereosphere", "mode: SbsFish; fishFov: 200")
-            rightEye.setAttribute("stereosphere", "mode: SbsFish; fishFov: 200")
+            E.env.setAttribute('env-manager', { mode: PRESET.FE_180_SBS })
         }
     }
 ]

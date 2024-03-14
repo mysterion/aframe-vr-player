@@ -61,13 +61,7 @@
     </a-entity>
 
     <!-- video player -->
-    <a-entity id="leftEye" geometry="primitive:sphere; radius: 100; segmentsWidth: 32; segmentsHeight: 32;"
-      material="shader: flat; src: #video; side: back;" stereosphere="eye:both; side:left; mode:180SbsEq;">
-    </a-entity>
-    <a-entity id="rightEye" geometry="primitive:sphere; radius: 100; segmentsWidth: 32; segmentsHeight: 32;"
-      material="shader: flat; src: #video; side: back;" stereosphere="eye:right; side:right; mode:180SbsEq;"
-      visible="false">
-    </a-entity>
+    <a-entity id="env" env-manager></a-entity>
 
     <!-- video player ui -->
     <a-entity id="controls" position="0 -2.5 1.5" rotation="0 0 0">
