@@ -10,11 +10,14 @@ export const PRESET = {
     FE_180_SBS: 'FE_180_SBS'
 }
 
+export const ViewAngles = [0, 30, 45, 60, 90, 60, 45, 30]
+
 AFRAME.registerComponent('env-manager', {
     schema: {
         mode: { type: 'string', default: PRESET.EQ_180_SBS },
         uiHidden: { type: 'boolean', default: false },
-        defaultEye: { type: 'string', default: 'left' }
+        defaultEye: { type: 'string', default: 'left' },
+        viewAngle: { type: 'number', default: 0 }
     },
 
     init: function () {
@@ -26,7 +29,8 @@ AFRAME.registerComponent('env-manager', {
     update: function (od) {
         let d = this.data
         let el = this.el
-        if (this.currentMode !== null) {
+        el.setAttribute('rotation', { x: ViewAngles[d.viewAngle] })
+        if (this.currentMode !== null && this.currentMode !== od.mode) {
             el.removeAttribute(this.currentMode)
         }
         switch (d.mode) {

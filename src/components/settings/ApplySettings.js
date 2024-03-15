@@ -1,3 +1,4 @@
+import { E } from "../../main";
 import { Store } from "../../store"
 import { getElem, isObjectEmpty } from "../../utils";
 
@@ -10,7 +11,8 @@ AFRAME.registerComponent(C_APPLY_SETTINGS, {
         resumeVideo: { type: 'boolean', default: true },
         defaultPreset: { type: 'number', default: 0 },
         savePreset: { type: 'boolean', default: true },
-        defaultEye: { type: 'string', default: 'left' }
+        defaultEye: { type: 'string', default: 'left' },
+        viewAngle: { type: 'number', default: 0 },
     },
 
     init: function () {
@@ -44,6 +46,8 @@ AFRAME.registerComponent(C_APPLY_SETTINGS, {
         el.setAttribute(C_AS_VIDEO, { savePreset: d.savePreset })
         getElem('camera').setAttribute('stereocam', { eye: d.defaultEye })
         getElem('env').setAttribute('env-manager', { defaultEye: d.defaultEye })
+        E.env.setAttribute('env-manager', { viewAngle: d.viewAngle })
+        this.el.emit(C_APPLY_SETTINGS, d, false)
         Store.set('settings', d)
     },
 });

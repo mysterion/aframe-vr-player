@@ -10,6 +10,8 @@ import './components/Recenter.js'
 import './components/CursorUtil.js'
 import './components/ToggleMode.js'
 import './components/AdjustCamera.js'
+import './components/ToggleViewAngle.js'
+
 
 // components:dialog
 import './components/dialog/Files.js'
