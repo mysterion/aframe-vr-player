@@ -5,7 +5,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-CX01L4N7NB"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-CX01L4N7NB');
   </script>
@@ -14,7 +14,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="/aframe-vr-player/static/aframe-v1.5.0.min.js"></script>
   <title>aframe vr player</title>
-  <script type="module" crossorigin src="/aframe-vr-player/static/index-bFBEQW4b.js"></script>
+  <script type="module" crossorigin src="/aframe-vr-player/static/index-CJ5qFqxa.js"></script>
 </head>
 
 <body>
@@ -68,13 +68,7 @@
     </a-entity>
 
     <!-- video player -->
-    <a-entity id="leftEye" geometry="primitive:sphere; radius: 100; segmentsWidth: 32; segmentsHeight: 32;"
-      material="shader: flat; src: #video; side: back;" stereosphere="eye:both; side:left; mode:180SbsEq;">
-    </a-entity>
-    <a-entity id="rightEye" geometry="primitive:sphere; radius: 100; segmentsWidth: 32; segmentsHeight: 32;"
-      material="shader: flat; src: #video; side: back;" stereosphere="eye:right; side:right; mode:180SbsEq;"
-      visible="false">
-    </a-entity>
+    <a-entity id="env" env-manager></a-entity>
 
     <!-- video player ui -->
     <a-entity id="controls" position="0 -2.5 1.5" rotation="0 0 0">
@@ -100,6 +94,11 @@
       <a-text toggle-mode clickable controls align="center" id="toggleMode" value="180 SBS EQR" width="3"
         position="0 0.5 -5" material="color: #FFF; opacity: 0.5" geometry="primitive:plane; width:1; height: 0.2"
         button-highlight></a-text>
+
+      <a-text toggle-view-angle clickable controls align="center" id="toggleViewAngle" value="0" width="3"
+        position="0 0.2 -5" material="color: #FFF; opacity: 0.5" geometry="primitive:plane; width:1; height: 0.2"
+        button-highlight></a-text>
+
       <a-entity dialog-utils id="dialog" position="0 3 -5" rotation="0 0 0" visible="false">
 
       </a-entity>
