@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### 🚀 Features
+
+- Settings - default eye added
+- Viewing angle button
+
+### 🐛 Bug Fixes
+
+- FileInput on mobile devices
+
+### 🚜 Refactor
+
+- Added env to setup more presets
+
 ## [1.1] - 2024-03-12
 
 ### 🚀 Features
