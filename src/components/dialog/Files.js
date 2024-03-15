@@ -1,7 +1,6 @@
 import { del } from 'idb-keyval'
 import { E } from '../../main'
 import { getFileName } from '../../utils'
-import { getFolderFromFS } from '../../web/filesystem'
 import { C_VID_STATE } from '../VideoState'
 
 const LISTING_URL = `${import.meta.env.VITE_LISTING_URL}`
@@ -23,16 +22,9 @@ function createIcon(src, parent, position, scale) {
 
 async function fetchFiles(el, url) {
     el.setAttribute('dialog-loading', '')
-    if (import.meta.env.VITE_WEB) {
-        let { files, folders, fileHandles } = await getFolderFromFS(url)
-        this.fileHandles = fileHandles
-        el.setAttribute(C_FILES, { filesFolders: { files, folders } })
-    } else {
-        let res = await fetch(LISTING_URL + "/" + url)
-        let { files, folders } = await res.json()
-        el.setAttribute(C_FILES, { filesFolders: { files, folders } })
-
-    }
+    let res = await fetch(LISTING_URL + "/" + url)
+    let { files, folders } = await res.json()
+    el.setAttribute(C_FILES, { filesFolders: { files, folders } })
     // TODO: add error handling screen for web and server builds
     el.removeAttribute('dialog-loading')
 }

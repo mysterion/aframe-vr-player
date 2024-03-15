@@ -1,3 +1,6 @@
+import { E } from "../../main";
+import { getElem } from "../../utils";
+import { setupWebFileInput } from "../../web/setupFileInput";
 import { C_FILES } from "../dialog/Files";
 
 AFRAME.registerComponent('btn-open-file', {
@@ -7,7 +10,14 @@ AFRAME.registerComponent('btn-open-file', {
 
     init: function () {
         let el = this.el
-        let dialog = document.getElementById('dialog')
+        let dialog = getElem('dialog')
+        if (import.meta.env.VITE_WEB) {
+            setupWebFileInput()
+            el.addEventListener('click', (e) => {
+                E.file.click()
+            })
+            return
+        }
         el.addEventListener('click', () => {
             if (dialog.hasAttribute(C_FILES)) {
                 if (dialog.object3D.visible) {

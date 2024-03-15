@@ -36,21 +36,10 @@ import './components/buttons/btnVol.js'
 import './components/buttons/btnHideControls.js'
 import './components/buttons/btnSettings.js'
 
-if (import.meta.env.VITE_WEB) {
-    function handleFileSelect(event) {
-        const fileInput = event.target;
-        const file = fileInput.files[0];
-        const video = document.getElementById('video')
-        if (file) {
-            video.src = URL.createObjectURL(file)
-        }
-    }
-
-    document.getElementById('fileInput').addEventListener('change', handleFileSelect)
-}
-
 export const E = {
     ascene: document.querySelector('a-scene'),
     video: document.getElementById('video'),
-    env: document.getElementById('env')
+    env: document.getElementById('env'),
+    file: document.getElementById('fileInput')
 }
+
