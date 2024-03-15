@@ -1,5 +1,5 @@
 import { Store } from "../../store"
-import { videoPresets } from "../VideoState";
+import { getElem, isObjectEmpty } from "../../utils";
 
 import { C_AS_VIDEO } from "./ApplySettingsVideo";
 
@@ -9,7 +9,8 @@ AFRAME.registerComponent(C_APPLY_SETTINGS, {
     schema: {
         resumeVideo: { type: 'boolean', default: true },
         defaultPreset: { type: 'number', default: 0 },
-        savePreset: { type: 'boolean', default: true }
+        savePreset: { type: 'boolean', default: true },
+        defaultEye: { type: 'string', default: 'left' }
     },
 
     init: function () {
@@ -19,6 +20,17 @@ AFRAME.registerComponent(C_APPLY_SETTINGS, {
             settings = this.data
             Store.set('settings', settings)
         } else {
+            // migration
+            let newSettings = {}
+            for (let dkey in this.data) {
+                if (!(dkey in settings)) {
+                    newSettings[dkey] = this.data[dkey]
+                }
+            }
+            if (!isObjectEmpty(newSettings)) {
+                Store.set('settings', { ...settings, ...newSettings })
+            }
+            //
             el.setAttribute(C_APPLY_SETTINGS, settings)
         }
     },
@@ -30,6 +42,8 @@ AFRAME.registerComponent(C_APPLY_SETTINGS, {
         el.setAttribute(C_AS_VIDEO, { time: d.resumeVideo })
         el.setAttribute(C_AS_VIDEO, { defaultPreset: d.defaultPreset })
         el.setAttribute(C_AS_VIDEO, { savePreset: d.savePreset })
+        getElem('camera').setAttribute('stereocam', { eye: d.defaultEye })
+        getElem('env').setAttribute('env-manager', { defaultEye: d.defaultEye })
         Store.set('settings', d)
     },
 });

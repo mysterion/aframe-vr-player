@@ -27,3 +27,7 @@ export function createElement(tagName = 'a-entity', attributes = {}, children = 
     }
     return el
 }
+
+export function isObjectEmpty(obj) { for (const i in obj) return false; return true; }
+
+export function getElem(id) { return document.querySelector('#' + id) }

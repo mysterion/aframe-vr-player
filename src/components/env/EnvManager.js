@@ -1,3 +1,5 @@
+import { ControlsHidden, ControlsShown, E_Controls } from "../../systems/Controls";
+
 const ENVS = {
     EQ: 'equirectangular',
     FE: 'fisheye'
@@ -10,11 +12,15 @@ export const PRESET = {
 
 AFRAME.registerComponent('env-manager', {
     schema: {
-        mode: { type: 'string', default: PRESET.EQ_180_SBS }
+        mode: { type: 'string', default: PRESET.EQ_180_SBS },
+        uiHidden: { type: 'boolean', default: false },
+        defaultEye: { type: 'string', default: 'left' }
     },
 
     init: function () {
         this.currentMode = null
+        this.onUIHide = AFRAME.utils.bind(this.onUIHide, this)
+        this.el.sceneEl.addEventListener(E_Controls, this.onUIHide)
     },
 
     update: function (od) {
@@ -25,11 +31,11 @@ AFRAME.registerComponent('env-manager', {
         }
         switch (d.mode) {
             case PRESET.EQ_180_SBS:
-                el.setAttribute(ENVS.EQ, '')
+                el.setAttribute(ENVS.EQ, { uiHidden: d.uiHidden, defaultEye: d.defaultEye })
                 this.currentMode = ENVS.EQ
                 break
             case PRESET.FE_180_SBS:
-                el.setAttribute(ENVS.FE, '')
+                el.setAttribute(ENVS.FE, { uiHidden: d.uiHidden, defaultEye: d.defaultEye })
                 this.currentMode = ENVS.FE
                 break
             default:
@@ -37,4 +43,12 @@ AFRAME.registerComponent('env-manager', {
 
         }
     },
+
+    onUIHide: function (e) {
+        if (e.detail === ControlsHidden) {
+            this.el.setAttribute('env-manager', 'uiHidden: true')
+        } else if (e.detail === ControlsShown) {
+            this.el.setAttribute('env-manager', 'uiHidden: false')
+        }
+    }
 });

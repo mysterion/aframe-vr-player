@@ -1,4 +1,3 @@
-import { ControlsHidden, ControlsShown, E_Controls } from "../../systems/Controls";
 import { createElement } from "../../utils";
 
 AFRAME.registerComponent('eq-sphere', {
@@ -8,7 +7,7 @@ AFRAME.registerComponent('eq-sphere', {
         side: { type: 'string', default: 'left' }, // LRTB TODO: TB
     },
 
-    update: function (od) {
+    init: function () {
         let object3D = this.el.object3D.children[0]
         let d = this.data
         let og = this.el.getAttribute("geometry")
@@ -27,8 +26,12 @@ AFRAME.registerComponent('eq-sphere', {
         }
         uv.needsUpdate = true;
         object3D.geometry = geometry
+    },
 
-        // layers logic
+    update: function (od) {
+        let d = this.data
+        let object3D = this.el.object3D.children[0]
+        // layers
         if (d.eye === "left") {
             object3D.layers.set(1);
         } else if (d.eye === "right") {
@@ -36,14 +39,14 @@ AFRAME.registerComponent('eq-sphere', {
         } else {
             object3D.layers.set(0);
         }
-
     },
 });
 
 AFRAME.registerComponent('equirectangular', {
     schema: {
         defaultEye: { type: 'string', default: 'left' },
-        detail: { type: 'number', default: 32 }
+        detail: { type: 'number', default: 32 },
+        uiHidden: { type: 'boolean', default: false }
     },
 
     init: function () {
@@ -57,50 +60,34 @@ AFRAME.registerComponent('equirectangular', {
             material: "shader: flat; src: #video; side: back;",
         })
 
-        this.onHide = AFRAME.utils.bind(this.onHide, this)
-        this.el.sceneEl.addEventListener(E_Controls, this.onHide)
-
         this.el.append(this.leftEye, this.rightEye)
     },
 
     update: function (od) {
         let d = this.data
-        console.log(d)
-        let le = 'both', re = 'both'
-        if (d.defaultEye === 'left') {
-            re = 'right'
-        } else {
-            le = 'left'
+
+        let le = 'left', re = 'right', lev = true, rev = true
+
+        if (!d.uiHidden) {
+            if (d.defaultEye === 'left') {
+                rev = false
+                le = 'both'
+            } else {
+                lev = false
+                re = 'both'
+            }
         }
+
         this.leftEye.setAttribute('eq-sphere', { eye: le, fov: 180, side: 'left' })
         this.rightEye.setAttribute('eq-sphere', { eye: re, fov: 180, side: 'right' })
+
+        this.leftEye.object3D.visible = lev
+        this.rightEye.object3D.visible = rev
     },
 
     remove: function () {
         this.el.removeChild(this.leftEye)
         this.el.removeChild(this.rightEye)
-        this.el.sceneEl.removeEventListener(E_Controls, this.onHide)
     },
 
-    onHide: function (e) {
-        let d = this.data
-        console.log(d)
-        if (e.detail === ControlsHidden) {
-            if (d.defaultEye === 'left') {
-                console.log('show right eye')
-                this.rightEye.object3D.visible = true
-            } else {
-                console.log('show left eye')
-                this.leftEye.object3D.visible = true
-            }
-        } else if (e.detail === ControlsShown) {
-            if (d.defaultEye === 'left') {
-                console.log('hide right eye')
-                this.rightEye.object3D.visible = false
-            } else {
-                console.log('hide left eye')
-                this.leftEye.object3D.visible = false
-            }
-        }
-    }
 });

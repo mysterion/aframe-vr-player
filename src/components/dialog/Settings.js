@@ -66,6 +66,34 @@ function defaultPresetTgl(el, y, val) {
     el.appendChild(tile)
 }
 
+
+function defaultEyeTgl(el, y, val) {
+    var vars = ['left', 'right']
+    var i = vars.indexOf(val)
+
+    let tile = document.createElement("a-plane")
+    tile.setAttribute("geometry", "width:2; height: 0.2")
+    tile.setAttribute("material", "color: #A15807;")
+    tile.setAttribute("position", `1.2 ${y} 0.01`)
+    tile.setAttribute("clickable", "")
+    tile.setAttribute("button-highlight", "")
+
+    let text = document.createElement("a-text")
+    text.setAttribute("value", val)
+    text.setAttribute("align", "center")
+    text.setAttribute("width", "2")
+
+    tile.appendChild(text)
+    tile.onclick = () => {
+        i = (i + 1) % vars.length
+        text.setAttribute("value", vars[i])
+        E.ascene.setAttribute(C_APPLY_SETTINGS, {
+            defaultEye: vars[i]
+        })
+    }
+    el.appendChild(tile)
+}
+
 function savePresetChk(el, y, val) {
     var vars = [false, true]
     var i = vars.indexOf(val)
@@ -149,31 +177,6 @@ function uiPosTgl(el, y) {
     el.appendChild(tile)
 }
 
-function defaultEyeTgl(el, y) {
-    var i = 0
-    var vars = ["LEFT", "RIGHT"]
-
-    let tile = document.createElement("a-plane")
-    tile.setAttribute("geometry", "width:2; height: 0.2")
-    tile.setAttribute("material", "color: #A15807;")
-    tile.setAttribute("position", `1.2 ${y} 0.01`)
-    tile.setAttribute("clickable", "")
-    tile.setAttribute("button-highlight", "")
-
-
-    let text = document.createElement("a-text")
-    text.setAttribute("value", vars[0])
-    text.setAttribute("align", "center")
-    text.setAttribute("width", "2")
-
-    tile.appendChild(text)
-    tile.onclick = () => {
-        text.setAttribute("value", vars[++i % vars.length])
-    }
-
-    el.appendChild(tile)
-}
-
 function seekTimeTgl(el, y) {
     var i = 0
     var vars = ["10s", "15s", "30s", "120s"]
@@ -204,6 +207,7 @@ const settings = [
     { name: "default preset", render: defaultPresetTgl, storeKey: 'defaultPreset' },
     { name: "save preset for video", render: savePresetChk, storeKey: 'savePreset' },
     { name: "resume video", render: resumeVideoChk, storeKey: 'resumeVideo' },
+    { name: "default eye", render: defaultEyeTgl, storeKey: 'defaultEye' },
     // { name: "ui position", render: uiPosTgl },
     // { name: "default eye", render: defaultEyeTgl },
     // { name: "seek time", render: seekTimeTgl },
