@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [1.2.1] - 2024-03-16
+
+### 🐛 Bug Fixes
+
+- 190,200, FE presets
+- Viewing angle controls
+- FE preset artefact
+
+## [1.2] - 2024-03-15
 
 ### 🚀 Features
 
