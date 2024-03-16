@@ -42,7 +42,7 @@
 
     <video id="video" src="static/sample.mp4"></video>
     <!-- camera stuff -->
-    <a-entity adjust-camera position="0 0 0">
+    <a-entity id="cameraRig" adjust-camera position="0 0 0">
       <!-- camera-wrapper rotates around camera-rig for recenter -->
       <a-entity recenter clickable geometry="primitive: sphere; radius: 10; segmentsWidth: 8; segmentsHeight: 8"
         material="opacity: 0; side: back">

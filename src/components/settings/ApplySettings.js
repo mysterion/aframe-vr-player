@@ -4,6 +4,8 @@ import { getElem, isObjectEmpty } from "../../utils";
 
 import { C_AS_VIDEO } from "./ApplySettingsVideo";
 
+export const ViewAngles = [0, 30, 45, 60, 90, 60, 45, 30]
+
 export const C_APPLY_SETTINGS = 'apply-settings'
 
 AFRAME.registerComponent(C_APPLY_SETTINGS, {
@@ -46,7 +48,7 @@ AFRAME.registerComponent(C_APPLY_SETTINGS, {
         el.setAttribute(C_AS_VIDEO, { savePreset: d.savePreset })
         getElem('camera').setAttribute('stereocam', { eye: d.defaultEye })
         getElem('env').setAttribute('env-manager', { defaultEye: d.defaultEye })
-        E.env.setAttribute('env-manager', { viewAngle: d.viewAngle })
+        E.cameraRig.setAttribute('rotation', `-${ViewAngles[d.viewAngle]} 0 0`)
         this.el.emit(C_APPLY_SETTINGS, d, false)
         Store.set('settings', d)
     },

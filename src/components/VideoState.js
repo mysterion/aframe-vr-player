@@ -13,7 +13,18 @@ export const videoPresets = [
         "text": "180 SBS FISH", "fn": () => {
             E.env.setAttribute('env-manager', { mode: PRESET.FE_180_SBS })
         }
+    },
+    {
+        "text": "190 SBS FISH", "fn": () => {
+            E.env.setAttribute('env-manager', { mode: PRESET.FE_190_SBS })
+        }
+    },
+    {
+        "text": "200 SBS FISH", "fn": () => {
+            E.env.setAttribute('env-manager', { mode: PRESET.FE_200_SBS })
+        }
     }
+
 ]
 
 AFRAME.registerComponent(C_VID_STATE, {

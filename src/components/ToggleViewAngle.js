@@ -1,6 +1,5 @@
 import { E } from "../main";
-import { ViewAngles } from "./env/EnvManager";
-import { C_APPLY_SETTINGS } from "./settings/ApplySettings";
+import { C_APPLY_SETTINGS, ViewAngles } from "./settings/ApplySettings";
 
 AFRAME.registerComponent('toggle-view-angle', {
 

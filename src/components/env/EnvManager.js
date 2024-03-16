@@ -7,17 +7,17 @@ const ENVS = {
 
 export const PRESET = {
     EQ_180_SBS: 'EQ_180_SBS',
-    FE_180_SBS: 'FE_180_SBS'
+    FE_180_SBS: 'FE_180_SBS',
+    FE_190_SBS: 'FE_190_SBS',
+    FE_200_SBS: 'FE_200_SBS',
 }
 
-export const ViewAngles = [0, 30, 45, 60, 90, 60, 45, 30]
 
 AFRAME.registerComponent('env-manager', {
     schema: {
         mode: { type: 'string', default: PRESET.EQ_180_SBS },
         uiHidden: { type: 'boolean', default: false },
         defaultEye: { type: 'string', default: 'left' },
-        viewAngle: { type: 'number', default: 0 }
     },
 
     init: function () {
@@ -29,7 +29,6 @@ AFRAME.registerComponent('env-manager', {
     update: function (od) {
         let d = this.data
         let el = this.el
-        el.setAttribute('rotation', { x: ViewAngles[d.viewAngle] })
         if (this.currentMode !== null && this.currentMode !== od.mode) {
             el.removeAttribute(this.currentMode)
         }
@@ -40,6 +39,14 @@ AFRAME.registerComponent('env-manager', {
                 break
             case PRESET.FE_180_SBS:
                 el.setAttribute(ENVS.FE, { uiHidden: d.uiHidden, defaultEye: d.defaultEye })
+                this.currentMode = ENVS.FE
+                break
+            case PRESET.FE_190_SBS:
+                el.setAttribute(ENVS.FE, { uiHidden: d.uiHidden, defaultEye: d.defaultEye, fov: 190 })
+                this.currentMode = ENVS.FE
+                break
+            case PRESET.FE_200_SBS:
+                el.setAttribute(ENVS.FE, { uiHidden: d.uiHidden, defaultEye: d.defaultEye, fov: 200 })
                 this.currentMode = ENVS.FE
                 break
             default:

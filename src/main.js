@@ -3,7 +3,6 @@ import './systems/Controls.js'
 
 // components
 import './components/Timeline.js'
-import './components/StereoSphere.js'
 import './components/StereoCam.js'
 import './components/ButtonHighlight.js'
 import './components/Recenter.js'
@@ -42,6 +41,7 @@ export const E = {
     ascene: document.querySelector('a-scene'),
     video: document.getElementById('video'),
     env: document.getElementById('env'),
-    file: document.getElementById('fileInput')
+    file: document.getElementById('fileInput'),
+    cameraRig: document.getElementById('cameraRig')
 }
 

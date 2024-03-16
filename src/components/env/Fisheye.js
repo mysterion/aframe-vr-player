@@ -12,8 +12,8 @@ AFRAME.registerComponent('fe-sphere', {
         let d = this.data
 
         let fov = Math.PI
+        let afov = d.fov - 180
         if (d.fov) {
-            let afov = d.fov - 180
             fov += (Math.PI / 180) * afov
         }
         let og = this.el.getAttribute("geometry")
@@ -44,6 +44,16 @@ AFRAME.registerComponent('fe-sphere', {
 
         object3D.geometry = geometry
 
+        // remove other eye artifact ;)
+        console.log(afov)
+        console.log(`${90 - afov / 2}`)
+        this.el.appendChild(createElement('a-entity',
+            {
+                geometry: `primitive:sphere; radius: 99; segmentsWidth: ${og.segmentsWidth || 32}; segmentsHeight: 8; thetaStart: 0; thetaLength: ${90 - afov / 2}`,
+                material: "shader: flat; side: back; color: grey",
+                rotation: "90 0 0"
+
+            }))
     },
 
     update: function (od) {
@@ -97,8 +107,8 @@ AFRAME.registerComponent('fisheye', {
             }
         }
 
-        this.leftEye.setAttribute('fe-sphere', { eye: le, fov: 180, side: 'left' })
-        this.rightEye.setAttribute('fe-sphere', { eye: re, fov: 180, side: 'right' })
+        this.leftEye.setAttribute('fe-sphere', { eye: le, fov: d.fov, side: 'left' })
+        this.rightEye.setAttribute('fe-sphere', { eye: re, fov: d.fov, side: 'right' })
 
         this.leftEye.object3D.visible = lev
         this.rightEye.object3D.visible = rev
