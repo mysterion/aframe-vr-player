@@ -5,23 +5,38 @@ export const C_VID_STATE = 'video-state'
 
 export const videoPresets = [
     {
+        "text": "FLAT 2D S", "fn": () => {
+            E.env.setAttribute('env-manager', { preset: PRESET.FLAT_2D_S })
+        }
+    },
+    {
+        "text": "FLAT 2D M", "fn": () => {
+            E.env.setAttribute('env-manager', { preset: PRESET.FLAT_2D_M })
+        }
+    },
+    {
+        "text": "FLAT 2D L", "fn": () => {
+            E.env.setAttribute('env-manager', { preset: PRESET.FLAT_2D_L })
+        }
+    },
+    {
         "text": "180 SBS EQR", "fn": () => {
-            E.env.setAttribute('env-manager', { mode: PRESET.EQ_180_SBS })
+            E.env.setAttribute('env-manager', { preset: PRESET.EQ_180_SBS })
         }
     },
     {
         "text": "180 SBS FISH", "fn": () => {
-            E.env.setAttribute('env-manager', { mode: PRESET.FE_180_SBS })
+            E.env.setAttribute('env-manager', { preset: PRESET.FE_180_SBS })
         }
     },
     {
         "text": "190 SBS FISH", "fn": () => {
-            E.env.setAttribute('env-manager', { mode: PRESET.FE_190_SBS })
+            E.env.setAttribute('env-manager', { preset: PRESET.FE_190_SBS })
         }
     },
     {
         "text": "200 SBS FISH", "fn": () => {
-            E.env.setAttribute('env-manager', { mode: PRESET.FE_200_SBS })
+            E.env.setAttribute('env-manager', { preset: PRESET.FE_200_SBS })
         }
     }
 
@@ -51,4 +66,5 @@ AFRAME.registerComponent(C_VID_STATE, {
             od: od
         })
     },
+
 });

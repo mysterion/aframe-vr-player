@@ -28,6 +28,12 @@ export function createElement(tagName = 'a-entity', attributes = {}, children = 
     return el
 }
 
+export function applyAttribs(el, attributes = {}) {
+    for (let key in attributes) {
+        el.setAttribute(key, attributes[key])
+    }
+}
+
 export function isObjectEmpty(obj) { for (const i in obj) return false; return true; }
 
 export function getElem(id) { return document.querySelector('#' + id) }

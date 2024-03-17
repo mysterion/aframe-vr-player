@@ -26,6 +26,7 @@ import './components/settings/ApplySettings.js'
 import './components/env/EnvManager.js'
 import './components/env/Equirectangular.js'
 import './components/env/Fisheye.js'
+import './components/env/Flat.js'
 
 
 // buttons

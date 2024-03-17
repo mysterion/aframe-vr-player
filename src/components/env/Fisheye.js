@@ -44,16 +44,6 @@ AFRAME.registerComponent('fe-sphere', {
 
         object3D.geometry = geometry
 
-        // remove other eye artifact ;)
-        console.log(afov)
-        console.log(`${90 - afov / 2}`)
-        this.el.appendChild(createElement('a-entity',
-            {
-                geometry: `primitive:sphere; radius: 99; segmentsWidth: ${og.segmentsWidth || 32}; segmentsHeight: 8; thetaStart: 0; thetaLength: ${90 - afov / 2}`,
-                material: "shader: flat; side: back; color: grey",
-                rotation: "90 0 0"
-
-            }))
     },
 
     update: function (od) {
@@ -80,6 +70,8 @@ AFRAME.registerComponent('fisheye', {
     },
 
     init: function () {
+        let d = this.data
+        let afov = d.fov - 180
         this.leftEye = createElement('a-entity', {
             geometry: `primitive:sphere; radius: 100; segmentsWidth: ${this.data.detail}; segmentsHeight: ${this.data.detail};`,
             material: "shader: flat; src: #video; side: back;",
@@ -89,7 +81,16 @@ AFRAME.registerComponent('fisheye', {
             material: "shader: flat; src: #video; side: back;",
         })
 
-        this.el.append(this.leftEye, this.rightEye)
+        // remove other eye artifact ;)
+        this.hideA = createElement('a-entity',
+        {
+            geometry: `primitive:sphere; radius: 99; segmentsWidth: 32; segmentsHeight: 8; thetaStart: 0; thetaLength: ${90 - afov / 2}`,
+            material: "shader: flat; side: back; color: grey",
+            rotation: "90 0 0"
+
+        })
+
+        this.el.append(this.leftEye, this.rightEye, this.hideA)
     },
 
     update: function (od) {
@@ -113,10 +114,14 @@ AFRAME.registerComponent('fisheye', {
         this.leftEye.object3D.visible = lev
         this.rightEye.object3D.visible = rev
 
+        let afov = d.fov - 180
+        this.hideA.setAttribute('geometry', `thetaLength: ${90 - afov / 2};`)
+
     },
 
     remove: function () {
         this.el.removeChild(this.leftEye)
         this.el.removeChild(this.rightEye)
+        this.el.removeChild(this.hideA)
     },
 });

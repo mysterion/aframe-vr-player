@@ -2,7 +2,8 @@ import { ControlsHidden, ControlsShown, E_Controls } from "../../systems/Control
 
 const ENVS = {
     EQ: 'equirectangular',
-    FE: 'fisheye'
+    FE: 'fisheye',
+    FLAT: 'flat'
 }
 
 export const PRESET = {
@@ -10,18 +11,31 @@ export const PRESET = {
     FE_180_SBS: 'FE_180_SBS',
     FE_190_SBS: 'FE_190_SBS',
     FE_200_SBS: 'FE_200_SBS',
+    FLAT_2D_S: 'FLAT_2D_S',
+    FLAT_2D_M: 'FLAT_2D_M',
+    FLAT_2D_L: 'FLAT_2D_L',
+    FLAT_3D: 'FLAT_3D'
+}
+
+function presetToMode(preset) {
+    if (preset === null || preset === undefined) preset = ''
+    for (let env in ENVS) {
+        if (preset.startsWith(env)) {
+            return ENVS[env]
+        }
+    }
 }
 
 
 AFRAME.registerComponent('env-manager', {
     schema: {
-        mode: { type: 'string', default: PRESET.EQ_180_SBS },
+        preset: { type: 'string', default: PRESET.EQ_180_SBS },
         uiHidden: { type: 'boolean', default: false },
         defaultEye: { type: 'string', default: 'left' },
     },
 
     init: function () {
-        this.currentMode = null
+        this.currentMode = ENVS.EQ // default
         this.onUIHide = AFRAME.utils.bind(this.onUIHide, this)
         this.el.sceneEl.addEventListener(E_Controls, this.onUIHide)
     },
@@ -29,10 +43,10 @@ AFRAME.registerComponent('env-manager', {
     update: function (od) {
         let d = this.data
         let el = this.el
-        if (this.currentMode !== null && this.currentMode !== od.mode) {
+        if (this.currentMode !== presetToMode(d.preset)) {
             el.removeAttribute(this.currentMode)
         }
-        switch (d.mode) {
+        switch (d.preset) {
             case PRESET.EQ_180_SBS:
                 el.setAttribute(ENVS.EQ, { uiHidden: d.uiHidden, defaultEye: d.defaultEye })
                 this.currentMode = ENVS.EQ
@@ -48,6 +62,18 @@ AFRAME.registerComponent('env-manager', {
             case PRESET.FE_200_SBS:
                 el.setAttribute(ENVS.FE, { uiHidden: d.uiHidden, defaultEye: d.defaultEye, fov: 200 })
                 this.currentMode = ENVS.FE
+                break
+            case PRESET.FLAT_2D_S:
+                el.setAttribute(ENVS.FLAT, { size: 'S' })
+                this.currentMode = ENVS.FLAT
+                break
+            case PRESET.FLAT_2D_M:
+                el.setAttribute(ENVS.FLAT, { size: 'M' })
+                this.currentMode = ENVS.FLAT
+                break
+            case PRESET.FLAT_2D_L:
+                el.setAttribute(ENVS.FLAT, { size: 'L' })
+                this.currentMode = ENVS.FLAT
                 break
             default:
                 console.error('preset not found')

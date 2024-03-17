@@ -6,6 +6,7 @@
   <link rel="icon" type="image/svg+xml" href="/static/vr.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="/static/aframe-v1.5.0.min.js"></script>
+  <script src="/static/aframe-extras.loaders.min.js"></script>
   <script src="src/main.js" type="module"></script>
   <title>aframe vr player</title>
 </head>
@@ -48,7 +49,7 @@
         material="opacity: 0; side: back">
         <a-entity id="cameraWrapper">
           <!-- camera rotation controlled by vrheadset/mousekeyboard -->
-          <a-entity id="camera" camera look-controls stereocam="eye:left">
+          <a-entity id="camera" camera wasd-controls look-controls stereocam="eye:left" fov="180">
 
             <!-- cursor stuff -->
             <a-cursor cursor-util controls id="cursor" raycaster="objects: [clickable]" fuse="false"
