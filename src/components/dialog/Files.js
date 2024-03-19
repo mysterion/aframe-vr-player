@@ -1,24 +1,14 @@
-import { del } from 'idb-keyval'
 import { E } from '../../main'
-import { getFileName } from '../../utils'
+import { createEl, getFileName } from '../../utils'
 import { C_VID_STATE } from '../VideoState'
+import { DHeight, DWidth } from './Utils'
 
 const LISTING_URL = `${import.meta.env.VITE_LISTING_URL}`
 const FILE_GET_URL = `${import.meta.env.VITE_FILE_GET_URL}`
 export const C_FILES = 'dialog-files'
-const itemLimit = 6
-const space = -0.23
-const initialPosition = 0.5
-
-
-function createIcon(src, parent, position, scale) {
-    let el = document.createElement("a-image")
-    el.setAttribute("src", src)
-    el.setAttribute("position", position)
-    el.setAttribute("background-color", "blue")
-    el.setAttribute("scale", scale)
-    parent.appendChild(el)
-}
+const itemLimit = 5
+const space = -DHeight * 0.125
+const initialPosition = DHeight * 0.15
 
 async function fetchFiles(el, url) {
     el.setAttribute('dialog-loading', '')
@@ -34,59 +24,74 @@ function insertFolderUI(el, url, files, folders, offset) {
     let offsetFiles = offset[url]?.files ?? 0
     let offsetFolders = offset[url]?.folders ?? 0
 
-    let uri = document.createElement("a-text")
     let p = el.getAttribute("geometry")
-    uri.setAttribute("value", "folder://" + url)
-    uri.setAttribute("geometry", `primitive:plane; width:${p.width}; height: 0.2`)
-    uri.setAttribute("position", `0 ${p.height / 2} 0.01`)
-    uri.setAttribute("material", "color: grey")
-    // el.setAttribute("rotation", "20 0 0")
-    uri.setAttribute("align", "center")
-    uri.setAttribute("width", "2")
+    let uri = createEl("a-plane", {
+        "geometry": `primitive:plane; width:${p.width}; height: 3`,
+        "position": `0 ${p.height / 2} 0.2`,
+        "material": "color: #808080",
+    }, [
+        createEl('a-entity', {
+            text: `value: folder:/${url}; align: center; width: 30;`,
+            position: '0 0 0.2'
+        })
+    ])
     el.appendChild(uri)
 
-    createIcon("#asset-movie-icon", el, `-2.35 0 0.01`, "0.25 0.25 1")
-    createIcon("#asset-folder", el, `2.35 0 0.01`, "0.25 0.25 1")
+    el.append(
+        createEl("a-image", {
+            'src': "#asset-movie-icon",
+            'position': `-${p.width / 2} 0 0.1`,
+            'background-color': "blue",
+            'scale': "4 4 1"
+        }),
+        createEl("a-image", {
+            'src': "#asset-folder",
+            'position': `${p.width / 2} 0 0.1`,
+            'background-color': "blue",
+            'scale': "4 4 1"
+        })
+    )
 
-    let refreshBtn = document.createElement("a-image")
-    refreshBtn.setAttribute("src", "#asset-refresh")
-    refreshBtn.setAttribute("scale", "0.2 0.2 1")
-    refreshBtn.setAttribute("position", `-0.3 ${p.height / 2 - 0.3} 0.02`)
-    refreshBtn.setAttribute("clickable", "")
-    refreshBtn.setAttribute("button-highlight", "")
+    let refreshBtn = createEl("a-image", {
+        "src": "#asset-refresh",
+        "scale": "4 4 1",
+        "position": `-${p.width * 0.1} ${p.height * 0.35} 0.3`,
+        "clickable": "",
+        "button-highlight": "",
+    })
     refreshBtn.addEventListener("click", () => {
         this.fetchFiles(el, url)
     })
-    el.appendChild(refreshBtn)
 
-
-    let backBtn = document.createElement("a-image")
-    backBtn.setAttribute("src", "#asset-back")
-    backBtn.setAttribute("scale", "0.2 0.2 1")
-    backBtn.setAttribute("position", `0.3 ${p.height / 2 - 0.3} 0.02`)
-    backBtn.setAttribute("clickable", "")
-    backBtn.setAttribute("button-highlight", "")
+    let backBtn = createEl("a-image", {
+        "src": "#asset-back",
+        "scale": "4 4 1",
+        "position": `${p.width * 0.1} ${p.height * 0.35} 0.3`,
+        "clickable": "",
+        "button-highlight": "",
+    })
     backBtn.addEventListener("click", () => {
         el.setAttribute(C_FILES, {
             url: url.substr(0, url.lastIndexOf('/'))
         })
     })
-    el.appendChild(backBtn)
+    el.append(refreshBtn, backBtn)
 
     if (files.length > itemLimit) {
         if (offsetFiles != 0) {
-            let filesUpBtn = document.createElement("a-image")
-            filesUpBtn.setAttribute("src", "#asset-up")
-            filesUpBtn.setAttribute("scale", "0.2 0.2 1")
-            filesUpBtn.setAttribute("position", `-1.2 0.75 0.02`)
-            filesUpBtn.setAttribute("clickable", "")
-            filesUpBtn.setAttribute("button-highlight", "")
+            let filesUpBtn = createEl("a-image", {
+                "src": "#asset-up",
+                "scale": "3 3 1",
+                "position": `-${p.width * 0.25} ${p.height * 0.3} 0.2`,
+                "clickable": "",
+                "button-highlight": "",
+            })
             filesUpBtn.addEventListener("click", () => {
                 el.setAttribute(C_FILES, {
                     offset: {
                         ...offset,
                         [url]: {
-                            files: offsetFiles - itemLimit / 2,
+                            files: offsetFiles - itemLimit,
                             folders: offsetFolders
                         }
                     }
@@ -95,18 +100,19 @@ function insertFolderUI(el, url, files, folders, offset) {
             el.appendChild(filesUpBtn)
         }
         if (offsetFiles + itemLimit < files.length) {
-            let filesDownBtn = document.createElement("a-image")
-            filesDownBtn.setAttribute("src", "#asset-up")
-            filesDownBtn.setAttribute("scale", "0.2 -0.2 1")
-            filesDownBtn.setAttribute("position", `-1.2 ${initialPosition + 0.2 + (itemLimit * space) + (space - 0.01)} 0.02`)
-            filesDownBtn.setAttribute("clickable", "")
-            filesDownBtn.setAttribute("button-highlight", "")
+            let filesDownBtn = createEl("a-image", {
+                "src": "#asset-up",
+                "scale": "3 -3 1",
+                "position": `-${p.width * 0.25} -${p.height * 0.5} 0.2`,
+                "clickable": "",
+                "button-highlight": "",
+            })
             filesDownBtn.addEventListener("click", () => {
                 el.setAttribute(C_FILES, {
                     offset: {
                         ...offset,
                         [url]: {
-                            files: offsetFiles + itemLimit / 2,
+                            files: offsetFiles + itemLimit,
                             folders: offsetFolders
                         }
                     }
@@ -118,19 +124,20 @@ function insertFolderUI(el, url, files, folders, offset) {
 
     if (folders.length > itemLimit) {
         if (offsetFolders != 0) {
-            let foldersUpBtn = document.createElement("a-image")
-            foldersUpBtn.setAttribute("src", "#asset-up")
-            foldersUpBtn.setAttribute("scale", "0.2 0.2 1")
-            foldersUpBtn.setAttribute("position", "1.2 0.75 0.02")
-            foldersUpBtn.setAttribute("clickable", "")
-            foldersUpBtn.setAttribute("button-highlight", "")
+            let foldersUpBtn = createEl("a-image", {
+                "src": "#asset-up",
+                "scale": "3 3 1",
+                "position": `${p.width * 0.25} ${p.height * 0.3} 0.2`,
+                "clickable": "",
+                "button-highlight": "",
+            })
             foldersUpBtn.addEventListener("click", () => {
                 el.setAttribute(C_FILES, {
                     offset: {
                         ...offset,
                         [url]: {
                             files: offsetFiles,
-                            folders: offsetFolders - itemLimit / 2
+                            folders: offsetFolders - itemLimit
                         }
                     }
                 })
@@ -138,47 +145,26 @@ function insertFolderUI(el, url, files, folders, offset) {
             el.appendChild(foldersUpBtn)
         }
         if (offsetFolders + itemLimit < folders.length) {
-            let foldersDownBtn = document.createElement("a-image")
-            foldersDownBtn.setAttribute("src", "#asset-up")
-            foldersDownBtn.setAttribute("scale", "0.2 -0.2 1")
-            foldersDownBtn.setAttribute("position", `1.2 ${initialPosition + 0.2 + (itemLimit * space) + (space - 0.01)} 0.02`)
-            foldersDownBtn.setAttribute("clickable", "")
-            foldersDownBtn.setAttribute("button-highlight", "")
+            let foldersDownBtn = createEl("a-image", {
+                "src": "#asset-up",
+                "scale": "3 -3 1",
+                "position": `${p.width * 0.25} -${p.height * 0.5} 0.2`,
+                "clickable": "",
+                "button-highlight": "",
+            })
             foldersDownBtn.addEventListener("click", () => {
                 el.setAttribute(C_FILES, {
                     offset: {
                         ...offset,
                         [url]: {
                             files: offsetFiles,
-                            folders: offsetFolders + itemLimit / 2
+                            folders: offsetFolders + itemLimit
                         }
                     }
                 })
             })
             el.appendChild(foldersDownBtn)
         }
-    }
-
-    if (import.meta.env.VITE_WEB) {
-        let tile = document.createElement("a-plane")
-        tile.setAttribute("geometry", "width:2; height: 0.2")
-        tile.setAttribute("material", "color: #2F9F1D;")
-        tile.setAttribute("position", `0 1.3 0.01`)
-        tile.setAttribute("clickable", "")
-        tile.setAttribute("button-highlight", "")
-        tile.onclick = async () => {
-            await del('fs')
-            this.fetchFiles(this.el, '')
-            el.setAttribute(C_FILES, { reRender: 'rerender' })
-        }
-
-        let text = document.createElement("a-text")
-        text.setAttribute("value", "Choose Another Directory")
-        text.setAttribute("align", "center")
-        text.setAttribute("width", "2")
-
-        tile.appendChild(text)
-        el.appendChild(tile)
     }
 }
 
@@ -195,12 +181,14 @@ function renderFiles(el, url, files, folders, offset) {
     let pos = initialPosition
     for (let i = offsetFiles; i < offsetFiles + itemLimit; i++) {
         if (i < files.length) {
-            let tile = document.createElement("a-plane")
-            tile.setAttribute("geometry", "width:2; height: 0.2")
-            tile.setAttribute("material", "color: #801D9F;")
-            tile.setAttribute("position", `-1.2 ${pos} 0.01`)
-            tile.setAttribute("clickable", "")
-            tile.setAttribute("button-highlight", "")
+            let tile = createEl("a-plane", {
+                "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+                "material": "color: #801D9F;",
+                "position": `-${DWidth * 0.25} ${pos} 1`,
+                "clickable": "",
+                "button-highlight": "",
+                "marq-text": `value:${getFileName(files[i])}; limit:30`,
+            })
             tile.onclick = async () => {
                 let src = FILE_GET_URL + url + "/" + files[i]
                 if (import.meta.env.VITE_WEB) {
@@ -212,13 +200,6 @@ function renderFiles(el, url, files, folders, offset) {
                 })
 
             }
-
-            let text = document.createElement("a-text")
-            text.setAttribute("value", getFileName(files[i]).substring(0, 40))
-            text.setAttribute("align", "center")
-            text.setAttribute("width", "2")
-
-            tile.appendChild(text)
             el.appendChild(tile)
             pos += space
         }
@@ -228,23 +209,19 @@ function renderFiles(el, url, files, folders, offset) {
     pos = initialPosition
     for (let i = offsetFolders; i < offsetFolders + itemLimit; i++) {
         if (i < folders.length) {
-            let tile = document.createElement("a-plane")
-            tile.setAttribute("geometry", "width:2; height: 0.2")
-            tile.setAttribute("material", "color: #C39807;")
-            tile.setAttribute("position", `1.2 ${pos} 0.01`)
-            tile.setAttribute("clickable", "")
-            tile.setAttribute("button-highlight", "")
+            let tile = createEl("a-plane", {
+                "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+                "material": "color: #C39807;",
+                "position": `${DWidth * 0.25} ${pos} 1`,
+                "clickable": "",
+                "button-highlight": "",
+                "marq-text": `value:${getFileName(folders[i])}; limit:30`,
+            })
             tile.onclick = () => {
                 el.setAttribute(C_FILES, { 'url': url + "/" + folders[i] })
                 console.log("going : ", url + "/" + folders[i])
             }
-
-            let text = document.createElement("a-text")
-            text.setAttribute("value", getFileName(folders[i]))
-            text.setAttribute("align", "center")
-            text.setAttribute("width", "2")
-
-            tile.appendChild(text)
+            console.log(tile)
             el.appendChild(tile)
             pos += space
         }
@@ -299,7 +276,7 @@ AFRAME.registerComponent(C_FILES, {
 
     init: function () {
         let el = this.el
-        el.setAttribute('geometry', 'primitive: plane; width: 5; height: 2.1')
+        el.setAttribute('geometry', `primitive: plane; width: ${DWidth}; height: ${DHeight}`)
         el.setAttribute('material', 'color: teal')
         el.setAttribute('dialog-utils', { 'screen': C_FILES })
         el.object3D.visible = true

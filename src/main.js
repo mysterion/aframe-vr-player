@@ -13,6 +13,7 @@ import './components/ToggleViewAngle.js'
 
 
 // components:dialog
+import './components/dialog/MarqTxt.js'
 import './components/dialog/Files.js'
 import './components/dialog/Settings.js'
 import './components/dialog/Loading.js'

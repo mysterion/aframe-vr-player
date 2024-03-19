@@ -15,3 +15,6 @@ AFRAME.registerComponent('dialog-utils', {
         })
     }
 });
+
+export const DWidth = 60
+export const DHeight = 30

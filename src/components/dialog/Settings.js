@@ -1,13 +1,15 @@
 import { E } from "../../main"
+import { createEl } from "../../utils"
 import { videoPresets } from "../VideoState"
 
 import { C_APPLY_SETTINGS } from "../settings/ApplySettings"
+import { DHeight, DWidth } from "./Utils"
 
 export const C_SETTINGS = 'dialog-settings'
 
-const itemLimit = 4
-const space = -0.3
-const initialPosition = 0.4
+const itemLimit = 5
+const space = -DHeight * 0.125
+const initialPosition = DHeight * 0.15
 const ascene = document.querySelector('a-scene')
 
 
@@ -17,7 +19,7 @@ function selectionModeTgl(el, y) {
     var ids = ["tap (recommended)", "fuse 1.5s", "fuse 2s", "fuse 3s"]
 
     let tile = document.createElement("a-plane")
-    tile.setAttribute("geometry", "width:2; height: 0.2")
+    tile.setAttribute("geometry", `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`)
     tile.setAttribute("material", "color: #A15807;")
     tile.setAttribute("position", `1.2 ${y} 0.01`)
     tile.setAttribute("clickable", "")
@@ -40,29 +42,29 @@ function selectionModeTgl(el, y) {
 function defaultPresetTgl(el, y, val) {
     var id = val
 
-    let tile = document.createElement("a-plane")
-    tile.setAttribute("geometry", "width:2; height: 0.2")
-    tile.setAttribute("material", "color: #A15807;")
-    tile.setAttribute("position", `1.2 ${y} 0.01`)
-    tile.setAttribute("clickable", "")
-    tile.setAttribute("button-highlight", "")
+    let tile = createEl("a-plane", {
+        "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+        "material": "color: #A15807;",
+        "position": `${DWidth * 0.25} ${y} 0.2`,
+        "clickable": "",
+        "button-highlight": "",
+    }, [
+        createEl('a-entity', {
+            text: `value: ${videoPresets[id].text}; align: center; width: 35;`,
+            position: '0 0 0.2'
+        })
+    ])
 
-    let text = document.createElement("a-text")
-    text.setAttribute("value", videoPresets[id].text)
-    text.setAttribute("align", "center")
-    text.setAttribute("width", "2")
+    let text = tile.children[0]
+    console.log(text)
 
-    tile.appendChild(text)
     tile.onclick = () => {
         id = (id + 1) % videoPresets.length
-        text.setAttribute("value", videoPresets[id].text)
-        console.log(id)
+        text.setAttribute("text", `value: ${videoPresets[id].text}`)
         E.ascene.setAttribute(C_APPLY_SETTINGS, {
             defaultPreset: id
         })
-
     }
-
     el.appendChild(tile)
 }
 
@@ -71,22 +73,24 @@ function defaultEyeTgl(el, y, val) {
     var vars = ['left', 'right']
     var i = vars.indexOf(val)
 
-    let tile = document.createElement("a-plane")
-    tile.setAttribute("geometry", "width:2; height: 0.2")
-    tile.setAttribute("material", "color: #A15807;")
-    tile.setAttribute("position", `1.2 ${y} 0.01`)
-    tile.setAttribute("clickable", "")
-    tile.setAttribute("button-highlight", "")
+    let tile = createEl("a-plane", {
+        "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+        "material": "color: #A15807;",
+        "position": `${DWidth * 0.25} ${y} 0.2`,
+        "clickable": "",
+        "button-highlight": "",
+    }, [
+        createEl('a-entity', {
+            text: `value: ${val}; align: center; width: 35;`,
+            position: '0 0 0.2'
+        })
+    ])
 
-    let text = document.createElement("a-text")
-    text.setAttribute("value", val)
-    text.setAttribute("align", "center")
-    text.setAttribute("width", "2")
+    let text = tile.children[0]
 
-    tile.appendChild(text)
     tile.onclick = () => {
         i = (i + 1) % vars.length
-        text.setAttribute("value", vars[i])
+        text.setAttribute("text", `value: ${vars[i]}`)
         E.ascene.setAttribute(C_APPLY_SETTINGS, {
             defaultEye: vars[i]
         })
@@ -98,23 +102,24 @@ function savePresetChk(el, y, val) {
     var vars = [false, true]
     var i = vars.indexOf(val)
 
-    let tile = document.createElement("a-plane")
-    tile.setAttribute("geometry", "width:2; height: 0.2")
-    tile.setAttribute("material", "color: #A15807;")
-    tile.setAttribute("position", `1.2 ${y} 0.01`)
-    tile.setAttribute("clickable", "")
-    tile.setAttribute("button-highlight", "")
+    let tile = createEl("a-plane", {
+        "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+        "material": "color: #A15807;",
+        "position": `${DWidth * 0.25} ${y} 0.2`,
+        "clickable": "",
+        "button-highlight": "",
+    }, [
+        createEl('a-entity', {
+            text: `value: ${val ? "ON" : "OFF"}; align: center; width: 35;`,
+            position: '0 0 0.2'
+        })
+    ])
 
+    let text = tile.children[0]
 
-    let text = document.createElement("a-text")
-    text.setAttribute("value", val ? "ON" : "OFF")
-    text.setAttribute("align", "center")
-    text.setAttribute("width", "2")
-
-    tile.appendChild(text)
     tile.onclick = () => {
         let newVal = vars[++i % vars.length]
-        text.setAttribute("value", newVal ? "ON" : "OFF")
+        text.setAttribute("text", `value: ${newVal ? "ON" : "OFF"}`)
         E.ascene.setAttribute(C_APPLY_SETTINGS, {
             savePreset: newVal
         })
@@ -127,23 +132,24 @@ function resumeVideoChk(el, y, val) {
     var vars = [false, true]
     var i = vars.indexOf(val)
 
-    let tile = document.createElement("a-plane")
-    tile.setAttribute("geometry", "width:2; height: 0.2")
-    tile.setAttribute("material", "color: #A15807;")
-    tile.setAttribute("position", `1.2 ${y} 0.01`)
-    tile.setAttribute("clickable", "")
-    tile.setAttribute("button-highlight", "")
+    let tile = createEl("a-plane", {
+        "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+        "material": "color: #A15807;",
+        "position": `${DWidth * 0.25} ${y} 0.2`,
+        "clickable": "",
+        "button-highlight": "",
+    }, [
+        createEl('a-entity', {
+            text: `value: ${val ? "ON" : "OFF"}; align: center; width: 35;`,
+            position: '0 0 0.2'
+        })
+    ])
 
-    let text = document.createElement("a-text")
-    text.setAttribute("value", val ? "ON" : "OFF")
-    text.setAttribute("align", "center")
-    text.setAttribute("width", "2")
-
-    tile.appendChild(text)
+    let text = tile.children[0]
 
     tile.addEventListener('click', () => {
         let newVal = vars[++i % vars.length]
-        text.setAttribute("value", newVal ? "ON" : "OFF")
+        text.setAttribute("text", `value: ${newVal ? "ON" : "OFF"}`)
         ascene.setAttribute(C_APPLY_SETTINGS, {
             resumeVideo: newVal
         })
@@ -157,7 +163,7 @@ function uiPosTgl(el, y) {
     var vars = ["OFF", "ON"]
 
     let tile = document.createElement("a-plane")
-    tile.setAttribute("geometry", "width:2; height: 0.2")
+    tile.setAttribute("geometry", `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`)
     tile.setAttribute("material", "color: #A15807;")
     tile.setAttribute("position", `1.2 ${y} 0.01`)
     tile.setAttribute("clickable", "")
@@ -182,7 +188,7 @@ function seekTimeTgl(el, y) {
     var vars = ["10s", "15s", "30s", "120s"]
 
     let tile = document.createElement("a-plane")
-    tile.setAttribute("geometry", "width:2; height: 0.2")
+    tile.setAttribute("geometry", `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`)
     tile.setAttribute("material", "color: #A15807;")
     tile.setAttribute("position", `1.2 ${y} 0.01`)
     tile.setAttribute("clickable", "")
@@ -214,25 +220,29 @@ const settings = [
 ]
 
 function insertSettingsUI(el, offset) {
-
-    let uri = document.createElement("a-text")
     let p = el.getAttribute("geometry")
-    uri.setAttribute("value", "Settings")
-    uri.setAttribute("geometry", `primitive:plane; width:${p.width}; height: 0.2`)
-    uri.setAttribute("position", `0 ${p.height / 2} 0.01`)
-    uri.setAttribute("material", "color: grey")
-    uri.setAttribute("align", "center")
-    uri.setAttribute("width", "2")
-    el.appendChild(uri)
+
+    el.appendChild(createEl("a-entity", {
+        "geometry": `primitive:plane; width:${p.width}; height: 3`,
+        "position": `0 ${p.height / 2} 0.2`,
+        "material": "color: grey",
+    }, [
+        createEl('a-entity', {
+            "text": "value: Settings; align: center; width: 30;",
+            "position": `0 0 0.2`,
+        })
+    ]))
+
 
     if (settings.length > itemLimit) {
         if (offset != 0) {
-            let upBtn = document.createElement("a-image")
-            upBtn.setAttribute("src", "#asset-up")
-            upBtn.setAttribute("scale", "0.2 0.2 1")
-            upBtn.setAttribute("position", `0 0.75 0.02`)
-            upBtn.setAttribute("clickable", "")
-            upBtn.setAttribute("button-highlight", "")
+            let upBtn = createEl("a-image", {
+                "src": "#asset-up",
+                "scale": "3 3 1",
+                "position": `0 ${p.height * 0.3} 0.2`,
+                "clickable": "",
+                "button-highlight": "",
+            })
             upBtn.addEventListener("click", () => {
                 el.setAttribute(C_SETTINGS, {
                     offset: offset - 1
@@ -241,12 +251,13 @@ function insertSettingsUI(el, offset) {
             el.appendChild(upBtn)
         }
         if (offset + itemLimit < settings.length) {
-            let downBtn = document.createElement("a-image")
-            downBtn.setAttribute("src", "#asset-up")
-            downBtn.setAttribute("scale", "0.2 -0.2 1")
-            downBtn.setAttribute("position", `0 ${initialPosition + 0.2 + (itemLimit * space) + (space - 0.01)} 0.02`)
-            downBtn.setAttribute("clickable", "")
-            downBtn.setAttribute("button-highlight", "")
+            let downBtn = createEl("a-image", {
+                "src": "#asset-up",
+                "scale": "3 -3 1",
+                "position": `0 -${p.height * 0.5} 0.2`,
+                "clickable": "",
+                "button-highlight": "",
+            })
             downBtn.addEventListener("click", () => {
                 el.setAttribute(C_SETTINGS, {
                     offset: offset + 1
@@ -269,18 +280,17 @@ function renderSettings(el, offset) {
     let pos = initialPosition
     for (let i = offset; i < offset + itemLimit; i++) {
         if (i < settings.length) {
-            let tile = document.createElement("a-plane")
-            tile.setAttribute("geometry", "width:2; height: 0.2")
-            tile.setAttribute("material", "color: #801D9F;")
-            tile.setAttribute("position", `-1.2 ${pos} 0.01`)
+            let tile = createEl("a-plane", {
+                "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+                "material": "color: #801D9F;",
+                "position": `-${DWidth * 0.25} ${pos} 0.2`,
+            }, [
+                createEl('a-entity', {
+                    text: `value: ${settings[i].name}; align: center; width: 35`,
+                    position: '0 0 0.2'
+                })
+            ])
             settings[i].render(el, pos, currentSettings[settings[i].storeKey])
-
-            let text = document.createElement("a-text")
-            text.setAttribute("value", settings[i].name)
-            text.setAttribute("align", "center")
-            text.setAttribute("width", "2")
-
-            tile.appendChild(text)
             el.appendChild(tile)
             pos += space
         }
@@ -304,7 +314,7 @@ AFRAME.registerComponent(C_SETTINGS, {
 
     init: function () {
         let el = this.el
-        el.setAttribute('geometry', 'primitive: plane; width: 5; height: 2.1')
+        el.setAttribute('geometry', `primitive: plane; width: ${DWidth}; height: ${DHeight}`)
         el.setAttribute('material', 'color: teal')
         el.setAttribute('dialog-utils', { 'screen': C_SETTINGS })
     },
