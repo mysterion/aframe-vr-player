@@ -11,9 +11,7 @@ export const PRESET = {
     FE_180_SBS: 'FE_180_SBS',
     FE_190_SBS: 'FE_190_SBS',
     FE_200_SBS: 'FE_200_SBS',
-    FLAT_2D_S: 'FLAT_2D_S',
-    FLAT_2D_M: 'FLAT_2D_M',
-    FLAT_2D_L: 'FLAT_2D_L',
+    FLAT_2D: 'FLAT_2D',
     FLAT_3D: 'FLAT_3D'
 }
 
@@ -63,16 +61,8 @@ AFRAME.registerComponent('env-manager', {
                 el.setAttribute(ENVS.FE, { uiHidden: d.uiHidden, defaultEye: d.defaultEye, fov: 200 })
                 this.currentMode = ENVS.FE
                 break
-            case PRESET.FLAT_2D_S:
-                el.setAttribute(ENVS.FLAT, { size: 'S' })
-                this.currentMode = ENVS.FLAT
-                break
-            case PRESET.FLAT_2D_M:
-                el.setAttribute(ENVS.FLAT, { size: 'M' })
-                this.currentMode = ENVS.FLAT
-                break
-            case PRESET.FLAT_2D_L:
-                el.setAttribute(ENVS.FLAT, { size: 'L' })
+            case PRESET.FLAT_2D:
+                el.setAttribute(ENVS.FLAT, '')
                 this.currentMode = ENVS.FLAT
                 break
             default:

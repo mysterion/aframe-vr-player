@@ -1,4 +1,4 @@
-import { adjustColor, toTime } from "../utils";
+import { adjustColor, createEl, toTime } from "../utils";
 
 function createSeek(p, { width, height, depth }) {
     var seek = document.createElement('a-entity')
@@ -17,7 +17,7 @@ function createSeek(p, { width, height, depth }) {
 
 function createHoverText(p) {
     var el = document.createElement('a-text')
-    el.setAttribute('position', '0 0.3 0')
+    el.setAttribute('position', '0 7 0')
     el.setAttribute('align', 'center')
     el.setAttribute('value', '00:00:00')
     p.appendChild(el)
@@ -59,27 +59,6 @@ function createBg(el) {
     bg.setAttribute('position', position)
 }
 
-function createVideoText(el) {
-    var videoText = document.createElement('a-entity')
-    videoText.setAttribute('position', '0 0 0')
-    videoText.setAttribute('geometry', {
-        primitive: 'plane',
-        width: 1.5,
-        height: 0.15
-    })
-    videoText.setAttribute('text', {
-        value: '00:00:00/00:00:00',
-        width: 2,
-        align: 'center'
-    })
-    videoText.setAttribute('material', {
-        color: '#333',
-        opacity: 0.5
-    })
-    el.appendChild(videoText)
-    return videoText
-}
-
 AFRAME.registerComponent('timeline', {
     schema: {
         videoId: { type: 'string', default: 'video' },
@@ -89,11 +68,23 @@ AFRAME.registerComponent('timeline', {
         this.video = document.getElementById(this.data.videoId)
         let { width, height } = el.getAttribute('geometry')
 
-        this.seek = createSeek(el, { width: width * 0.015, height, depth: 0.015 })
-        this.hoverEl = createHover(this.seek, { width: width * 0.01, height: height + 0.01, depth: 0.01 })
-        this.hoverTextEl = createHoverText(this.hoverEl)
+        this.seek = createSeek(el, { width: width * 0.015, height, depth: 0.5 })
+        this.hoverEl = createHover(this.seek, { width: width * 0.01, height: height + 0.5, depth: 0.5 })
+        this.hoverTextEl = createEl('a-text', {
+            'position': '0 4 0',
+            'align': 'center',
+            'value': '00:00:00',
+            'width': '40'
+        })
+        this.hoverEl.appendChild(this.hoverTextEl)
         this.bg = createBg(el)
-        this.videoText = createVideoText(el)
+        this.videoText = createEl('a-entity', {
+            position: '0 0 0',
+            geometry: 'primitive: plane; width: 1.5; height: 0.15',
+            text: 'value: 00:00:00/00:00:00; width: 2; align: center;',
+            material: 'color: #333; opacity: 0.5;'
+        })
+        el.appendChild(this.videoText)
 
         this.timelineWidth = timeline.getAttribute("geometry").width;
 

@@ -1,5 +1,6 @@
 import { E } from "../../main";
 import { Store } from "../../store";
+import { createEl, setAttr } from "../../utils";
 
 AFRAME.registerComponent('btn-vol', {
     schema: {
@@ -9,35 +10,36 @@ AFRAME.registerComponent('btn-vol', {
         let el = this.el
         this.setVolume = AFRAME.utils.bind(this.setVolume, this)
 
-        let width = this.width = 0.65
-        el.setAttribute('geometry', {
-            primitive: 'plane',
-            width: width + 0.05,
-            height: 0.35
+        let width = this.width = 10
+        setAttr(el, {
+            geometry: {
+                primitive: 'plane',
+                width: width + 1,
+                height: 5,
+            },
+            material: 'color: #808080'
         })
-        el.setAttribute('material', 'color: #808080')
 
-        let txt = this.txt = document.createElement('a-text')
-        txt.setAttribute('width', 2.5)
-        txt.setAttribute('align', 'center')
-        txt.setAttribute('value', '100')
-        txt.setAttribute('position', '0 0 0.011')
+        let txt = this.txt = createEl('a-text', {
+            'width': 40,
+            'align': 'center',
+            'value': '100',
+            'position': '0 0 0.3',
+            
+        })
         el.appendChild(txt)
 
-        let bar = this.bar = document.createElement('a-entity')
-        bar.setAttribute('material', 'color: #005073')
-        bar.setAttribute('position', `0 0 0.01`)
-        bar.setAttribute('geometry', {
-            primitive: 'plane',
-            width: width,
-            height: 0.30
+        let bar = this.bar = createEl('a-entity', {
+            material: 'color: #005073',
+            geometry: `primitive: plane;width: width;height: 4;`
         })
-        this.el.appendChild(bar)
-        this.el.addEventListener('click', (e) => {
+        el.appendChild(bar)
+
+        el.addEventListener('click', (e) => {
             this.setVolume(e.detail.intersection.uv.x)
         });
 
-        this.setVolume(Store.get('volume'))
+        this.setVolume(Store.get('volume') ?? 1)
     },
     setVolume: function (i) {
         if (i >= 0.9) i = 1
@@ -47,7 +49,7 @@ AFRAME.registerComponent('btn-vol', {
         E.video.volume = i
         Store.set('volume', i)
         this.txt.setAttribute('value', `${Math.round(E.video.volume * 100)}`)
-        this.bar.setAttribute('position', `${p - this.width / 2} 0 0.01`)
+        this.bar.setAttribute('position', `${p - this.width / 2} 0 0.2`)
         this.bar.setAttribute('geometry', { 'width': q })
     }
 });

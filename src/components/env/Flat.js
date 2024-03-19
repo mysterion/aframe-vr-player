@@ -1,5 +1,5 @@
 import { E } from "../../main";
-import { applyAttribs, createElement } from "../../utils";
+import { applyAttribs, createEl } from "../../utils";
 
 const bgs = [
     {
@@ -19,12 +19,26 @@ AFRAME.registerComponent('flat-2d', {
     schema: {
         eye: { type: 'string', default: 'left' },
     },
-
-    init: function () {
-        let object3D = this.el.object3D.children[0]
+    
+    update: function (od) {
         let d = this.data
+        let object3D = this.el.object3D.children[0]
+        // layers
+        if (d.eye === "left") {
+            object3D.layers.set(1);
+        } else if (d.eye === "right") {
+            object3D.layers.set(2);
+        } else {
+            object3D.layers.set(0);
+        }
     },
+});
 
+AFRAME.registerComponent('flat-3d', {
+    schema: {
+        eye: { type: 'string', default: 'left' },
+    },
+    
     update: function (od) {
         let d = this.data
         let object3D = this.el.object3D.children[0]
@@ -41,7 +55,7 @@ AFRAME.registerComponent('flat-2d', {
 
 AFRAME.registerComponent('flat', {
     schema: {
-        size: { type: 'string', default: 'M' },
+        size: { type: 'string', default: 'S' },
     },
 
     init: function () {
@@ -53,14 +67,13 @@ AFRAME.registerComponent('flat', {
             'M': { h: 5, w: 1.77777777778 * 5 },
             'L': { h: 6, w: 1.77777777778 * 6 },
         }
-        this.eye = createElement('a-entity', {
-            id: 'wanker',
+        this.eye = createEl('a-entity', {
             geometry: `primitive: plane; height: ${this.size[d.size].h}; width: ${this.size[d.size].w}`,
             material: `shader: flat; src: #video; side: front;`,
             position: "0 0 -4"
         })
 
-        this.bg = createElement('a-gltf-model', bgs[Math.floor(Math.random() * 3)])
+        this.bg = createEl('a-gltf-model', bgs[Math.floor(Math.random() * 3)])
 
         this.el.append(this.eye, this.bg)
     },

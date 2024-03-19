@@ -5,23 +5,13 @@ export const C_VID_STATE = 'video-state'
 
 export const videoPresets = [
     {
-        "text": "FLAT 2D S", "fn": () => {
-            E.env.setAttribute('env-manager', { preset: PRESET.FLAT_2D_S })
-        }
-    },
-    {
-        "text": "FLAT 2D M", "fn": () => {
-            E.env.setAttribute('env-manager', { preset: PRESET.FLAT_2D_M })
-        }
-    },
-    {
-        "text": "FLAT 2D L", "fn": () => {
-            E.env.setAttribute('env-manager', { preset: PRESET.FLAT_2D_L })
-        }
-    },
-    {
         "text": "180 SBS EQR", "fn": () => {
             E.env.setAttribute('env-manager', { preset: PRESET.EQ_180_SBS })
+        }
+    },
+    {
+        "text": "FLAT 2D", "fn": () => {
+            E.env.setAttribute('env-manager', { preset: PRESET.FLAT_2D })
         }
     },
     {

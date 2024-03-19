@@ -10,7 +10,7 @@ AFRAME.registerComponent('toggle-mode', {
         })
         E.ascene.addEventListener(C_VID_STATE, (e) => {
             let d = e.detail.data
-            this.el.setAttribute("value", videoPresets[d.preset].text)
+            this.el.children[0].setAttribute("value", videoPresets[d.preset].text)
         })
     }
 });

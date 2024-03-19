@@ -1,5 +1,6 @@
 // negative = darker :O
 export function adjustColor(color, amount) {
+    if (!color) color = "#FFF"
     if (color === "#FFF") {
         amount *= -1
     }
@@ -17,7 +18,7 @@ export function getFileName(link) {
     return link.replace(/^.*[\\/]/, '')
 }
 
-export function createElement(tagName = 'a-entity', attributes = {}, children = []) {
+export function createEl(tagName = 'a-entity', attributes = {}, children = []) {
     const el = document.createElement(tagName)
     for (let key in attributes) {
         el.setAttribute(key, attributes[key])
@@ -26,6 +27,13 @@ export function createElement(tagName = 'a-entity', attributes = {}, children = 
         el.append(...children)
     }
     return el
+}
+
+
+export function setAttr(element, attributes = {}) {
+    for (let key in attributes) {
+        element.setAttribute(key, attributes[key])
+    }
 }
 
 export function applyAttribs(el, attributes = {}) {

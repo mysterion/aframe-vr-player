@@ -10,7 +10,7 @@ AFRAME.registerComponent('toggle-view-angle', {
             E.ascene.setAttribute(C_APPLY_SETTINGS, { viewAngle: this.i })
         }, this))
         E.ascene.addEventListener(C_APPLY_SETTINGS, AFRAME.utils.bind((e) => {
-            this.el.setAttribute('value', ViewAngles[e.detail.viewAngle ?? 0])
+            this.el.children[0].setAttribute('value', ViewAngles[e.detail.viewAngle ?? 0])
             this.i = e.detail.viewAngle
         }))
     }
