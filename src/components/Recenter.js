@@ -26,6 +26,7 @@ AFRAME.registerComponent('recenter', {
 
         el.addEventListener("click", (e) => {
             if (e.detail.intersectedEl !== el) return;
+            console.log("clicked")
             if (!this.controlsVisible) {
                 el.sceneEl.systems.controls.showControls()
                 return

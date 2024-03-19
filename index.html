@@ -45,15 +45,14 @@
     <!-- camera stuff -->
     <a-entity id="cameraRig" adjust-camera position="0 0 0">
       <!-- camera-wrapper rotates around camera-rig for recenter -->
-      <a-entity recenter clickable geometry="primitive: sphere; radius: 10; segmentsWidth: 8; segmentsHeight: 8"
-        visible="false">
+      <a-entity recenter clickable geometry="primitive: sphere; radius: 80; segmentsWidth: 8; segmentsHeight: 8"
+        material="opacity: 0; side: back">
         <a-entity id="cameraWrapper">
           <!-- camera rotation controlled by vrheadset/mousekeyboard -->
-          <a-entity id="camera" camera wasd-controls look-controls stereocam="eye:left" fov="180">
+          <a-entity id="camera" camera wasd-controls look-controls stereocam="eye:left">
 
             <!-- cursor stuff -->
-            <a-cursor cursor-util controls id="cursor" raycaster="objects: [clickable]" fuse="false"
-              position="0 0 -1.4">
+            <a-cursor controls id="cursor" cursor-util raycaster="objects: [clickable]" fuse="false" position="0 0 -50">
             </a-cursor>
           </a-entity>
         </a-entity>
