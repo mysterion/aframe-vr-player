@@ -221,7 +221,6 @@ function renderFiles(el, url, files, folders, offset) {
                 el.setAttribute(C_FILES, { 'url': url + "/" + folders[i] })
                 console.log("going : ", url + "/" + folders[i])
             }
-            console.log(tile)
             el.appendChild(tile)
             pos += space
         }

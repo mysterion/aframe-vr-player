@@ -41,6 +41,9 @@ AFRAME.registerComponent('env-manager', {
     update: function (od) {
         let d = this.data
         let el = this.el
+        // TODO: Fix Save Presets OFF , toggle Preset bug
+        // console.trace()
+        // console.log("env", d)
         if (this.currentMode !== presetToMode(d.preset)) {
             el.removeAttribute(this.currentMode)
         }

@@ -6,6 +6,7 @@ AFRAME.registerComponent('toggle-mode', {
     init: function () {
         this.el.addEventListener('click', () => {
             let preset = E.ascene.getAttribute(C_VID_STATE).preset
+            // console.log(preset, (preset + 1) % videoPresets.length, videoPresets.length)
             E.ascene.setAttribute(C_VID_STATE, { preset: (preset + 1) % videoPresets.length })
         })
         E.ascene.addEventListener(C_VID_STATE, (e) => {
