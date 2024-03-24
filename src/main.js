@@ -10,6 +10,7 @@ import './components/CursorUtil.js'
 import './components/ToggleMode.js'
 import './components/AdjustCamera.js'
 import './components/ToggleViewAngle.js'
+import './components/ToggleUiAngle.js'
 
 
 // components:dialog
@@ -44,6 +45,7 @@ export const E = {
     video: document.getElementById('video'),
     env: document.getElementById('env'),
     file: document.getElementById('fileInput'),
-    cameraRig: document.getElementById('cameraRig')
+    cameraRig: document.getElementById('cameraRig'),
+    controls: document.getElementById('controls')
 }
 

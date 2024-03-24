@@ -5,6 +5,7 @@ import { getElem, isObjectEmpty } from "../../utils";
 import { C_AS_VIDEO } from "./ApplySettingsVideo";
 
 export const ViewAngles = [0, 30, 45, 60, 90, 60, 45, 30]
+export const UiAngles = [0, 30, 0, -30]
 
 export const C_APPLY_SETTINGS = 'apply-settings'
 
@@ -15,6 +16,7 @@ AFRAME.registerComponent(C_APPLY_SETTINGS, {
         savePreset: { type: 'boolean', default: true },
         defaultEye: { type: 'string', default: 'left' },
         viewAngle: { type: 'number', default: 0 },
+        uiAngle: { type: 'number', default: 0 },
     },
 
     init: function () {
@@ -48,7 +50,8 @@ AFRAME.registerComponent(C_APPLY_SETTINGS, {
         el.setAttribute(C_AS_VIDEO, { savePreset: d.savePreset })
         getElem('camera').setAttribute('stereocam', { eye: d.defaultEye })
         getElem('env').setAttribute('env-manager', { defaultEye: d.defaultEye })
-        E.cameraRig.setAttribute('rotation', `-${ViewAngles[d.viewAngle]} 0 0`)
+        E.cameraRig.setAttribute('rotation', `${ViewAngles[d.viewAngle]} 0 0`)
+        E.controls.setAttribute('rotation', `${UiAngles[d.uiAngle]} 0 0`)
         this.el.emit(C_APPLY_SETTINGS, d, false)
         Store.set('settings', d)
     },
