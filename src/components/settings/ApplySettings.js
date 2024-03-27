@@ -4,7 +4,7 @@ import { getElem, isObjectEmpty } from "../../utils";
 
 import { C_AS_VIDEO } from "./ApplySettingsVideo";
 
-export const ViewAngles = [0, 30, 45, 60, 90, 60, 45, 30]
+export const ViewAngles = [0, -30, -45, -60, -90, -60, -45, -30]
 export const UiAngles = [0, 30, 0, -30]
 
 export const C_APPLY_SETTINGS = 'apply-settings'

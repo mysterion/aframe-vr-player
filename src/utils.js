@@ -18,13 +18,16 @@ export function getFileName(link) {
     return link.replace(/^.*[\\/]/, '')
 }
 
-export function createEl(tagName = 'a-entity', attributes = {}, children = []) {
+export function createEl(tagName = 'a-entity', attributes = {}, children = [], parent = null) {
     const el = document.createElement(tagName)
     for (let key in attributes) {
         el.setAttribute(key, attributes[key])
     }
     if (children.length > 0) {
         el.append(...children)
+    }
+    if (parent !== null) {
+        parent.appendChild(el)
     }
     return el
 }

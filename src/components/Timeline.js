@@ -1,49 +1,5 @@
 import { adjustColor, createEl, toTime } from "../utils";
 
-function createSeek(p, { width, height, depth }) {
-    var seek = document.createElement('a-entity')
-    seek.setAttribute('geometry', {
-        primitive: 'box',
-        width: width,
-        height: height,
-        depth: depth,
-    })
-    seek.setAttribute('material', {
-        color: '#4CC3D9'
-    })
-    p.appendChild(seek)
-    return seek
-}
-
-function createHoverText(p) {
-    var el = document.createElement('a-text')
-    el.setAttribute('position', '0 7 0')
-    el.setAttribute('align', 'center')
-    el.setAttribute('value', '00:00:00')
-    p.appendChild(el)
-    return el
-}
-
-function createHover(seek, { width, height, depth }) {
-
-    var hover = document.createElement('a-entity')
-    let position = seek.getAttribute('position')
-    hover.setAttribute('visible', false)
-    hover.setAttribute('geometry', {
-        primitive: 'box',
-        width: width,
-        height: height,
-        depth: depth,
-    })
-    hover.setAttribute('position', position)
-
-    hover.setAttribute('material', {
-        color: "#00FF00"
-    })
-    seek.insertAdjacentElement("afterend", hover)
-    return hover
-}
-
 function createBg(el) {
     let { width, height } = el.getAttribute('geometry')
     let position = el.getAttribute('position')
@@ -66,38 +22,55 @@ AFRAME.registerComponent('timeline', {
     init: function () {
         var el = this.el
         this.video = document.getElementById(this.data.videoId)
-        let { width, height } = el.getAttribute('geometry')
+        const { width, height } = el.getAttribute('geometry')
 
-        this.seek = createSeek(el, { width: width * 0.015, height, depth: 0.5 })
-        this.hoverEl = createHover(this.seek, { width: width * 0.01, height: height + 0.5, depth: 0.5 })
+        this.seek = createEl('a-entity', {
+            geometry: `primitive: box; width: ${width * 0.01}; height: ${height}; depth: 0.5;`,
+            material: 'color: #4CC3D9',
+            position: `${-width / 2} 0 0`
+        }, [], el)
+
+        this.hoverEl = createEl('a-entity', {
+            geometry: `primitive: box; width: ${width * 0.01}; height: ${height + 1}; depth: 0.5; `,
+            visible: false,
+            material: 'color: #00FF00'
+        }, [], el)
+
         this.hoverTextEl = createEl('a-text', {
             'position': '0 4 0',
             'align': 'center',
             'value': '00:00:00',
             'width': '40'
+        }, [], this.hoverEl)
+
+        this.bg = createEl('a-entity', {
+            geometry: `primitive: plane; width: ${width + 1.5}; height: ${height + 1} `,
+            material: `color: ${adjustColor(el.getAttribute('material').color, -40)} `,
+            position: '0 0 -0.5'
         })
-        this.hoverEl.appendChild(this.hoverTextEl)
-        this.bg = createBg(el)
+        el.appendChild(this.bg)
+        // el.insertAdjacentElement("afterend", this.bg)
+
         this.videoText = createEl('a-entity', {
-            position: '0 0 0',
-            geometry: 'primitive: plane; width: 1.5; height: 0.15',
-            text: 'value: 00:00:00/00:00:00; width: 2; align: center;',
+            position: '0 0 0.5',
+            text: 'value: 00:00:00/00:00:00; width: 40; align: center;',
             material: 'color: #333; opacity: 0.5;'
-        })
-        el.appendChild(this.videoText)
-
-        this.timelineWidth = timeline.getAttribute("geometry").width;
-
-        this.seek.setAttribute("position", { x: -this.timelineWidth / 2 })
+        }, [
+            createEl('a-plane', {
+                geometry: 'primitive: plane; width: 15; height: 2.5;',
+                position: '0 0 -0.1',
+                material: 'color: black; opacity: 0.5'
+            })
+        ], el)
 
         this.updateElems = () => {
-            var newPosition = (this.video.currentTime / this.video.duration) * this.timelineWidth - this.timelineWidth / 2;
+            var newPosition = (this.video.currentTime / this.video.duration) * width - width / 2;
             this.seek.setAttribute("position", { x: newPosition });
-            this.videoText.setAttribute("text", { value: `${toTime(this.video.currentTime)}/${toTime(this.video.duration)}` })
+            this.videoText.setAttribute("text", { value: `${toTime(this.video.currentTime)} /${toTime(this.video.duration)}` })
         }
 
         this.video.addEventListener("loadedmetadata", () => {
-            this.seek.setAttribute("position", { x: -this.timelineWidth / 2 })
+            this.seek.setAttribute("position", { x: -width / 2 })
             this.videoText.setAttribute("text", { value: `${toTime(this.video.currentTime)}/${toTime(this.video.duration)}` })
         })
 
