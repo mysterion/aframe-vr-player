@@ -26,7 +26,7 @@ AFRAME.registerComponent('timeline', {
 
         this.seek = createEl('a-entity', {
             geometry: `primitive: box; width: ${width * 0.01}; height: ${height}; depth: 0.5;`,
-            material: 'color: #4CC3D9',
+            material: 'color: #006cd8',
             position: `${-width / 2} 0 0`
         }, [], el)
 
@@ -37,7 +37,9 @@ AFRAME.registerComponent('timeline', {
         }, [], el)
 
         this.hoverTextEl = createEl('a-text', {
-            'position': '0 4 0',
+            'geometry': 'primitive: plane; width: 8; height: 2.5;',
+            'material': 'color: #808080',
+            'position': '0 5 0',
             'align': 'center',
             'value': '00:00:00',
             'width': '40'
@@ -45,11 +47,9 @@ AFRAME.registerComponent('timeline', {
 
         this.bg = createEl('a-entity', {
             geometry: `primitive: plane; width: ${width + 1.5}; height: ${height + 1} `,
-            material: `color: ${adjustColor(el.getAttribute('material').color, -40)} `,
+            material: `color: #006cd8`,
             position: '0 0 -0.5'
-        })
-        el.appendChild(this.bg)
-        // el.insertAdjacentElement("afterend", this.bg)
+        }, [], el)
 
         this.videoText = createEl('a-entity', {
             position: '0 0 0.5',
@@ -121,6 +121,11 @@ AFRAME.registerComponent('timeline', {
 
     remove: function () {
         var el = this.el
-        el.setAttribute('controls')
+        el.removeAttribute('controls')
+        el.removeChild(this.seek)
+        el.removeChild(this.hoverEl)
+        el.removeChild(this.bg)
+        el.removeChild(this.videoText)
+        // TODO: bind listener functions and remove listeners here.
     }
 });

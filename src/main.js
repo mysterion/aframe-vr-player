@@ -9,8 +9,7 @@ import './components/Recenter.js'
 import './components/CursorUtil.js'
 import './components/ToggleMode.js'
 import './components/AdjustCamera.js'
-import './components/ToggleViewAngle.js'
-import './components/ToggleUiAngle.js'
+import './components/toggleAdjustUi.js'
 
 
 // components:dialog
