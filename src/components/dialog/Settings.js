@@ -1,11 +1,10 @@
-import { E } from "../../main"
-import { createEl } from "../../utils"
-import { videoPresets } from "../VideoState"
+import { El } from "../../main"
+import { createEl, getAttr } from "../../utils"
+import { SETTINGS, ST } from "../settings/Settings"
 
-import { C_APPLY_SETTINGS } from "../settings/ApplySettings"
 import { DHeight, DWidth } from "./Utils"
 
-export const C_SETTINGS = 'dialog-settings'
+export const DIALOG_SETTINGS = 'dialog-settings'
 
 const itemLimit = 5
 const space = -DHeight * 0.125
@@ -16,6 +15,7 @@ const ascene = document.querySelector('a-scene')
 // -1.2 ${pos} 0.01
 function selectionModeTgl(el, y) {
     var id = 0
+    // TODO: Add reverting back in 15 seconds logic
     var ids = ["tap (recommended)", "fuse 1.5s", "fuse 2s", "fuse 3s"]
 
     let tile = document.createElement("a-plane")
@@ -39,36 +39,6 @@ function selectionModeTgl(el, y) {
     el.appendChild(tile)
 }
 
-function defaultPresetTgl(el, y, val) {
-    var id = val
-
-    let tile = createEl("a-plane", {
-        "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
-        "material": "color: #A15807;",
-        "position": `${DWidth * 0.25} ${y} 0.2`,
-        "clickable": "",
-        "button-highlight": "",
-    }, [
-        createEl('a-entity', {
-            text: `value: ${videoPresets[id].text}; align: center; width: 35;`,
-            position: '0 0 0.2'
-        })
-    ])
-
-    let text = tile.children[0]
-    console.log(text)
-
-    tile.onclick = () => {
-        id = (id + 1) % videoPresets.length
-        text.setAttribute("text", `value: ${videoPresets[id].text}`)
-        E.ascene.setAttribute(C_APPLY_SETTINGS, {
-            defaultPreset: id
-        })
-    }
-    el.appendChild(tile)
-}
-
-
 function defaultEyeTgl(el, y, val) {
     var vars = ['left', 'right']
     var i = vars.indexOf(val)
@@ -91,7 +61,7 @@ function defaultEyeTgl(el, y, val) {
     tile.onclick = () => {
         i = (i + 1) % vars.length
         text.setAttribute("text", `value: ${vars[i]}`)
-        E.ascene.setAttribute(C_APPLY_SETTINGS, {
+        El.settings.setAttribute(SETTINGS, {
             defaultEye: vars[i]
         })
     }
@@ -120,7 +90,7 @@ function savePresetChk(el, y, val) {
     tile.onclick = () => {
         let newVal = vars[++i % vars.length]
         text.setAttribute("text", `value: ${newVal ? "ON" : "OFF"}`)
-        E.ascene.setAttribute(C_APPLY_SETTINGS, {
+        El.settings.setAttribute(SETTINGS, {
             savePreset: newVal
         })
     }
@@ -150,7 +120,7 @@ function resumeVideoChk(el, y, val) {
     tile.addEventListener('click', () => {
         let newVal = vars[++i % vars.length]
         text.setAttribute("text", `value: ${newVal ? "ON" : "OFF"}`)
-        ascene.setAttribute(C_APPLY_SETTINGS, {
+        El.settings.setAttribute(SETTINGS, {
             resumeVideo: newVal
         })
     })
@@ -210,10 +180,9 @@ function seekTimeTgl(el, y) {
 
 const settings = [
     // { name: "select mode", render: selectionModeTgl },
-    { name: "default preset", render: defaultPresetTgl, storeKey: 'defaultPreset' },
-    { name: "save preset for video", render: savePresetChk, storeKey: 'savePreset' },
-    { name: "resume video", render: resumeVideoChk, storeKey: 'resumeVideo' },
-    { name: "default eye", render: defaultEyeTgl, storeKey: 'defaultEye' },
+    { name: "save preset per video", render: savePresetChk, storeKey: ST.SAVE_PRESET },
+    { name: "resume video", render: resumeVideoChk, storeKey: ST.RESUME_VIDEO },
+    { name: "default eye", render: defaultEyeTgl, storeKey: ST.DEF_EYE },
     // { name: "ui position", render: uiPosTgl },
     // { name: "default eye", render: defaultEyeTgl },
     // { name: "seek time", render: seekTimeTgl },
@@ -244,7 +213,7 @@ function insertSettingsUI(el, offset) {
                 "button-highlight": "",
             })
             upBtn.addEventListener("click", () => {
-                el.setAttribute(C_SETTINGS, {
+                el.setAttribute(SETTINGS, {
                     offset: offset - 1
                 })
             })
@@ -259,7 +228,7 @@ function insertSettingsUI(el, offset) {
                 "button-highlight": "",
             })
             downBtn.addEventListener("click", () => {
-                el.setAttribute(C_SETTINGS, {
+                el.setAttribute(SETTINGS, {
                     offset: offset + 1
                 })
             })
@@ -276,7 +245,7 @@ function renderSettings(el, offset) {
 
     insertSettingsUI(el, offset)
 
-    let currentSettings = ascene.getAttribute(C_APPLY_SETTINGS)
+    let currentSettings = getAttr(El.settings, SETTINGS)
     let pos = initialPosition
     for (let i = offset; i < offset + itemLimit; i++) {
         if (i < settings.length) {
@@ -305,7 +274,7 @@ function renderSettings(el, offset) {
 // { name: "default eye", render: defaultEyeTgl },
 // { name: "seek time", render: seekTimeTgl },
 
-AFRAME.registerComponent(C_SETTINGS, {
+AFRAME.registerComponent(DIALOG_SETTINGS, {
     schema: {
         offset: { type: 'number', default: 0 },
         resumeVideo: { type: 'string', default: 'ON' },
@@ -316,15 +285,15 @@ AFRAME.registerComponent(C_SETTINGS, {
         let el = this.el
         el.setAttribute('geometry', `primitive: plane; width: ${DWidth}; height: ${DHeight}`)
         el.setAttribute('material', 'color: teal')
-        el.setAttribute('dialog-utils', { 'screen': C_SETTINGS })
+        el.setAttribute('dialog-utils', { 'screen': DIALOG_SETTINGS })
     },
 
     update: function (od) {
         var d = this.data
         var el = this.el
         if (d.reRender && d.reRender.length > 0) {
-            el.setAttribute('dialog-utils', { 'screen': C_SETTINGS })
-            el.setAttribute(C_SETTINGS, { reRender: '' })
+            el.setAttribute('dialog-utils', { 'screen': DIALOG_SETTINGS })
+            el.setAttribute(DIALOG_SETTINGS, { reRender: '' })
             return
         }
         renderSettings(el, d.offset)

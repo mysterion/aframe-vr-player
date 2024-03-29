@@ -1,4 +1,4 @@
-import { E } from "../../main";
+import { El } from "../../main";
 import { Store } from "../../store";
 import { createEl, setAttr } from "../../utils";
 
@@ -25,7 +25,7 @@ AFRAME.registerComponent('btn-vol', {
             'align': 'center',
             'value': '100',
             'position': '0 0 0.3',
-            
+
         })
         el.appendChild(txt)
 
@@ -46,9 +46,9 @@ AFRAME.registerComponent('btn-vol', {
         if (i <= 0.1) i = 0.1
         let q = this.width * i
         let p = q / 2
-        E.video.volume = i
+        El.video.volume = i
         Store.set('volume', i)
-        this.txt.setAttribute('value', `${Math.round(E.video.volume * 100)}`)
+        this.txt.setAttribute('value', `${Math.round(El.video.volume * 100)}`)
         this.bar.setAttribute('position', `${p - this.width / 2} 0 0.2`)
         this.bar.setAttribute('geometry', { 'width': q })
     }

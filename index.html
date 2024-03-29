@@ -14,7 +14,12 @@
 <body>
   <input type="file" id="fileInput" style="display: none;">
 
-  <a-scene background="color: grey" video-state apply-settings apply-settings-vid>
+  <a-scene background="color: grey">
+
+    <a-entity id="events" events></a-entity>
+    <a-entity id="settings" settings></a-entity>
+    <a-entity id="video-state" video-state></a-entity>
+
     <a-assets>
       <img id="asset-vp-play" src="static/play.png">
       <img id="asset-vp-pause" src="static/pause.png">
@@ -88,11 +93,6 @@
         scale="5 5 1"></a-image>
 
       <a-entity id="toggleAdjustUi" toggle-adjust-ui controls>
-      </a-entity>
-
-      <a-entity id="toggleMode" toggle-mode clickable controls position="0 -12 -60"
-        material="color: #808080; opacity: 1" geometry="primitive:plane; width:15; height: 3" button-highlight>
-        <a-text value="180 SBS EQR" width="40" align="center" position="0 0 0.5"></a-text>
       </a-entity>
 
       <a-entity dialog-utils id="dialog" position="0 25 -50" rotation="15 0 0" visible="false">

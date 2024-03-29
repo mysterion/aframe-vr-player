@@ -1,4 +1,4 @@
-import { E } from "../../main";
+import { El } from "../../main";
 import { Store } from "../../store";
 import { C_VID_STATE } from "../VideoState";
 
@@ -20,33 +20,33 @@ AFRAME.registerComponent(C_AS_VIDEO, {
         this.saveVidTime = AFRAME.utils.bind(this.saveVidTime, this)
         this.onVideoStateChange = AFRAME.utils.bind(this.onVideoStateChange, this)
 
-        if (E.video.readyState >= 1) {
-            this.videoName = E.ascene.getAttribute(C_VID_STATE).fileName
+        if (El.video.readyState >= 1) {
+            this.videoName = El.ascene.getAttribute(C_VID_STATE).fileName
             this.timeKey = `VID_T_${this.videoName}`
             this.presetKey = `VID_P_${this.videoName}`
         }
-        E.video.addEventListener('loadedmetadata', this.onVideoLoad)
-        E.ascene.addEventListener(C_VID_STATE, this.onVideoStateChange)
+        El.video.addEventListener('loadedmetadata', this.onVideoLoad)
+        El.ascene.addEventListener(C_VID_STATE, this.onVideoStateChange)
     },
 
     update: function (od) {
         var d = this.data
 
         if (d.time) {
-            E.video.addEventListener('timeupdate', this.saveVidTime)
+            El.video.addEventListener('timeupdate', this.saveVidTime)
         } else {
-            E.video.removeEventListener('timeupdate', this.saveVidTime)
+            El.video.removeEventListener('timeupdate', this.saveVidTime)
         }
     },
 
     remove: function () {
         // console.log("listeners removed")
-        E.video.removeEventListener('timeupdate', this.saveVidTime)
-        E.video.removeEventListener('loadedmetadata', this.onVideoLoad)
+        El.video.removeEventListener('timeupdate', this.saveVidTime)
+        El.video.removeEventListener('loadedmetadata', this.onVideoLoad)
     },
 
     onVideoLoad: function () {
-        this.videoName = E.ascene.getAttribute(C_VID_STATE).fileName
+        this.videoName = El.ascene.getAttribute(C_VID_STATE).fileName
         this.timeKey = `VID_T_${this.videoName}`
         this.presetKey = `VID_P_${this.videoName}`
         this.lastUpdate = Date.now()
@@ -54,7 +54,7 @@ AFRAME.registerComponent(C_AS_VIDEO, {
         if (this.data.time) {
             let t = Store.get(this.timeKey)
             if (t) {
-                E.video.currentTime = t
+                El.video.currentTime = t
             }
         }
     },
@@ -67,17 +67,17 @@ AFRAME.registerComponent(C_AS_VIDEO, {
                 let p = Store.get(presetKey)
                 if (p !== null && p !== undefined) {
                     // console.log("first time", "get", data.fileName, p)
-                    E.ascene.setAttribute(C_VID_STATE, { preset: p })
+                    El.ascene.setAttribute(C_VID_STATE, { preset: p })
                 } else {
                     // console.log("first time", "setDefault", data.fileName, this.data.defaultPreset)
-                    E.ascene.setAttribute(C_VID_STATE, { preset: this.data.defaultPreset })
+                    El.ascene.setAttribute(C_VID_STATE, { preset: this.data.defaultPreset })
                 }
             } else { // toggle presets
                 // console.log("changing", "set", data.fileName, data.preset)
                 Store.set(presetKey, data.preset)
             }
         } else {
-            E.ascene.setAttribute(C_VID_STATE, { preset: this.data.defaultPreset })
+            El.ascene.setAttribute(C_VID_STATE, { preset: this.data.defaultPreset })
         }
     },
 
@@ -86,7 +86,7 @@ AFRAME.registerComponent(C_AS_VIDEO, {
         if (now - this.lastUpdate > 5000) {
             this.lastUpdate = now
             // console.log('saving', this.timeKey, E.video.currentTime)
-            Store.set(this.timeKey, E.video.currentTime)
+            Store.set(this.timeKey, El.video.currentTime)
         }
     }
 });

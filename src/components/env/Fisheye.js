@@ -82,13 +82,14 @@ AFRAME.registerComponent('fisheye', {
         })
 
         // remove other eye artifact ;)
+        // TODO fix this, sometimes it doesnt work :(((((
         this.hideA = createEl('a-entity',
-        {
-            geometry: `primitive:sphere; radius: 99; segmentsWidth: 32; segmentsHeight: 8; thetaStart: 0; thetaLength: ${90 - afov / 2}`,
-            material: "shader: flat; side: back; color: grey",
-            rotation: "90 0 0"
+            {
+                geometry: `primitive:sphere; radius: 99; segmentsWidth: 32; segmentsHeight: 8; thetaStart: 0; thetaLength: ${90 - afov / 2}`,
+                material: "shader: flat; side: back; color: grey",
+                rotation: "90 0 0"
 
-        })
+            })
 
         this.el.append(this.leftEye, this.rightEye, this.hideA)
     },

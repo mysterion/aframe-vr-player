@@ -1,4 +1,4 @@
-import { E } from "../../main";
+import { El } from "../../main";
 import { createEl, setAttr } from "../../utils";
 
 const bgs = [
@@ -81,7 +81,7 @@ AFRAME.registerComponent('flat-3d', {
 AFRAME.registerComponent('flat', {
     init: function () {
         this.onVideoChange = AFRAME.utils.bind(this.onVideoChange, this)
-        E.video.addEventListener("loadedmetadata", this.onVideoChange)
+        El.video.addEventListener("loadedmetadata", this.onVideoChange)
         this.i = 1
         this.p = 0
         this.tvAttr = {
@@ -141,7 +141,7 @@ AFRAME.registerComponent('flat', {
     },
 
     onVideoChange: function (e) {
-        let w = E.video.videoWidth / E.video.videoHeight * bgs[this.i].poi[this.p].tv.geometry.height
+        let w = El.video.videoWidth / El.video.videoHeight * bgs[this.i].poi[this.p].tv.geometry.height
         this.eye.setAttribute('geometry', `width: ${w};`)
     },
 
@@ -160,6 +160,6 @@ AFRAME.registerComponent('flat', {
         this.el.removeChild(this.bg)
         this.el.removeChild(this.bgToggle)
         this.el.removeChild(this.poiToggle)
-        E.video.removeEventListener("loadedmetadata", this.onVideoChange)
+        El.video.removeEventListener("loadedmetadata", this.onVideoChange)
     },
 });

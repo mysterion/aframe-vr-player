@@ -1,4 +1,4 @@
-import { E } from "../../main";
+import { El } from "../../main";
 import { getElem } from "../../utils";
 import { setupWebFileInput } from "../../web/setupFileInput";
 import { C_FILES } from "../dialog/Files";
@@ -14,7 +14,7 @@ AFRAME.registerComponent('btn-open-file', {
         if (import.meta.env.VITE_WEB) {
             setupWebFileInput()
             el.addEventListener('click', (e) => {
-                E.file.click()
+                El.file.click()
             })
             return
         }

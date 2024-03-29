@@ -33,6 +33,10 @@ export function createEl(tagName = 'a-entity', attributes = {}, children = [], p
 }
 
 
+export function getAttr(element, key) {
+    return element.getAttribute(key)
+}
+
 export function setAttr(element, attributes = {}) {
     for (let key in attributes) {
         element.setAttribute(key, attributes[key])

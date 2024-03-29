@@ -1,4 +1,8 @@
+import { El } from "../../main";
 import { ControlsHidden, ControlsShown, E_Controls } from "../../systems/Controls";
+import { createEl, setAttr } from "../../utils";
+import { SETTINGS } from "../settings/Settings";
+
 
 const ENVS = {
     EQ: 'equirectangular',
@@ -15,7 +19,27 @@ export const PRESET = {
     FLAT_3D: 'FLAT_3D'
 }
 
-function presetToMode(preset) {
+
+export const videoPresets = [
+    {
+        "text": "180 SBS EQR", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.EQ_180_SBS}` }) }
+    },
+    {
+        "text": "FLAT 2D", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.FLAT_2D}` }) }
+    },
+    {
+        "text": "180 SBS FISH", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.FE_180_SBS}` }) }
+    },
+    {
+        "text": "190 SBS FISH", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.FE_190_SBS}` }) }
+    },
+    {
+        "text": "200 SBS FISH", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.FE_200_SBS}` }) }
+    }
+]
+
+
+function presetToEnv(preset) {
     if (preset === null || preset === undefined) preset = ''
     for (let env in ENVS) {
         if (preset.startsWith(env)) {
@@ -33,40 +57,33 @@ AFRAME.registerComponent('env-manager', {
     },
 
     init: function () {
-        this.currentMode = ENVS.EQ // default
+        var d = this.data
+
         this.onUIHide = AFRAME.utils.bind(this.onUIHide, this)
-        this.el.sceneEl.addEventListener(E_Controls, this.onUIHide)
+        El.ascene.addEventListener(E_Controls, this.onUIHide)
     },
 
     update: function (od) {
         let d = this.data
         let el = this.el
-        // TODO: Fix Save Presets OFF , toggle Preset bug
-        // console.trace()
-        // console.log("env", d)
-        if (this.currentMode !== presetToMode(d.preset)) {
-            el.removeAttribute(this.currentMode)
-        }
+
+        el.removeAttribute(presetToEnv(od.preset))
+
         switch (d.preset) {
             case PRESET.EQ_180_SBS:
                 el.setAttribute(ENVS.EQ, { uiHidden: d.uiHidden, defaultEye: d.defaultEye })
-                this.currentMode = ENVS.EQ
                 break
             case PRESET.FE_180_SBS:
                 el.setAttribute(ENVS.FE, { uiHidden: d.uiHidden, defaultEye: d.defaultEye })
-                this.currentMode = ENVS.FE
                 break
             case PRESET.FE_190_SBS:
                 el.setAttribute(ENVS.FE, { uiHidden: d.uiHidden, defaultEye: d.defaultEye, fov: 190 })
-                this.currentMode = ENVS.FE
                 break
             case PRESET.FE_200_SBS:
                 el.setAttribute(ENVS.FE, { uiHidden: d.uiHidden, defaultEye: d.defaultEye, fov: 200 })
-                this.currentMode = ENVS.FE
                 break
             case PRESET.FLAT_2D:
                 el.setAttribute(ENVS.FLAT, '')
-                this.currentMode = ENVS.FLAT
                 break
             default:
                 console.error('preset not found')
@@ -80,5 +97,9 @@ AFRAME.registerComponent('env-manager', {
         } else if (e.detail === ControlsShown) {
             this.el.setAttribute('env-manager', 'uiHidden: false')
         }
+    },
+
+    remove: function () {
+        El.ascene.removeEventListener(E_Controls, this.onUIHide)
     }
 });

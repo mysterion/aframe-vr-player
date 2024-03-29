@@ -37,13 +37,17 @@ AFRAME.registerComponent('timeline', {
         }, [], el)
 
         this.hoverTextEl = createEl('a-text', {
-            'geometry': 'primitive: plane; width: 8; height: 2.5;',
-            'material': 'color: #808080',
             'position': '0 5 0',
             'align': 'center',
             'value': '00:00:00',
             'width': '40'
-        }, [], this.hoverEl)
+        }, [
+            createEl('a-entity', {
+                'geometry': 'primitive: plane; width: 8; height: 2.5;',
+                'position': '0 0 -0.5',
+                'material': 'color: #808080',
+            })
+        ], this.hoverEl)
 
         this.bg = createEl('a-entity', {
             geometry: `primitive: plane; width: ${width + 1.5}; height: ${height + 1} `,

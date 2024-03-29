@@ -1,4 +1,4 @@
-import { E } from '../../main'
+import { El } from '../../main'
 import { createEl, getFileName } from '../../utils'
 import { C_VID_STATE } from '../VideoState'
 import { DHeight, DWidth } from './Utils'
@@ -194,7 +194,7 @@ function renderFiles(el, url, files, folders, offset) {
                 if (import.meta.env.VITE_WEB) {
                     src = URL.createObjectURL(await this.fileHandles[i].getFile())
                 }
-                E.ascene.setAttribute(C_VID_STATE, {
+                El.videoState.setAttribute(C_VID_STATE, {
                     src: src,
                     fileName: files[i]
                 })
