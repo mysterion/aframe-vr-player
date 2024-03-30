@@ -1,5 +1,5 @@
 import { El } from "../../main";
-import { ControlsHidden, ControlsShown, E_Controls } from "../../systems/Controls";
+import { CTL_HIDDEN, CTL_SHOWN, CONTROLS } from "../../systems/Controls";
 import { createEl, setAttr } from "../../utils";
 import { SETTINGS } from "../settings/Settings";
 
@@ -60,7 +60,7 @@ AFRAME.registerComponent('env-manager', {
         var d = this.data
 
         this.onUIHide = AFRAME.utils.bind(this.onUIHide, this)
-        El.ascene.addEventListener(E_Controls, this.onUIHide)
+        El.events.addEventListener(CONTROLS, this.onUIHide)
     },
 
     update: function (od) {
@@ -92,14 +92,14 @@ AFRAME.registerComponent('env-manager', {
     },
 
     onUIHide: function (e) {
-        if (e.detail === ControlsHidden) {
+        if (e.detail === CTL_HIDDEN) {
             this.el.setAttribute('env-manager', 'uiHidden: true')
-        } else if (e.detail === ControlsShown) {
+        } else if (e.detail === CTL_SHOWN) {
             this.el.setAttribute('env-manager', 'uiHidden: false')
         }
     },
 
     remove: function () {
-        El.ascene.removeEventListener(E_Controls, this.onUIHide)
+        El.events.removeEventListener(CONTROLS, this.onUIHide)
     }
 });

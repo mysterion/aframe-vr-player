@@ -1,6 +1,8 @@
-export const ControlsHidden = 'controlsHidden'
-export const ControlsShown = 'controlsShown'
-export const E_Controls = 'E_Controls'
+import { El } from "../main";
+
+export const CTL_HIDDEN = 'controls-hidden'
+export const CTL_SHOWN = 'controls-shown'
+export const CONTROLS = 'controls'
 
 AFRAME.registerComponent('controls', {
     init: function () {
@@ -12,7 +14,6 @@ AFRAME.registerComponent('controls', {
     }
 });
 
-// this.el - a-scene
 AFRAME.registerSystem('controls', {
     init: function () {
         this.entities = []
@@ -38,7 +39,7 @@ AFRAME.registerSystem('controls', {
             e.object3D.visible = false
         }
 
-        this.el.emit(E_Controls, ControlsHidden, false)
+        El.events.emit(CONTROLS, CTL_HIDDEN, false)
     },
 
     showControls: function () {
@@ -50,6 +51,6 @@ AFRAME.registerSystem('controls', {
             e.object3D.visible = true
         }
         this.clickables = []
-        this.el.emit(E_Controls, ControlsShown, false)
+        El.events.emit(CONTROLS, CTL_SHOWN, false)
     }
 });

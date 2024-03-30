@@ -1,4 +1,5 @@
-import { ControlsHidden, ControlsShown, E_Controls } from "../systems/Controls";
+import { El } from "../main";
+import { CTL_HIDDEN, CTL_SHOWN, CONTROLS } from "../systems/Controls";
 
 AFRAME.registerComponent('recenter', {
     schema: {},
@@ -17,10 +18,10 @@ AFRAME.registerComponent('recenter', {
             this.recenterCamera = false
         })
 
-        el.sceneEl.addEventListener(E_Controls, (e) => {
-            if (e.detail === ControlsHidden)
+        El.events.addEventListener(CONTROLS, (e) => {
+            if (e.detail === CTL_HIDDEN)
                 this.controlsVisible = false
-            else if (e.detail === ControlsShown)
+            else if (e.detail === CTL_SHOWN)
                 this.controlsVisible = true
         })
 

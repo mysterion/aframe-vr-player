@@ -1,4 +1,5 @@
-import { ControlsHidden, E_Controls } from "../../systems/Controls";
+import { El } from "../../main";
+import { CTL_HIDDEN, CONTROLS } from "../../systems/Controls";
 
 AFRAME.registerComponent('dialog-utils', {
     schema: {
@@ -7,8 +8,8 @@ AFRAME.registerComponent('dialog-utils', {
 
     init: function () {
         let el = this.el
-        el.sceneEl.addEventListener(E_Controls, (e) => {
-            if (e.detail !== ControlsHidden) return false
+        El.events.addEventListener(CONTROLS, (e) => {
+            if (e.detail !== CTL_HIDDEN) return false
             el.object3D.visible = false
             el.removeAttribute('clickable')
             el.replaceChildren()
