@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### 🚀 Features
+
+- Added 2d video support with 3d backgrounds
+- Toggle Ui angle
+- New ui for moving ui elems
+- Better view angle toggle
+- Toggle controls ui angle
+- Added 2D video support with beach & mountain themes
+
+### 🐛 Bug Fixes
+
+- VideoText and background of timeline listener
+
+### 🚜 Refactor
+
+- UI scale (for consistent viewing experience)
+- [**breaking**] Videostate, settings, UI, event dispatch system
+
 ## [1.2.1] - 2024-03-16
 
 ### 🐛 Bug Fixes
