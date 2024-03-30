@@ -1,16 +1,41 @@
-import { E } from "../../main";
-import { applyAttribs, createElement } from "../../utils";
+import { El } from "../../main";
+import { createEl, setAttr } from "../../utils";
 
 const bgs = [
     {
+        name: 'island',
         src: '/static/gltf/tropical_island/scene.gltf',
-        position: '0 -4 -7',
-        'animation-mixer': ''
+        poi: [
+            {
+                tv: {
+                    geometry: { height: 60 }, // width calculated from aspect ratio of the video
+                    position: '0 0 -65'
+                },
+                bg: {
+                    position: '230 -35 -100',
+                    scale: '20 20 20',
+                    rotation: '0 -80 0',
+                    'animation-mixer': ''
+                }
+            }
+        ]
     },
     {
+        name: 'sky tower',
         src: '/static/gltf/mountain_movie_lounge/scene.gltf',
-        position: '0 -2.5 0',
-        scale: '2 2 2'
+        poi: [
+            {
+                tv: {
+                    geometry: { height: 60 },
+                    position: '0 10 -65'
+                },
+                bg: {
+                    position: '0 -25 0',
+                    rotation: '0 0 0',
+                    scale: '20 20 20'
+                }
+            }
+        ]
     }
 
 ]
@@ -20,9 +45,23 @@ AFRAME.registerComponent('flat-2d', {
         eye: { type: 'string', default: 'left' },
     },
 
-    init: function () {
-        let object3D = this.el.object3D.children[0]
+    update: function (od) {
         let d = this.data
+        let object3D = this.el.object3D.children[0]
+        // layers
+        if (d.eye === "left") {
+            object3D.layers.set(1);
+        } else if (d.eye === "right") {
+            object3D.layers.set(2);
+        } else {
+            object3D.layers.set(0);
+        }
+    },
+});
+
+AFRAME.registerComponent('flat-3d', {
+    schema: {
+        eye: { type: 'string', default: 'left' },
     },
 
     update: function (od) {
@@ -40,46 +79,87 @@ AFRAME.registerComponent('flat-2d', {
 });
 
 AFRAME.registerComponent('flat', {
-    schema: {
-        size: { type: 'string', default: 'M' },
-    },
-
     init: function () {
-        let d = this.data
         this.onVideoChange = AFRAME.utils.bind(this.onVideoChange, this)
-        E.video.addEventListener("loadedmetadata", this.onVideoChange)
-        this.size = {
-            'S': { h: 4, w: 1.77777777778 * 4 },
-            'M': { h: 5, w: 1.77777777778 * 5 },
-            'L': { h: 6, w: 1.77777777778 * 6 },
-        }
-        this.eye = createElement('a-entity', {
-            id: 'wanker',
-            geometry: `primitive: plane; height: ${this.size[d.size].h}; width: ${this.size[d.size].w}`,
+        El.video.addEventListener("loadedmetadata", this.onVideoChange)
+        this.i = 1
+        this.p = 0
+        this.tvAttr = {
+            geometry: `primitive: plane; height: ${bgs[this.i].poi[this.p].tv.geometry.height}; width: ${1.77 * bgs[this.i].poi[this.p].tv.geometry.height}`,
             material: `shader: flat; src: #video; side: front;`,
-            position: "0 0 -4"
+            position: '0 0 -25'
+        }
+        this.eye = createEl('a-entity', this.tvAttr)
+        this.bg = createEl('a-gltf-model', {
+            ...bgs[this.i].poi[this.p].bg,
+            src: bgs[this.i].src
         })
 
-        this.bg = createElement('a-gltf-model', bgs[Math.floor(Math.random() * 3)])
+        // bg toggle >>>
+        this.bgToggleHandler = AFRAME.utils.bind(this.bgToggleHandler, this)
+        this.bgToggleTxt = createEl('a-text', { position: '0 0 0.5', align: 'center', width: 40, value: bgs[this.i].name })
+        this.bgToggle = createEl('a-entity', {
+            position: '0 -16 -60',
+            geometry: 'primitive:plane; width:15; height: 3',
+            material: 'color: #808080; opacity: 1',
+            clickable: '', controls: '', 'button-highlight': '',
+        }, [this.bgToggleTxt])
 
-        this.el.append(this.eye, this.bg)
+        this.bgToggle.addEventListener('click', this.bgToggleHandler)
+
+        // bg toggle <<<
+
+        // poi toggle >>>
+        this.poiToggleHandler = AFRAME.utils.bind(this.poiToggleHandler, this)
+        this.poiToggleTxt = createEl('a-text', { position: '0 0 0.5', align: 'center', width: 40, value: this.p })
+
+        this.poiToggle = createEl('a-entity', {
+            position: '10 -16 -60',
+            geometry: 'primitive:plane; width:3; height: 3',
+            material: 'color: #808080; opacity: 1',
+            clickable: '', controls: '', 'button-highlight': '',
+        }, [this.poiToggleTxt])
+
+        this.bgToggle.addEventListener('click', this.poiToggleHandler)
+
+        // poi toggle <<<
+
+        this.el.append(this.eye, this.bg, this.bgToggle, this.poiToggle)
     },
 
     update: function (od) {
-        let d = this.data
+        setAttr(this.bgToggleTxt, { value: bgs[this.i].name })
+        setAttr(this.poiToggleTxt, { value: this.p })
 
-        applyAttribs(this.bg, bgs[Math.floor(Math.random() * bgs.length)])
-        this.eye.setAttribute('geometry', {height: this.size[d.size].h, width:this.size[d.size].w})
+        if (this.bg.getAttribute('src') !== bgs[this.i].src) {
+            setAttr(this.bg, {
+                src: bgs[this.i].src
+            })
+        }
+        setAttr(this.bg, bgs[this.i].poi[this.p].bg)
+        setAttr(this.eye, bgs[this.i].poi[this.p].tv)
     },
 
     onVideoChange: function (e) {
-        let w = E.video.videoWidth / E.video.videoHeight * this.size[this.data.size].h
-        this.eye.setAttribute('geometry', `height: ${this.size[this.data.size].h}; width: ${w};`)
+        let w = El.video.videoWidth / El.video.videoHeight * bgs[this.i].poi[this.p].tv.geometry.height
+        this.eye.setAttribute('geometry', `width: ${w};`)
+    },
+
+    bgToggleHandler: function () {
+        this.i = (this.i + 1) % bgs.length
+        this.update()
+    },
+
+    poiToggleHandler: function () {
+        this.p = (this.p + 1) % bgs[this.i].poi.length
+        this.update()
     },
 
     remove: function () {
         this.el.removeChild(this.eye)
         this.el.removeChild(this.bg)
-        E.ascene.removeEventListener("loadedmetadata", this.onVideoChange)
+        this.el.removeChild(this.bgToggle)
+        this.el.removeChild(this.poiToggle)
+        El.video.removeEventListener("loadedmetadata", this.onVideoChange)
     },
 });

@@ -1,4 +1,4 @@
-import { createElement } from "../../utils";
+import { createEl } from "../../utils";
 
 AFRAME.registerComponent('eq-sphere', {
     schema: {
@@ -50,12 +50,12 @@ AFRAME.registerComponent('equirectangular', {
     },
 
     init: function () {
-        this.leftEye = createElement('a-entity', {
+        this.leftEye = createEl('a-entity', {
             geometry: `primitive:sphere; radius: 100; segmentsWidth: ${this.data.detail}; segmentsHeight: ${this.data.detail};`,
             material: "shader: flat; src: #video; side: back;",
         })
 
-        this.rightEye = createElement('a-entity', {
+        this.rightEye = createEl('a-entity', {
             geometry: `primitive:sphere; radius: 100; segmentsWidth: ${this.data.detail}; segmentsHeight: ${this.data.detail};`,
             material: "shader: flat; src: #video; side: back;",
         })

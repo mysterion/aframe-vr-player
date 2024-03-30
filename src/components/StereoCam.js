@@ -1,3 +1,7 @@
+import { El } from "../main";
+import { EV } from "./Events";
+import { ST } from "./settings/Settings";
+
 AFRAME.registerComponent('stereocam', {
 
     schema: {
@@ -5,7 +9,18 @@ AFRAME.registerComponent('stereocam', {
     },
 
     init: function () {
+        this.onEyeChange = AFRAME.utils.bind(this.onEyeChange, this)
+
         this.layer_changed = false;
+
+        El.events.addEventListener(EV.SETTINGS, this.onEyeChange)
+
+
+    },
+
+    onEyeChange: function (e) {
+        let eye = e.detail[ST.DEF_EYE]
+        this.el.setAttribute('stereocam', `eye: ${eye}`)
     },
 
     tick: function (time) {
@@ -32,5 +47,9 @@ AFRAME.registerComponent('stereocam', {
                 console.error("stereocam: Camera not found")
             }
         }
+    },
+
+    remove: function (e) {
+        El.events.removeEventListener(EV.SETTINGS, this.onEyeChange)
     }
 });

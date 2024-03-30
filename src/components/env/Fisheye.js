@@ -1,4 +1,4 @@
-import { createElement } from "../../utils";
+import { createEl } from "../../utils";
 
 AFRAME.registerComponent('fe-sphere', {
     schema: {
@@ -72,23 +72,24 @@ AFRAME.registerComponent('fisheye', {
     init: function () {
         let d = this.data
         let afov = d.fov - 180
-        this.leftEye = createElement('a-entity', {
+        this.leftEye = createEl('a-entity', {
             geometry: `primitive:sphere; radius: 100; segmentsWidth: ${this.data.detail}; segmentsHeight: ${this.data.detail};`,
             material: "shader: flat; src: #video; side: back;",
         })
-        this.rightEye = createElement('a-entity', {
+        this.rightEye = createEl('a-entity', {
             geometry: `primitive:sphere; radius: 100; segmentsWidth: ${this.data.detail}; segmentsHeight: ${this.data.detail};`,
             material: "shader: flat; src: #video; side: back;",
         })
 
         // remove other eye artifact ;)
-        this.hideA = createElement('a-entity',
-        {
-            geometry: `primitive:sphere; radius: 99; segmentsWidth: 32; segmentsHeight: 8; thetaStart: 0; thetaLength: ${90 - afov / 2}`,
-            material: "shader: flat; side: back; color: grey",
-            rotation: "90 0 0"
+        // TODO fix this, sometimes it doesnt work :(((((
+        this.hideA = createEl('a-entity',
+            {
+                geometry: `primitive:sphere; radius: 99; segmentsWidth: 32; segmentsHeight: 8; thetaStart: 0; thetaLength: ${90 - afov / 2}`,
+                material: "shader: flat; side: back; color: grey",
+                rotation: "90 0 0"
 
-        })
+            })
 
         this.el.append(this.leftEye, this.rightEye, this.hideA)
     },

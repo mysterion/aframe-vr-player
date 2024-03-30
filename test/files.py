@@ -1,4 +1,4 @@
-from flask import Flask, send_file
+from flask import Flask, send_file, request, redirect
 from flask_cors import CORS
 import os
 import sys
@@ -8,9 +8,19 @@ ROOT = os.curdir
 app = Flask(__name__)
 CORS(app)
 
+
+@app.before_request
+def before_request():
+    if not request.is_secure:
+        url = request.url.replace('http://', 'https://', 1)
+        code = 301
+        return redirect(url, code=code)
+
+
 @app.route("/file/<path:file_path>")
 def get_file(file_path):
     return send_file(os.path.join(ROOT, file_path))
+
 
 @app.route("/list/", defaults={'p': '.'})
 @app.route("/list/<path:p>")

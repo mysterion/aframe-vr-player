@@ -1,4 +1,5 @@
-import { C_SETTINGS } from "../dialog/Settings";
+import { El } from "../../main";
+import { DIALOG_SETTINGS } from "../dialog/Settings";
 
 AFRAME.registerComponent('btn-settings', {
     schema: {
@@ -7,23 +8,22 @@ AFRAME.registerComponent('btn-settings', {
 
     init: function () {
         let el = this.el
-        let dialog = document.getElementById('dialog')
         el.addEventListener('click', () => {
-            if (dialog.hasAttribute(C_SETTINGS)) {
-                if (dialog.object3D.visible) {
-                    if (dialog.getAttribute('dialog-utils').screen === C_SETTINGS) {
-                        dialog.removeAttribute('clickable')
-                        dialog.replaceChildren()
-                        dialog.object3D.visible = false
+            if (El.dialog.hasAttribute(DIALOG_SETTINGS)) {
+                if (El.dialog.object3D.visible) {
+                    if (El.dialog.getAttribute('dialog-utils').screen === DIALOG_SETTINGS) {
+                        El.dialog.removeAttribute('clickable')
+                        El.dialog.replaceChildren()
+                        El.dialog.object3D.visible = false
                     } else {
-                        dialog.setAttribute(C_SETTINGS, { reRender: 'rerender' })
+                        El.dialog.setAttribute(DIALOG_SETTINGS, { reRender: 'rerender' })
                     }
                 } else {
-                    dialog.setAttribute(C_SETTINGS, { reRender: 'rerender' })
+                    El.dialog.setAttribute(DIALOG_SETTINGS, { reRender: 'rerender' })
                 }
             } else {
-                dialog.setAttribute(C_SETTINGS, '')
-                dialog.object3D.visible = true
+                El.dialog.setAttribute(DIALOG_SETTINGS, '')
+                El.dialog.object3D.visible = true
             }
         })
         // el.click()

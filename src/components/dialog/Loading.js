@@ -1,3 +1,6 @@
+import { createEl } from "../../utils";
+import { DHeight, DWidth } from "./Utils";
+
 AFRAME.registerComponent('dialog-loading', {
     schema: {
 
@@ -6,25 +9,27 @@ AFRAME.registerComponent('dialog-loading', {
     init: function () {
         let el = this.el
 
-        let loader = this.loader = document.createElement('a-entity')
-        loader.setAttribute('geometry', 'primitive: plane; width: 5; height: 2.5')
-        loader.setAttribute('material', 'color: teal; opacity: 0.2')
-        loader.setAttribute('position', '0 0 0.1')
-        loader.setAttribute('clickable', '')
+        let loader = this.loader = createEl('a-entity', {
+            'geometry': `primitive: plane; width: ${DWidth}; height: ${DHeight}`,
+            'material': 'color: teal; opacity: 0.2',
+            'position': '0 0 3',
+            'clickable': '',
+        })
         el.appendChild(loader)
 
-        let img = document.createElement('a-image')
-        img.setAttribute('src', '#asset-loading')
-        img.setAttribute('position', '0 0 0.01')
-        img.setAttribute('scale', '0.5 0.5 1')
-        loader.appendChild(img)
+        let img = createEl('a-image', {
+            'src': '#asset-loading',
+            'position': '0 0 1',
+            'scale': '4 4 1',
+        })
 
-        let txt = document.createElement('a-text')
-        txt.setAttribute('value', 'loading')
-        txt.setAttribute('width', 2)
-        txt.setAttribute('align', 'center')
-        txt.setAttribute('position', '0 -0.5 0.01')
-        loader.appendChild(txt)
+        let txt = createEl('a-text', {
+            'value': 'loading',
+            'width': 2,
+            'align': 'center',
+            'position': '0 -0.5 0.1',
+        })
+        loader.append(img, txt)
     },
 
     remove: function () {
