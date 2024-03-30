@@ -43,6 +43,15 @@ export function setAttr(element, attributes = {}) {
     }
 }
 
+// const a = {a:'a',b:'b',c:'c', d:'d'};
+// const b = {a:'a',b: '1', c:'c', d:'2', f:'!!!'}
+// const c = getDifference(a,b); // peforms b-a
+// console.log(c); // {b:'1', d:'2'}
+export function diff(a, b) {
+    return Object.fromEntries(Object.entries(b).filter(([key, val]) => key in a && a[key] !== val));
+}
+
+
 export function isObjectEmpty(obj) { for (const i in obj) return false; return true; }
 
 export function getElem(id) { return document.querySelector('#' + id) }

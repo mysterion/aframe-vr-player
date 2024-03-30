@@ -2,11 +2,12 @@ export const EVENTS = "events"
 export const EV = {
     SETTINGS: 'Settings',
     VIDSTATE: 'VideoState',
-    CONTROLS: 'Controls'
+    CONTROLS: 'Controls',
+    ENVIRONMENT: 'Environment',
 }
 
 AFRAME.registerComponent('events', {
     init: function () {
-        console.log("Event bus initialized...")
+        console.log("Events initialized...")
     },
 });

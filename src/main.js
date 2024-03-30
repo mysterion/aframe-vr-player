@@ -36,7 +36,6 @@ import './components/dialog/Loading.js'
 import './components/dialog/Utils.js'
 
 // components:settings
-import './components/settings/ApplySettingsVideo.js'
 import './components/settings/Settings.js'
 
 // components:env

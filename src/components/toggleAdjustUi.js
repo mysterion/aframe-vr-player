@@ -1,11 +1,25 @@
 import { El } from "../main";
 import { Store } from "../store";
-import { createEl, setAttr } from "../utils";
+import { createEl, getAttr, setAttr } from "../utils";
+import { EV } from "./Events";
+import { ENVS, presetToEnv } from "./env/EnvManager";
 
 export const ViewAngles = [90, 60, 45, 30, 0, -30, -45, -60, -90]
 
 export const uiAngles = [60, 45, 30, 15, 0, -15, -30, -45, -60]
 
+function hideBtn(element) {
+    element.removeAttribute('button-highlight')
+    element.removeAttribute('clickable')
+    element.setAttribute('visible', false)
+}
+
+function showBtn(element) {
+    element.setAttribute('button-highlight', '')
+    element.setAttribute('clickable', '')
+    element.setAttribute('visible', true)
+
+}
 AFRAME.registerComponent('toggle-adjust-ui', {
     init: function () {
 
@@ -131,62 +145,65 @@ AFRAME.registerComponent('toggle-adjust-ui', {
             this.update()
         })
 
+        this.onEnvChange = AFRAME.utils.bind(this.onEnvChange, this)
+
+        El.events.addEventListener(EV.ENVIRONMENT, this.onEnvChange)
+
     },
 
     update: function () {
         // D:
         if (this.uiAngleIdx === 0) {
-            this.uiUp.removeAttribute('button-highlight')
-            this.uiUp.removeAttribute('clickable')
-            this.uiUp.setAttribute('visible', false)
+            hideBtn(this.uiUp)
         } else {
-            this.uiUp.setAttribute('button-highlight', '')
-            this.uiUp.setAttribute('clickable', '')
-            this.uiUp.setAttribute('visible', true)
+            showBtn(this.uiUp)
         }
 
         if (this.uiAngleIdx === uiAngles.length - 1) {
-            this.uiDown.removeAttribute('button-highlight')
-            this.uiDown.removeAttribute('clickable')
-            this.uiDown.setAttribute('visible', false)
+            hideBtn(this.uiDown)
         } else {
-            this.uiDown.setAttribute('button-highlight', '')
-            this.uiDown.setAttribute('clickable', '')
-            this.uiDown.setAttribute('visible', true)
+            showBtn(this.uiDown)
         }
 
         if (this.viewAngleIdx === 0) {
-            this.viewUp.removeAttribute('button-highlight')
-            this.viewUp.removeAttribute('clickable')
-            this.viewUp.setAttribute('visible', false)
+            hideBtn(this.viewUp)
         } else {
-            this.viewUp.setAttribute('button-highlight', '')
-            this.viewUp.setAttribute('clickable', '')
-            this.viewUp.setAttribute('visible', true)
+            showBtn(this.viewUp)
         }
 
         if (this.viewAngleIdx === ViewAngles.length - 1) {
-            this.viewDown.removeAttribute('button-highlight')
-            this.viewDown.removeAttribute('clickable')
-            this.viewDown.setAttribute('visible', false)
+            hideBtn(this.viewDown)
         } else {
-            this.viewDown.setAttribute('button-highlight', '')
-            this.viewDown.setAttribute('clickable', '')
-            this.viewDown.setAttribute('visible', true)
+            showBtn(this.viewDown)
         }
         // D:
 
-        El.cameraRig.setAttribute('rotation', `${ViewAngles[this.viewAngleIdx]} 0 0`)
-        El.controls.setAttribute('rotation', `${uiAngles[this.uiAngleIdx]} 0 0`)
+        if (this.curEnv === ENVS.FLAT) {
+            hideBtn(this.uiDown)
+            hideBtn(this.uiUp)
+            this.uiAngle.setAttribute('visible', false)
+        } else {
+            this.uiAngle.setAttribute('visible', true)
+        }
+
+
+        El.cameraRig.setAttribute('rotation', `${-1 * ViewAngles[this.viewAngleIdx]} 0 0`)
         setAttr(this.viewAngle.children[0], {
             value: `view\n${ViewAngles[this.viewAngleIdx]}`
         })
+        Store.set('viewAngleIdx', this.viewAngleIdx)
+
+        El.controls.setAttribute('rotation', `${uiAngles[this.uiAngleIdx]} 0 0`)
         setAttr(this.uiAngle.children[0], {
             value: `ui\n${uiAngles[this.uiAngleIdx]}`
         })
+        if (this.curEnv !== ENVS.FLAT)
+            Store.set('uiAngleIdx', this.uiAngleIdx)
+    },
 
-        Store.set('viewAngleIdx', this.viewAngleIdx)
-        Store.set('uiAngleIdx', this.uiAngleIdx)
+    onEnvChange: function (e) {
+        this.curEnv = presetToEnv(e.detail.preset)
+        this.update()
     },
 
     remove: function () {

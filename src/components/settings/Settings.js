@@ -1,11 +1,7 @@
 import { El } from "../../main";
 import { Store } from "../../store"
 import { isObjectEmpty } from "../../utils";
-import { EV, EVENTS } from "../Events";
-
-
-export const ViewAngles = [0, -30, -45, -60, -90, -60, -45, -30]
-export const UiAngles = [0, 30, 0, -30]
+import { EV } from "../Events";
 
 export const SETTINGS = 'settings'
 
@@ -60,16 +56,7 @@ AFRAME.registerComponent(SETTINGS, {
     },
 
     update: function (od) {
-        let d = this.data
-
-        // el.setAttribute(C_AS_VIDEO, { time: d.resumeVideo })
-        // el.setAttribute(C_AS_VIDEO, { defaultPreset: d.defaultPreset })
-        // el.setAttribute(C_AS_VIDEO, { savePreset: d.savePreset })
-        // getElem('camera').setAttribute('stereocam', { eye: d.defaultEye })
-        // getElem('env').setAttribute('env-manager', { defaultEye: d.defaultEye })
-        // El.cameraRig.setAttribute('rotation', `${ViewAngles[d.viewAngle]} 0 0`)
-        // El.controls.setAttribute('rotation', `${UiAngles[d.uiAngle]} 0 0`)
-        El.events.emit(EV.SETTINGS, d, false)
-        Store.set('settings', d)
+        El.events.emit(EV.SETTINGS, this.data, false)
+        Store.set('settings', this.data)
     },
 });
