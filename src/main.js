@@ -9,9 +9,10 @@ export const El = {
     settings: document.getElementById('settings'),
     videoState: document.getElementById('video-state'),
     dialog: document.getElementById('dialog'),
+    subtitles: document.getElementById('subtitles')
 }
 
-
+// El.subtitles.setAttribute('subtitles', '')
 // systems
 import './systems/Controls.js'
 
@@ -26,6 +27,8 @@ import './components/Recenter.js'
 import './components/CursorUtil.js'
 import './components/AdjustCamera.js'
 import './components/toggleAdjustUi.js'
+import './components/Subtitles.js'
+
 
 
 // components:dialog

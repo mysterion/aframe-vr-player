@@ -74,7 +74,8 @@ AFRAME.registerComponent('env-manager', {
         let d = this.data
         let el = this.el
 
-        el.removeAttribute(presetToEnv(od.preset))
+        if (presetToEnv(od.preset) !== presetToEnv(d.preset))
+            el.removeAttribute(presetToEnv(od.preset))
 
         switch (d.preset) {
             case PRESET.EQ_180_SBS:

@@ -43,6 +43,12 @@ export function setAttr(element, attributes = {}) {
     }
 }
 
+export function remAttr(element, attributes = []) {
+    for (let attr in attributes) {
+        element.removeAttribute(attr)
+    }
+}
+
 // const a = {a:'a',b:'b',c:'c', d:'d'};
 // const b = {a:'a',b: '1', c:'c', d:'2', f:'!!!'}
 // const c = getDifference(a,b); // peforms b-a

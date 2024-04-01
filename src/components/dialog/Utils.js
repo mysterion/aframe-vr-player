@@ -19,3 +19,48 @@ AFRAME.registerComponent('dialog-utils', {
 
 export const DWidth = 60
 export const DHeight = 30
+
+const videoExtensions = [
+    "3g2",
+    "3gp",
+    "aaf",
+    "asf",
+    "avchd",
+    "avi",
+    "drc",
+    "flv",
+    "m2v",
+    "m3u8",
+    "m4p",
+    "m4v",
+    "mkv",
+    "mng",
+    "mov",
+    "mp2",
+    "mp4",
+    "mpe",
+    "mpeg",
+    "mpg",
+    "mpv",
+    "mxf",
+    "nsv",
+    "ogg",
+    "ogv",
+    "qt",
+    "rm",
+    "rmvb",
+    "roq",
+    "svi",
+    "vob",
+    "webm",
+    "wmv",
+    "yuv"
+]
+
+export function isVideo(fileName) {
+    for (let i in videoExtensions) {
+        if (fileName.endsWith(videoExtensions[i]))
+            return true
+    }
+    return false
+}

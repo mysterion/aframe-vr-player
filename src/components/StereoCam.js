@@ -11,7 +11,7 @@ AFRAME.registerComponent('stereocam', {
     init: function () {
         this.onEyeChange = AFRAME.utils.bind(this.onEyeChange, this)
 
-        this.layer_changed = false;
+        this.eye_changed = true;
 
         El.events.addEventListener(EV.SETTINGS, this.onEyeChange)
 
@@ -21,11 +21,16 @@ AFRAME.registerComponent('stereocam', {
     onEyeChange: function (e) {
         let eye = e.detail[ST.DEF_EYE]
         this.el.setAttribute('stereocam', `eye: ${eye}`)
+        this.eye_changed = true
+    },
+
+    update: function (od) {
+        this.eye_changed = true
     },
 
     tick: function (time) {
-        var data = this.data;
-        if (!this.layer_changed) {
+        if (this.eye_changed) {
+            console.log('stereocam: ', this.data.eye)
             var rootCam
             this.el.object3D.children.forEach(function (item) {
                 if (item.type == "PerspectiveCamera") {
@@ -33,10 +38,10 @@ AFRAME.registerComponent('stereocam', {
                 }
             });
             if (rootCam) {
-                if (data.eye === 'left') {
+                if (this.data.eye === 'left') {
                     rootCam.layers.enable(1)
                     rootCam.layers.disable(2)
-                } else if (data.eye === 'right') {
+                } else if (this.data.eye === 'right') {
                     rootCam.layers.enable(2)
                     rootCam.layers.disable(1)
                 } else {
@@ -46,6 +51,7 @@ AFRAME.registerComponent('stereocam', {
             } else {
                 console.error("stereocam: Camera not found")
             }
+            this.eye_changed = false
         }
     },
 
