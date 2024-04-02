@@ -9,8 +9,8 @@ export const El = {
     settings: document.getElementById('settings'),
     videoState: document.getElementById('video-state'),
     dialog: document.getElementById('dialog'),
+    subtitles: document.getElementById('subtitles')
 }
-
 
 // systems
 import './systems/Controls.js'
@@ -19,13 +19,16 @@ import './systems/Controls.js'
 import './components/Events.js'
 
 // components
-import './components/Timeline.js'
+import './components/Stereo.js'
 import './components/StereoCam.js'
+import './components/Timeline.js'
 import './components/ButtonHighlight.js'
 import './components/Recenter.js'
 import './components/CursorUtil.js'
 import './components/AdjustCamera.js'
 import './components/toggleAdjustUi.js'
+import './components/Subtitles.js'
+
 
 
 // components:dialog

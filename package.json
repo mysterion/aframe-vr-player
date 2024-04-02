@@ -17,6 +17,6 @@
     "vite": "^5.1.0"
   },
   "dependencies": {
-    "idb-keyval": "^6.2.1"
+    "srt-parser-2": "^1.2.3"
   }
 }
