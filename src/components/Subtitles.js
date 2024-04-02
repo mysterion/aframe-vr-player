@@ -9,13 +9,14 @@ const ONLY_SUBS_NEXT = 4
 
 AFRAME.registerComponent('subtitles', {
     schema: {
-        src: { type: 'string', default: '' }
+        src: { type: 'string', default: '' },
+        on: { type: 'boolean', default: false }
     },
 
     init: function () {
-        console.log('subs initialized')
         this.parser = new srtParser2()
         this.updateSubtitle = AFRAME.utils.bind(this.updateSubtitle, this)
+        this.subsOnHandler = AFRAME.utils.bind(this.subsOnHandler, this)
         this.getAndPopulateSubs = AFRAME.utils.bind(this.getAndPopulateSubs, this)
         this.onlySubsHandlers = AFRAME.utils.bind(this.onlySubsHandlers, this)
         this.onEyeChange = AFRAME.utils.bind(this.onEyeChange, this)
@@ -40,9 +41,27 @@ AFRAME.registerComponent('subtitles', {
             })]
         )
 
+        this.subsOn = createEl('a-entity', {
+            geometry: 'primitive: plane; width: 10; height: 3',
+            material: 'color: #808080',
+            position: '21 -18 -60',
+            clickable: '',
+            controls: '',
+            'button-highlight': ''
+        },
+            [createEl('a-text', {
+                value: this.data.on ? "ON" : "OFF",
+                width: '40',
+                align: 'center',
+                position: '0 0 0.5'
+            })],
+        )
+
+        this.subsOn.addEventListener('click', this.subsOnHandler)
+
         this.onlySubsBtn.addEventListener('click', this.onlySubsHandlers)
 
-        El.controls.appendChild(this.onlySubsBtn)
+        El.controls.append(this.onlySubsBtn, this.subsOn)
         El.video.addEventListener('timeupdate', this.updateSubtitle)
         El.events.addEventListener(EV.SETTINGS, this.onEyeChange)
 
@@ -50,6 +69,7 @@ AFRAME.registerComponent('subtitles', {
     },
 
     update: function (od) {
+        this.subsOn.children[0].setAttribute('value', this.data.on ? "ON" : "OFF")
         if (this.data.src !== od.src) {
             this.getAndPopulateSubs(this.data.src)
             this.onEyeChange({
@@ -60,13 +80,21 @@ AFRAME.registerComponent('subtitles', {
         }
     },
 
+    subsOnHandler: function () {
+        let on = !this.data.on
+        this.el.setAttribute('subtitles', { on: on })
+        if (on) {
+            this.el.object3D.visible = true
+            El.video.addEventListener('timeupdate', this.updateSubtitle)
+        } else {
+            this.el.object3D.visible = false
+            El.video.removeEventListener('timeupdate', this.updateSubtitle)
+        }
+    },
+
     onEyeChange: function (e) {
         let eye = e.detail[ST.DEF_EYE]
-        let eyeLayer = eye === 'left' ? 1 : 2
-        console.log("eye changed")
-        this.el.object3D.children[0].layers.set(eyeLayer)
-        this.el.object3D.children[1].layers.set(eyeLayer)
-        this.bg.object3D.children[0].layers.set(eyeLayer)
+        this.el.setAttribute('stereo', `eye:${eye}`)
     },
 
     getAndPopulateSubs: async function (src) {
@@ -130,7 +158,8 @@ AFRAME.registerComponent('subtitles', {
     },
 
     remove: function () {
-        El.controls.appendChild(this.onlySubsBtn)
+        El.controls.removeChild(this.onlySubsBtn)
+        El.controls.removeChild(this.subsOn)
         El.video.removeEventListener('timeupdate', this.updateSubtitle)
         this.bg.object3D.visible = false
     },

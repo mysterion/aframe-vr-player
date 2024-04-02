@@ -4,13 +4,13 @@ import { defineConfig } from 'vite'
 export default defineConfig(({ mode }) => {
     const config = {
         plugins: [
-            basicSsl()
+            basicSsl(),
         ],
         build: {
             assetsDir: 'static',
         },
     }
-    if (mode == "web") {
+    if (mode === "web") {
         config['base'] = '/aframe-vr-player/'
 
     }
