@@ -8,7 +8,7 @@
   <script src="/aframe-vr-player/static/aframe-v1.5.0.min.js"></script>
   <script src="/aframe-vr-player/static/aframe-extras.loaders.min.js"></script>
   <title>aframe vr player</title>
-  <script type="module" crossorigin src="/aframe-vr-player/static/index-ClBI3MFD.js"></script>
+  <script type="module" crossorigin src="/aframe-vr-player/static/index-Bp6QC3UT.js"></script>
 </head>
 
 <body>
@@ -59,6 +59,11 @@
             <!-- cursor stuff -->
             <a-cursor controls id="cursor" cursor-util raycaster="objects: [clickable]" fuse="false" position="0 0 -50">
             </a-cursor>
+            <!-- subtitles -->
+            <a-text id="subtitles" position="0 -1.5 -5" width="5" align="center">
+              <a-plane visible="false"></a-plane>
+            </a-text>
+
           </a-entity>
         </a-entity>
       </a-entity>
@@ -66,6 +71,7 @@
 
     <!-- video player -->
     <a-entity id="env" env-manager></a-entity>
+
 
     <!-- video player ui -->
     <a-entity id="controls" position="0 0 0" rotation="0 0 0">
