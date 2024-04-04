@@ -5,7 +5,7 @@ import srtParser2 from "srt-parser-2";
 import { EV } from "./Events";
 import { ST, getSettings } from "./settings/Settings";
 
-const ONLY_SUBS_NEXT = 4
+const SEEK_NEXT_THRESH = 2
 
 AFRAME.registerComponent('subtitles', {
     schema: {
@@ -59,10 +59,15 @@ AFRAME.registerComponent('subtitles', {
 
         this.subsOn.addEventListener('click', this.subsOnHandler)
 
+        this.nextSeek = -2
+
         this.onlySubsBtn.addEventListener('click', this.onlySubsHandlers)
 
-        El.controls.append(this.onlySubsBtn, this.subsOn)
         El.video.addEventListener('timeupdate', this.updateSubtitle)
+        // El.video.addEventListener('seeking', () => { console.log('seeking start'), isSeeking = true })
+        // El.video.addEventListener('seeked', () => { console.log('seeking fin'), isSeeking = false })
+
+        El.controls.append(this.onlySubsBtn, this.subsOn)
         El.events.addEventListener(EV.SETTINGS, this.onEyeChange)
 
         this.subtitles = []
@@ -119,7 +124,7 @@ AFRAME.registerComponent('subtitles', {
     },
 
     updateSubtitle: function () {
-        if (El.video.seeking) return
+        // console.log(new Date(), 'currentTime', El.video.currentTime, "timeupdate: rs - ", this.nextSeek);
         const currentTime = El.video.currentTime
         const currentSubtitle = this.subtitles.find(subtitle => currentTime >= subtitle.startSeconds && currentTime <= subtitle.endSeconds)
         if (currentSubtitle) {
@@ -149,9 +154,17 @@ AFRAME.registerComponent('subtitles', {
         // - seek-to '4 seconds before' the next sub
         if (this.onlySubsON) {
             let nextSub = this.subtitles.find(subtitle => currentTime <= subtitle.startSeconds)
-            if (!this.latestSub || currentTime - this.latestSub.endSeconds > ONLY_SUBS_NEXT) {
-                if (nextSub.startSeconds - currentTime >= ONLY_SUBS_NEXT) {
-                    El.video.currentTime = nextSub.startSeconds - ONLY_SUBS_NEXT
+            if (!this.latestSub || currentTime - this.latestSub.endSeconds > SEEK_NEXT_THRESH) {
+                if (nextSub.startSeconds - currentTime >= SEEK_NEXT_THRESH) {
+                    let pNextSeek = nextSub.startSeconds - SEEK_NEXT_THRESH
+                    if (this.nextSeek - 1 <= pNextSeek && pNextSeek <= this.nextSeek + 1) {
+                        // don't process
+                        // console.log(this.nextSeek - 1, pNextSeek, this.nextSeek + 1)
+                        return
+                    }
+                    this.nextSeek = pNextSeek
+                    // console.log(new Date(), 'currentTime', currentTime, 'seeking called to ', nextSub.startSeconds - SEEK_NEXT_THRESH, 'rs - ', this.isSeeking)
+                    El.video.currentTime = this.nextSeek
                 }
             }
         }

@@ -181,6 +181,7 @@ AFRAME.registerComponent('toggle-adjust-ui', {
         if (this.curEnv === ENVS.FLAT) {
             hideBtn(this.uiDown)
             hideBtn(this.uiUp)
+            this.uiAngleIdx = 4 // set to 0
             this.uiAngle.setAttribute('visible', false)
         } else {
             this.uiAngle.setAttribute('visible', true)
