@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### 🚀 Features
+
+- Added subtitles(experimental)
+
+### 🐛 Bug Fixes
+
+- Buttons visible Flat 2D on hiding UI
+
+### 🚜 Refactor
+
+- Files component, filter files to show videos only
+
 ## [1.3] - 2024-03-30
 
 ### 🚀 Features
@@ -19,6 +33,7 @@ All notable changes to this project will be documented in this file.
 
 ### 🚜 Refactor
 
+- UI scale (for consistent viewing experience)
 - UI scale (for consistent viewing experience)
 - [**breaking**] Videostate, settings, UI, event dispatch system
 
@@ -54,19 +69,13 @@ All notable changes to this project will be documented in this file.
 - Video resume & save settings(on browser)
 - Mouse controls on non-vr mode
 - Added settings options: save presets, default presets, resume video
+- Filesystem api
 - [**breaking**] Added folder access for web build
 
 ### 🚜 Refactor
 
 - [**breaking**] Ecs codebase
-
-### Build
-
 - Update script
-
-### Wip
-
-- Filesystem api
 
 ## [1.0] - 2024-03-05
 
