@@ -1,8 +1,8 @@
 import { El } from "../main";
 import { Store } from "../store"
-import { createEl, getAttr, getFileName, setAttr } from "../utils";
+import { createEl, getFileName, setAttr } from "../utils";
 import { videoPresets } from "./env/EnvManager";
-import { SETTINGS, ST, getSettings } from "./settings/Settings"
+import { ST, getSettings } from "./settings/Settings"
 
 export const C_VID_STATE = 'video-state'
 

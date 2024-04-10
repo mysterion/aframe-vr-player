@@ -57,6 +57,10 @@ export function diff(a, b) {
     return Object.fromEntries(Object.entries(b).filter(([key, val]) => key in a && a[key] !== val));
 }
 
+export function rad(deg) {
+    return deg * Math.PI / 180
+}
+
 
 export function isObjectEmpty(obj) { for (const i in obj) return false; return true; }
 

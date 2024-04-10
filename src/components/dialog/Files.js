@@ -74,13 +74,16 @@ AFRAME.registerComponent(C_FILES, {
         let pos = initialPosition
         for (let i = offsetFiles; i < offsetFiles + itemLimit; i++) {
             if (i < this.files.length) {
+                let subName = this.files[i].substr(0, this.files[i].lastIndexOf('.')) + '.srt'
+                let sub = this.allFiles.find((f) => f === subName)
+                let fileName = (sub ? '[sub] ' : '') + getFileName(this.files[i])
                 let tile = createEl("a-plane", {
                     "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
                     "material": "color: #801D9F;",
                     "position": `-${DWidth * 0.25} ${pos} 1`,
                     "clickable": "",
                     "button-highlight": "",
-                    "marq-text": `value:${getFileName(this.files[i])}; limit:30`,
+                    "marq-text": `value:${fileName}; limit:30`,
                 }, [], el)
                 tile.onclick = async () => {
                     let src = FILE_GET_URL + url + "/" + this.files[i]
@@ -90,8 +93,6 @@ AFRAME.registerComponent(C_FILES, {
                         fileName: this.files[i]
                     })
 
-                    let subName = this.files[i].substr(0, this.files[i].lastIndexOf('.')) + '.srt'
-                    let sub = this.allFiles.find((f) => f === subName)
                     if (sub) {
                         El.subtitles.setAttribute('subtitles', `src: ${FILE_GET_URL + url + "/" + sub}`)
                     } else {

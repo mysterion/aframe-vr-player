@@ -7,21 +7,34 @@ import { ST } from "../settings/Settings";
 
 export const ENVS = {
     EQ: 'equirectangular',
+    MEQ: 'equirectangular-mono',
     FE: 'fisheye',
     FLAT: 'flat'
 }
 
 export const PRESET = {
     EQ_180_SBS: 'EQ_180_SBS',
+    EQ_360_TB: 'EQ_360_TB',
     FE_180_SBS: 'FE_180_SBS',
     FE_190_SBS: 'FE_190_SBS',
     FE_200_SBS: 'FE_200_SBS',
     FLAT_2D: 'FLAT_2D',
-    FLAT_3D: 'FLAT_3D'
+    FLAT_3D: 'FLAT_3D',
+    MEQ_360_MONO: 'MEQ_360_MONO',
+    MEQ_180_MONO: 'MEQ_180_MONO'
 }
 
 
 export const videoPresets = [
+    {
+        "text": "180 MONO EQR", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.MEQ_180_MONO}` }) }
+    },
+    {
+        "text": "360 MONO EQR", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.MEQ_360_MONO}` }) }
+    },
+    {
+        "text": "360 TB EQR", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.EQ_360_TB}` }) }
+    },
     {
         "text": "180 SBS EQR", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.EQ_180_SBS}` }) }
     },
@@ -77,9 +90,12 @@ AFRAME.registerComponent('env-manager', {
         if (presetToEnv(od.preset) !== presetToEnv(d.preset))
             el.removeAttribute(presetToEnv(od.preset))
 
+
+        console.log(d.preset)
+
         switch (d.preset) {
             case PRESET.EQ_180_SBS:
-                el.setAttribute(ENVS.EQ, { uiHidden: d.uiHidden, defaultEye: d.defaultEye })
+                el.setAttribute(ENVS.EQ, { uiHidden: d.uiHidden, defaultEye: d.defaultEye, side: 'LR' })
                 break
             case PRESET.FE_180_SBS:
                 el.setAttribute(ENVS.FE, { uiHidden: d.uiHidden, defaultEye: d.defaultEye })
@@ -92,6 +108,15 @@ AFRAME.registerComponent('env-manager', {
                 break
             case PRESET.FLAT_2D:
                 el.setAttribute(ENVS.FLAT, '')
+                break
+            case PRESET.EQ_360_TB:
+                el.setAttribute(ENVS.EQ, { uiHidden: d.uiHidden, defaultEye: d.defaultEye, side: 'TB' })
+                break
+            case PRESET.MEQ_360_MONO:
+                el.setAttribute(ENVS.MEQ, { fov: 360 })
+                break
+            case PRESET.MEQ_180_MONO:
+                el.setAttribute(ENVS.MEQ, { fov: 180 })
                 break
             default:
                 console.error('preset not found')
