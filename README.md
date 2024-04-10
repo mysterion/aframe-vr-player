@@ -39,7 +39,7 @@ Since this project is built with aframe, it should be compatible with WebXR comp
 
 ## Contributing
 Any contributions you make are **greatly appreciated**.
-Open an [issue](https://github.com/raffleberry/vrp/issues).
+Open an [issue](https://github.com/mysterion/aframe-vr-player/issues).
 
 ## Acknowledgments
 
