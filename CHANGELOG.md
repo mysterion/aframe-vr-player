@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [1.3.2] - 2024-04-04
+
+### 🐛 Bug Fixes
+
+- 2d flat ui reset bug
+- Exp - subtitles seek deadlock
+
+## [1.3.1] - 2024-04-04
 
 ### 🚀 Features
 
