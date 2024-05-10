@@ -3,6 +3,8 @@ from flask_cors import CORS
 import os
 import sys
 
+from thumbnails import THUMBNAIL_DIR, check_if_generating, check_if_already_generated, generate_thumbnail
+
 ROOT = os.curdir
 
 app = Flask(__name__)
@@ -78,6 +80,19 @@ def list_files(p):
         if os.path.isfile(f_path):
             rf.append(f)
     return { 'files': rf, 'folders': rd }
+
+@app.route("/thumb/<path:file_path>")
+def get_thumb(file_path):
+    file_name = os.path.basename(file_path)
+    id = request.args.get('id')
+    
+    if check_if_generating(file_name):
+        return send_file("loading.jpg")
+    if not check_if_already_generated(file_name):
+        generate_thumbnail(file_path)
+        return send_file("loading.jpg")
+    return send_file(os.path.join(THUMBNAIL_DIR, file_name, id + '.jpg'))
+
 
 def askForPath():
     while True:
