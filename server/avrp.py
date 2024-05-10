@@ -2,53 +2,20 @@ from flask import Flask, send_file, render_template ,request, redirect
 from flask_cors import CORS
 import os
 import sys
+import sqlite3
+import store
+import atexit
 
 from thumbnails import THUMBNAIL_DIR, check_if_generating, check_if_already_generated, generate_thumbnail
+
+atexit.register(store.close)
+
+store.connect()
 
 ROOT = os.curdir
 
 app = Flask(__name__)
 CORS(app)
-
-from OpenSSL import crypto, SSL
-
-def cert_gen(
-    emailAddress="NA",
-    commonName="NA",
-    countryName="NA",
-    localityName="NA",
-    stateOrProvinceName="NA",
-    organizationName="NA",
-    organizationUnitName="NA",
-    serialNumber=0,
-    validityStartInSeconds=0,
-    validityEndInSeconds=10*365*24*60*60,
-    KEY_FILE = "key.pem",
-    CERT_FILE="cert.pem"):
-    #can look at generated file using openssl:
-    #openssl x509 -inform pem -in selfsigned.crt -noout -text
-    # create a key pair
-    k = crypto.PKey()
-    k.generate_key(crypto.TYPE_RSA, 4096)
-    # create a self-signed cert
-    cert = crypto.X509()
-    cert.get_subject().C = countryName
-    cert.get_subject().ST = stateOrProvinceName
-    cert.get_subject().L = localityName
-    cert.get_subject().O = organizationName
-    cert.get_subject().OU = organizationUnitName
-    cert.get_subject().CN = commonName
-    cert.get_subject().emailAddress = emailAddress
-    cert.set_serial_number(serialNumber)
-    cert.gmtime_adj_notBefore(0)
-    cert.gmtime_adj_notAfter(validityEndInSeconds)
-    cert.set_issuer(cert.get_subject())
-    cert.set_pubkey(k)
-    cert.sign(k, 'sha512')
-    with open(CERT_FILE, "wt") as f:
-        f.write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert).decode("utf-8"))
-    with open(KEY_FILE, "wt") as f:
-        f.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, k).decode("utf-8"))
 
 @app.before_request
 def before_request():
@@ -116,8 +83,8 @@ if __name__ == '__main__':
     keyPath = 'key.pem'
 
     if  not os.path.isfile(certPath) or not os.path.isfile(keyPath):
-        print("Generating SSL certificate...")
-        cert_gen()
+        print("certs not found. please reinstall.")
+        os.exit(1)
     
     context = (certPath, keyPath)
     app.run(debug=False, host="0.0.0.0", ssl_context=context)
