@@ -1,4 +1,7 @@
-import { adjustColor, createEl, toTime } from "../utils";
+import { adjustColor, createEl, getFileName, toTime } from "../utils";
+import { V_FILE_GET_URL, V_THUMB_URL } from "./Consts";
+
+const DEFAULT_THUMB_URL = '/static/loading.jpg'
 
 function createBg(el) {
     let { width, height } = el.getAttribute('geometry')
@@ -30,11 +33,18 @@ AFRAME.registerComponent('timeline', {
             position: `${-width / 2} 0 0`
         }, [], el)
 
+        this.hoverThumb = createEl('a-image', {
+            src: '/static/loading.jpg',
+            width: width * 0.30,
+            height: width * 0.30 / 2,
+            position: '0 11 1'
+        });
+
         this.hoverEl = createEl('a-entity', {
             geometry: `primitive: box; width: ${width * 0.01}; height: ${height + 1}; depth: 0.5; `,
             visible: false,
             material: 'color: #00FF00'
-        }, [], el)
+        }, [this.hoverThumb], el)
 
         this.hoverTextEl = createEl('a-text', {
             'position': '0 5 0',
@@ -114,11 +124,13 @@ AFRAME.registerComponent('timeline', {
         let percentGazed = intersection.uv.x;
         let timelineWidth = timeline.getAttribute("geometry").width;
         let possibleNew = percentGazed * timelineWidth - timelineWidth / 2;
-        let possibleTime = Math.floor(percentGazed * video.duration);
-        let { y, z } = this.hoverEl.getAttribute("position")
+        let possibleTime = Math.floor(percentGazed * this.video.duration);
+        let { y, z } = this.hoverEl.getAttribute("position");
 
+        console.log(`${V_THUMB_URL}/${this.fileLink}/${Math.floor(possibleTime / 60)}.jpg`)
+        this.hoverThumb.setAttribute("src", `${V_THUMB_URL}/${this.fileLink}/${Math.floor(possibleTime / 60)}.jpg`)
         this.hoverEl.setAttribute("position", `${possibleNew} ${y} ${z}`);
-        this.hoverTextEl.setAttribute("value", toTime(possibleTime))
+        this.hoverTextEl.setAttribute("value", toTime(possibleTime));
         // for next tick
         this.previousIntersection = intersection.point;
     },

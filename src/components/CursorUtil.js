@@ -20,10 +20,6 @@ AFRAME.registerComponent('cursor-util', {
     checkVR: function () {
         let el = this.el
         if (AFRAME.utils.device.checkVRSupport()) {
-            setAttr(el, {
-                geometry: 'primitive: ring; radiusInner: 0.2; radiusOuter: 0.4',
-                material: 'color: black; shader: flat',
-            })
             el.appendChild(this.cursorChild)
         } else {
             el.setAttribute('cursor', 'rayOrigin: mouse')

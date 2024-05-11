@@ -12,8 +12,12 @@ export const El = {
     subtitles: document.getElementById('subtitles')
 }
 
+export const thumbs = ThumbStore()
+
 // systems
 import './systems/Controls.js'
+import './systems/Thumbnails.js'
+
 
 // events
 import './components/Events.js'
@@ -56,3 +60,4 @@ import './components/buttons/btnSeekForw.js'
 import './components/buttons/btnVol.js'
 import './components/buttons/btnHideControls.js'
 import './components/buttons/btnSettings.js'
+

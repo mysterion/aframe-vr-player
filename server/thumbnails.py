@@ -32,8 +32,8 @@ def generate(file_path):
     _, thumb_dir_path, file_name, file_size = get_thumb_dir(file_path)
     cur = store.db.cursor()
     cur.execute('''INSERT INTO generating(file_name, file_size) VALUES(?, ?)''', (file_name, file_size))
+    store.db.commit()
     try:
-        store.db.commit()
 
         Path(thumb_dir_path).mkdir(parents=True, exist_ok=True)
 

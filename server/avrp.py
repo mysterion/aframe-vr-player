@@ -1,11 +1,12 @@
 from flask_app import app, log
-from flask import  send_file, render_template ,request, redirect
+from flask import  send_file, render_template ,request, redirect, make_response
 from pathlib import Path
 import os
 import sys
 import store
 import atexit
 import thumbnails
+import datetime
 
 atexit.register(store.close)
 
@@ -46,11 +47,15 @@ def list_files(p):
 
 @app.route("/thumb/<path:file_path>")
 def get_thumb(file_path):
-    file_path = str(Path(ROOT, file_path))
+    p = Path(ROOT, file_path)
+    file_path = str(p)
+
     id = request.args.get('id')
     if id == None:
         return 'id not found in request', 400
-    log.info(file_path)
+
+    if not p.exists():
+        return "Not Found", 404
     if thumbnails.is_generating(file_path):
         return "generating", 418
     ___, thumb_dir_path, __, _ = thumbnails.get_thumb_dir(file_path)
@@ -59,7 +64,12 @@ def get_thumb(file_path):
     if not p.exists():
         thumbnails.generate(file_path)
         return "generating", 418
+    # res = make_response(send_file(p))
+    # res.headers['Cache-Control'] = 'max-age=604800'
+    # res.headers['Expires'] = (datetime.datetime.utcnow() + datetime.timedelta(days=7)).strftime('%a, %d %b %Y %H:%M:%S GMT')
+    # return res
     return send_file(p)
+
 
 @app.route("/thumb/debug")
 def debug_thumb():
@@ -83,8 +93,8 @@ if __name__ == '__main__':
     if len(args) == 0:
         ROOT = askForPath()
     else:
-        if os.path.exists(args[1]):
-            ROOT = args[1]
+        if os.path.exists(args[0]):
+            ROOT = args[0]
         else:
             ROOT = askForPath()
     print(ROOT)

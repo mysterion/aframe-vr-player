@@ -35,8 +35,6 @@ test/key.pem
 server/dist/
 server/.venv/
 server/build/
-server/key.pem
-server/cert.pem
 server/avrp.spec
 server/bin/ff*
 server/.thumbnails
