@@ -1,21 +1,17 @@
-from flask import Flask, send_file, render_template ,request, redirect
-from flask_cors import CORS
+from flask_app import app, log
+from flask import  send_file, render_template ,request, redirect
+from pathlib import Path
 import os
 import sys
-import sqlite3
 import store
 import atexit
-
-from thumbnails import THUMBNAIL_DIR, check_if_generating, check_if_already_generated, generate_thumbnail
+import thumbnails
 
 atexit.register(store.close)
 
 store.connect()
 
 ROOT = os.curdir
-
-app = Flask(__name__)
-CORS(app)
 
 @app.before_request
 def before_request():
@@ -38,7 +34,7 @@ def list_files(p):
     p = os.path.join(ROOT, p)
     rf = []
     rd = []
-    print(p)
+    log.info(p)
     fnd = os.listdir(p)
     for f in fnd:
         f_path = os.path.join(p, f)
@@ -50,15 +46,28 @@ def list_files(p):
 
 @app.route("/thumb/<path:file_path>")
 def get_thumb(file_path):
-    file_name = os.path.basename(file_path)
+    file_path = str(Path(ROOT, file_path))
     id = request.args.get('id')
-    
-    if check_if_generating(file_name):
-        return send_file("loading.jpg")
-    if not check_if_already_generated(file_name):
-        generate_thumbnail(file_path)
-        return send_file("loading.jpg")
-    return send_file(os.path.join(THUMBNAIL_DIR, file_name, id + '.jpg'))
+    if id == None:
+        return 'id not found in request', 400
+    log.info(file_path)
+    if thumbnails.is_generating(file_path):
+        return "generating", 418
+    ___, thumb_dir_path, __, _ = thumbnails.get_thumb_dir(file_path)
+
+    p = Path(thumb_dir_path, f"{id}.jpg")
+    if not p.exists():
+        thumbnails.generate(file_path)
+        return "generating", 418
+    return send_file(p)
+
+@app.route("/thumb/debug")
+def debug_thumb():
+    cur = store.db.cursor()
+    cur.execute('''SELECT * FROM generating''')
+    row = cur.fetchall()
+    return row
+
 
 
 def askForPath():

@@ -1,17 +1,23 @@
 import sqlite3
 
+migrate = '''
+CREATE TABLE IF NOT EXISTS generating(
+    id INTEGER PRIMARY KEY,
+    file_name TEXT,
+    file_size TEXT
+);
+'''
+
 def connect(fd = ''):
     global db
 
     if len(fd) == 0:
         fd = ':memory:'
 
-    db = sqlite3.connect(fd)
+    db = sqlite3.connect(fd, check_same_thread=False)
 
     cur = db.cursor()
-    with open("migrate.sql", "r") as f:
-        script = f.read()
-        cur.executescript(script)
+    cur.executescript(migrate)
 
     db.commit()
 
