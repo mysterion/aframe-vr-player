@@ -1,5 +1,5 @@
-import { adjustColor, createEl, getFileName, toTime } from "../utils";
-import { V_FILE_GET_URL, V_THUMB_URL } from "./Consts";
+import { THUMBNAILS } from "../systems/Thumbnails";
+import { adjustColor, createEl, toTime } from "../utils";
 
 const DEFAULT_THUMB_URL = '/static/loading.jpg'
 
@@ -33,12 +33,17 @@ AFRAME.registerComponent('timeline', {
             position: `${-width / 2} 0 0`
         }, [], el)
 
-        this.hoverThumb = createEl('a-image', {
+        this.hoverThumbImg = createEl('img', {
+            id: 'hoverThumbImg',
             src: '/static/loading.jpg',
+        })
+
+        this.hoverThumb = createEl('a-image', {
+            src: '#hoverThumbImg',
             width: width * 0.30,
             height: width * 0.30 / 2,
             position: '0 11 1'
-        });
+        }, [this.hoverThumbImg]);
 
         this.hoverEl = createEl('a-entity', {
             geometry: `primitive: box; width: ${width * 0.01}; height: ${height + 1}; depth: 0.5; `,
@@ -126,9 +131,13 @@ AFRAME.registerComponent('timeline', {
         let possibleNew = percentGazed * timelineWidth - timelineWidth / 2;
         let possibleTime = Math.floor(percentGazed * this.video.duration);
         let { y, z } = this.hoverEl.getAttribute("position");
+        
+        if (isNaN(possibleTime) || !possibleTime) possibleTime = 0
+        
+        console.log(this.el.sceneEl.systems[THUMBNAILS].get(Math.floor(possibleTime / 60)))
+        this.hoverThumbImg.setAttribute("src", this.el.sceneEl.systems[THUMBNAILS].get(Math.floor(possibleTime / 60)))
+        this.hoverThumb.getObject3D('mesh').material.map.needsUpdate = true
 
-        console.log(`${V_THUMB_URL}/${this.fileLink}/${Math.floor(possibleTime / 60)}.jpg`)
-        this.hoverThumb.setAttribute("src", `${V_THUMB_URL}/${this.fileLink}/${Math.floor(possibleTime / 60)}.jpg`)
         this.hoverEl.setAttribute("position", `${possibleNew} ${y} ${z}`);
         this.hoverTextEl.setAttribute("value", toTime(possibleTime));
         // for next tick

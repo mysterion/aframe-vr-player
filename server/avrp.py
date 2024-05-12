@@ -6,7 +6,6 @@ import sys
 import store
 import atexit
 import thumbnails
-import datetime
 
 atexit.register(store.close)
 

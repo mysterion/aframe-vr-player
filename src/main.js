@@ -12,8 +12,6 @@ export const El = {
     subtitles: document.getElementById('subtitles')
 }
 
-export const thumbs = ThumbStore()
-
 // systems
 import './systems/Controls.js'
 import './systems/Thumbnails.js'
