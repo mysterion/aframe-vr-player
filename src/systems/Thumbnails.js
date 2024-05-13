@@ -23,16 +23,15 @@ const RETRY_SECONDS = 5
 AFRAME.registerSystem(THUMBNAILS, {
     init: function () {
         this.video = document.getElementById("video")
-        this.processSrc = AFRAME.utils.bind(this.processSrc, this)
-        this.loadFromUrl = AFRAME.utils.bind(this.loadFromUrl, this)
-        this.get = AFRAME.utils.bind(this.get, this)
-        this.revokeUrls = AFRAME.utils.bind(this.revokeUrls, this)
-
+        this.textureLoader = new THREE.TextureLoader();
         this.thumbs = []
         this.error = ''
         this.loading = false
 
-        this.video.addEventListener('loadedmetadata', this.processSrc)
+        this.thumbLoading = this.textureLoader.load(THUMB_LOADING)
+        this.thumbError = this.textureLoader.load(THUMB_ERROR)
+
+        this.video.addEventListener('loadedmetadata', () => this.processSrc())
         this.processSrc()
     },
 
@@ -40,71 +39,94 @@ AFRAME.registerSystem(THUMBNAILS, {
         this.src = this.video.src
         this.current = `${V_THUMB_URL}/${this.src.replace(V_FILE_GET_URL, "")}`
         let len = Math.floor(this.video.duration / 60)
-        console.log('thumbnails len: ' + len)
         this.loadFromUrl(this.current, len)
     },
 
+    loadTexture: function(url) {
+        return new Promise((resolve, reject) => {
+            this.textureLoader.load(url, resolve, undefined, reject);
+        });
+    },
+
     // there may be a bug here :D
-    // processing with a Queue would fix this
+    // processing with a Queue could/maybe fix this?
     loadFromUrl: async function (url, len) {
+        var err = ''
+        var thumbs = []
         try {
             this.loading = true
-            var thumbs = []
-
-            for (let i = 0; i < len; i++) {
-                let response = await fetch(url + `?id=${i}`);
-                if (i === 0) {
-                    let tries = 0
-                    while (response.status === 418 && tries < RETRY) {
-                        delay(RETRY_SECONDS * 1000)
-                        ++tries;
-                        response = await fetch(url + `?id=${i}`);
+            // wait for backend to finish generating thumbnails
+            let response;
+            let tries = 0
+            while (true) {
+                response = await fetch(url + "?id=0");
+                if (response.status === 418) {
+                    await delay(RETRY_SECONDS * 1000)
+                    ++tries;
+                    if (tries === RETRY) {
+                        throw Error("Timedout while generating thumbnails")
                     }
+                } else if (response.status === 200) {
+                    break
+                } else {
+                    throw Error(`Response from backend - ${response.status} : ${response.body}`)
                 }
-
-                let blob = await response.blob();
-                let imageUrl = URL.createObjectURL(blob);
-
-                thumbs.push({
-                    url: imageUrl,
-                    blob: blob
-                })
-
             }
 
-        } catch (err) {
-            console.error(err)
-            this.error = `${err}`
-            this.revokeUrls(thumbs)
+            for (let i = 0; i < len; i++) {
+                const t = await this.loadTexture(`${url}?id=${i}`)
+                thumbs.push(t)
+            }
+
+
+        } catch (e) {
+            console.error(e)
+            err = `${e}`
         } finally {
             if (this.current === url) {
-                this.revokeUrls(this.thumbs)
-                this.thumbs = thumbs
+                if (err.length > 0) {
+                    this.error = err
+                    this.disposeThumbs(thumbs, "Error while fetching thumbnails, disposing FETCHED thumbnails")
+                } else {
+                    this.disposeThumbs(this.thumbs, "No error Disposing PREVIOUS thumbnails")
+                    this.thumbs = thumbs
+                    this.error = ''
+                }
                 this.loading = false
             } else {
                 //if another video been selected, while fetching the thumbnails
-                this.revokeUrls(thumbs)
+                // don't handle errors or update state(loading) as this is stale fn call
+                this.disposeThumbs(thumbs, "Another video has been selected, disposing FETCHED thumbnails")
             }
+
         }
     },
 
-    get: function (i) {
+    getThumb: function (i) {
         if (this.loading) {
-            return THUMB_LOADING
+            return this.thumbLoading
         }
         if (this.error.length > 0 || this.thumbs.length === 0) {
-            return THUMB_ERROR
+            return this.thumbError
         }
         
         if (i >= this.thumbs.length) i = this.thumbs.length - 1
         if (i < 0) i = 0
 
-        return this.thumbs[i].url
+        return this.thumbs[i]
     },
 
-    revokeUrls: function (elems) {
-        for (var i = 0; i < elems; ++i) {
-            URL.revokeObjectURL(elems[i].url)
+    disposeThumbs: function (elems, dbgMsg) {
+        if (dbgMsg) {
+            console.debug(`Thumbnails: ${dbgMsg}`)
         }
+        for (var i = 0; i < elems; ++i) {
+            elems[i].dispose()
+        }
+    },
+
+    remove: function () {
+        this.thumbLoading.dispose()
+        this.thumbError.dispose()
     }
 });
