@@ -57,7 +57,11 @@
           <a-entity id="camera" camera look-controls stereocam="eye:left">
 
             <!-- cursor stuff -->
-            <a-cursor controls id="cursor" cursor-util raycaster="objects: [clickable]" fuse="false" position="0 0 -50">
+            <a-cursor id="cursor" geometry='primitive: ring; radiusInner: 0.2; radiusOuter: 0.4'
+              material='color: black; shader: flat' controls cursor-util raycaster="objects: [clickable]" fuse="false"
+              position="0 0 -50">
+              <a-entity geometry='primitive: circle; radius: 0.2;' material='color: aquamarine; shader: flat'>
+              </a-entity>
             </a-cursor>
             <!-- subtitles -->
             <a-text id="subtitles" position="0 -1.5 -5" width="5" align="center">

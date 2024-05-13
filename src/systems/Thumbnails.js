@@ -17,13 +17,10 @@ AFRAME.registerComponent(THUMBNAILS, {
 const RETRY = 24
 const RETRY_SECONDS = 5
 
-// TODO: FUTURE - use THREE.TextureLoader)blob urls) and dispose(revoke) for the textures
-// https://stackoverflow.com/a/16070490
-
 AFRAME.registerSystem(THUMBNAILS, {
     init: function () {
         this.video = document.getElementById("video")
-        this.textureLoader = new THREE.TextureLoader();
+        this.textureLoader = new THREE.TextureLoader()
         this.thumbs = []
         this.error = ''
         this.loading = false
@@ -37,7 +34,7 @@ AFRAME.registerSystem(THUMBNAILS, {
 
     processSrc: function () {
         this.src = this.video.src
-        this.current = `${V_THUMB_URL}/${this.src.replace(V_FILE_GET_URL, "")}`
+        this.current = `${V_THUMB_URL}/${this.src.replace(new RegExp(`^.*${V_FILE_GET_URL}`), "")}`
         let len = Math.floor(this.video.duration / 60)
         this.loadFromUrl(this.current, len)
     },
