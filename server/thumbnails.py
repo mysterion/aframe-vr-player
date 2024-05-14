@@ -3,17 +3,19 @@ import subprocess
 from pathlib import Path
 import concurrent.futures
 from flask_app import log
+from hash import hashFile
 
 THUMBNAIL_DIR = Path(Path.home(), '.avrp', 'thumbnails')
 BIN_DIR = Path(__file__).parent / "bin"
 
 pool = concurrent.futures.ThreadPoolExecutor(thread_name_prefix='avrp_thumb_')
 
+# TODO: Cache this in-memory
 def get_thumb_dir(file_path):
     file_name = str(Path(file_path).name)
     file_size = str(Path(file_path).stat().st_size)
-    thumb_dir_name = f'{file_name}_{file_size}'
-    thumb_dir_path = THUMBNAIL_DIR / f"{file_name}_{file_size}"
+    thumb_dir_name = hashFile(f=file_path)
+    thumb_dir_path = THUMBNAIL_DIR / thumb_dir_name
     return thumb_dir_name, thumb_dir_path, file_name, file_size
 
 def get_duration(file_path):
