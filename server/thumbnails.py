@@ -1,10 +1,13 @@
 import store
 import subprocess
 from pathlib import Path
+import concurrent.futures
 from flask_app import log
 
-THUMBNAIL_DIR = Path(__file__).parent / '.thumbnails'
+THUMBNAIL_DIR = Path(Path.home(), '.avrp', 'thumbnails')
 BIN_DIR = Path(__file__).parent / "bin"
+
+pool = concurrent.futures.ThreadPoolExecutor(thread_name_prefix='avrp_thumb_')
 
 def get_thumb_dir(file_path):
     file_name = str(Path(file_path).name)
@@ -42,14 +45,17 @@ def generate(file_path):
         exit_code, seconds = get_duration(file_path)
         if exit_code != 0:
             raise Exception(f'Failed to get duration of {file_path}, output: {seconds}')
-
+        futures = []
         for i in range(0, int(float(seconds)//60)):
             if f'{i}.jpg' in already:
                 continue
 
             cmd = f''' "{BIN_DIR / 'ffmpeg'}" -y -accurate_seek -ss {i * 60} -i "{file_path}" -frames:v 1 -vf "crop=in_w/2:in_h/2:in_w:in_h/4,scale=320:-1" "{Path(thumb_dir_path, f"{i}.jpg")}" '''
             log.info("executing - " + cmd)
-            exit_code, output = subprocess.getstatusoutput(cmd)
+            futures.append(pool.submit(subprocess.getstatusoutput, cmd))
+
+        for f in futures:
+           exit_code, output = f.result()
     except Exception as e:
         log.error(e)
     cur = store.db.cursor()
