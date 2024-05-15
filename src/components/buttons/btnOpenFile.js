@@ -36,5 +36,8 @@ AFRAME.registerComponent('btn-open-file', {
                 dialog.object3D.visible = true
             }
         })
+
+        //REM:
+        el.click()
     },
 })

@@ -2,24 +2,25 @@ import store
 import subprocess
 from pathlib import Path
 import concurrent.futures
+from multiprocessing import cpu_count
 from flask_app import log
 from hash import hashFile
 
 THUMBNAIL_DIR = Path(Path.home(), '.avrp', 'thumbnails')
-BIN_DIR = Path(__file__).parent / "bin"
+BIN_DIR = Path(Path(__file__).parent, "bin")
 
-pool = concurrent.futures.ThreadPoolExecutor(thread_name_prefix='avrp_thumb_')
+pool = concurrent.futures.ThreadPoolExecutor(thread_name_prefix='avrp_thumb_', max_workers=cpu_count())
 
-# TODO: Cache this in-memory
+# TODO: Cache this in-memory or not :X
 def get_thumb_dir(file_path):
     file_name = str(Path(file_path).name)
     file_size = str(Path(file_path).stat().st_size)
     thumb_dir_name = hashFile(f=file_path)
-    thumb_dir_path = THUMBNAIL_DIR / thumb_dir_name
+    thumb_dir_path = Path(THUMBNAIL_DIR, thumb_dir_name)
     return thumb_dir_name, thumb_dir_path, file_name, file_size
 
 def get_duration(file_path):
-    cmd = f''' "{BIN_DIR / 'ffprobe'}" -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "{file_path}" '''
+    cmd = f''' "{Path(BIN_DIR, 'ffprobe')}" -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "{file_path}" '''
     log.info("executing - " + cmd)
     return subprocess.getstatusoutput(cmd)
 
@@ -52,7 +53,7 @@ def generate(file_path):
             if f'{i}.jpg' in already:
                 continue
 
-            cmd = f''' "{BIN_DIR / 'ffmpeg'}" -y -accurate_seek -ss {i * 60} -i "{file_path}" -frames:v 1 -vf "crop=in_w/2:in_h/2:in_w:in_h/4,scale=320:-1" "{Path(thumb_dir_path, f"{i}.jpg")}" '''
+            cmd = f''' "{Path(BIN_DIR, 'ffmpeg')}" -y -accurate_seek -ss {i * 60} -i "{file_path}" -frames:v 1 -vf "crop=in_w/2:in_h/2:in_w:in_h/4,scale=320:-1" "{Path(thumb_dir_path, f"{i}.jpg")}" '''
             log.info("executing - " + cmd)
             futures.append(pool.submit(subprocess.getstatusoutput, cmd))
 

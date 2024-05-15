@@ -18,7 +18,7 @@ AFRAME.registerComponent('dialog-utils', {
 });
 
 export const DWidth = 60
-export const DHeight = 30
+export const DHeight = 35
 
 const videoExtensions = [
     "3g2",
@@ -59,7 +59,7 @@ const videoExtensions = [
 
 export function isVideo(fileName) {
     for (let i in videoExtensions) {
-        if (fileName.endsWith(videoExtensions[i]))
+        if (fileName.toLowerCase().endsWith(videoExtensions[i]))
             return true
     }
     return false

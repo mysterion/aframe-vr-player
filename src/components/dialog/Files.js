@@ -1,14 +1,13 @@
 import { El } from '../../main'
 import { createEl, getFileName } from '../../utils'
+import { V_FILE_GET_URL, V_LISTING_URL } from '../Consts'
 import { C_VID_STATE } from '../VideoState'
 import { DHeight, DWidth, isVideo } from './Utils'
 
-const LISTING_URL = `${import.meta.env.VITE_LISTING_URL}`
-const FILE_GET_URL = `${import.meta.env.VITE_FILE_GET_URL}`
 export const C_FILES = 'dialog-files'
-const itemLimit = 5
-const space = -DHeight * 0.125
-const initialPosition = DHeight * 0.15
+const itemLimit = 7
+const space = -DHeight * 0.11
+const initialPosition = DHeight * 0.28
 
 AFRAME.registerComponent(C_FILES, {
     schema: {
@@ -47,7 +46,7 @@ AFRAME.registerComponent(C_FILES, {
 
     fetchFiles: async function (el, url) {
         el.setAttribute('dialog-loading', '')
-        let res = await fetch(LISTING_URL + "/" + url)
+        let res = await fetch(V_LISTING_URL + "/" + url)
         let { files, folders } = await res.json()
         this.files = files.filter((file) => isVideo(file))
         this.allFiles = files
@@ -83,7 +82,7 @@ AFRAME.registerComponent(C_FILES, {
                     "marq-text": `value:${getFileName(this.files[i])}; limit:30`,
                 }, [], el)
                 tile.onclick = async () => {
-                    let src = FILE_GET_URL + url + "/" + this.files[i]
+                    let src = V_FILE_GET_URL + url + "/" + this.files[i]
 
                     El.videoState.setAttribute(C_VID_STATE, {
                         src: src,
@@ -93,7 +92,7 @@ AFRAME.registerComponent(C_FILES, {
                     let subName = this.files[i].substr(0, this.files[i].lastIndexOf('.')) + '.srt'
                     let sub = this.allFiles.find((f) => f === subName)
                     if (sub) {
-                        El.subtitles.setAttribute('subtitles', `src: ${FILE_GET_URL + url + "/" + sub}`)
+                        El.subtitles.setAttribute('subtitles', `src: ${V_FILE_GET_URL + url + "/" + sub}`)
                     } else {
                         El.subtitles.removeAttribute('subtitles')
                     }
@@ -108,12 +107,12 @@ AFRAME.registerComponent(C_FILES, {
         for (let i = offsetFolders; i < offsetFolders + itemLimit; i++) {
             if (i < this.folders.length) {
                 let tile = createEl("a-plane", {
-                    "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+                    "geometry": `width: ${DWidth * 0.2}; height: ${DHeight * 0.1}`,
                     "material": "color: #C39807;",
-                    "position": `${DWidth * 0.25} ${pos} 1`,
+                    "position": `${DWidth * 0.35} ${pos} 1`,
                     "clickable": "",
                     "button-highlight": "",
-                    "marq-text": `value:${getFileName(this.folders[i])}; limit:30`,
+                    "marq-text": `value:${getFileName(this.folders[i])}; limit:14`,
                 }, [], el)
                 tile.onclick = () => {
                     el.setAttribute(C_FILES, { 'url': url + "/" + this.folders[i] })
@@ -163,8 +162,8 @@ AFRAME.registerComponent(C_FILES, {
 
         let refreshBtn = createEl("a-image", {
             "src": "#asset-refresh",
-            "scale": "4 4 1",
-            "position": `-${p.width * 0.1} ${p.height * 0.35} 0.3`,
+            "scale": "3 3 1",
+            "position": `${p.width * 0.05} ${p.height * 0.6} 0.3`,
             "clickable": "",
             "button-highlight": "",
         }, [], el)
@@ -174,8 +173,8 @@ AFRAME.registerComponent(C_FILES, {
 
         let backBtn = createEl("a-image", {
             "src": "#asset-back",
-            "scale": "4 4 1",
-            "position": `${p.width * 0.1} ${p.height * 0.35} 0.3`,
+            "scale": "3 3 1",
+            "position": `-${p.width * 0.05} ${p.height * 0.6} 0.3`,
             "clickable": "",
             "button-highlight": "",
         }, [], el)
@@ -190,7 +189,7 @@ AFRAME.registerComponent(C_FILES, {
                 let filesUpBtn = createEl("a-image", {
                     "src": "#asset-up",
                     "scale": "3 3 1",
-                    "position": `-${p.width * 0.25} ${p.height * 0.3} 0.2`,
+                    "position": `-${p.width * 0.25} ${p.height * 0.4} 0.2`,
                     "clickable": "",
                     "button-highlight": "",
                 }, [], el)
@@ -231,7 +230,7 @@ AFRAME.registerComponent(C_FILES, {
                 let foldersUpBtn = createEl("a-image", {
                     "src": "#asset-up",
                     "scale": "3 3 1",
-                    "position": `${p.width * 0.25} ${p.height * 0.3} 0.2`,
+                    "position": `${p.width * 0.35} ${p.height * 0.4} 0.2`,
                     "clickable": "",
                     "button-highlight": "",
                 }, [], el)
@@ -250,7 +249,7 @@ AFRAME.registerComponent(C_FILES, {
                 let foldersDownBtn = createEl("a-image", {
                     "src": "#asset-up",
                     "scale": "3 -3 1",
-                    "position": `${p.width * 0.25} -${p.height * 0.5} 0.2`,
+                    "position": `${p.width * 0.35} -${p.height * 0.5} 0.2`,
                     "clickable": "",
                     "button-highlight": "",
                 }, [], el)
