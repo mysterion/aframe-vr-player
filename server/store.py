@@ -6,6 +6,10 @@ CREATE TABLE IF NOT EXISTS generating(
     file_name TEXT,
     file_size TEXT
 );
+CREATE TABLE IF NOT EXISTS duration(
+    file_path TEXT,
+    duration INT
+);
 '''
 
 def connect(fd = ''):

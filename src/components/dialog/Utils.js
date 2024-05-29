@@ -18,7 +18,7 @@ AFRAME.registerComponent('dialog-utils', {
 });
 
 export const DWidth = 60
-export const DHeight = 35
+export const DHeight = 30
 
 const videoExtensions = [
     "3g2",

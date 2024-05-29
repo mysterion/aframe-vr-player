@@ -48,7 +48,7 @@ AFRAME.registerComponent(C_FILES, {
         el.setAttribute('dialog-loading', '')
         let res = await fetch(V_LISTING_URL + "/" + url)
         let { files, folders } = await res.json()
-        this.files = files.filter((file) => isVideo(file))
+        this.files = files.map((f) => f.name)
         this.allFiles = files
         this.folders = folders
         // TODO: add error handling screen for server builds

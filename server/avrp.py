@@ -1,10 +1,12 @@
 from flask_app import app, log
 from flask import  send_file, render_template ,request
 from pathlib import Path
+from utils import is_video
 import sys
 import store
 import atexit
 import thumbnails
+
 
 atexit.register(store.close)
 
@@ -32,7 +34,8 @@ def list_files(p):
         if f.is_dir():
             rd.append(f.name)
         if f.is_file():
-            rf.append(f.name)
+            if (is_video(f.name)):
+                rf.append({'name': f.name, 'duration': thumbnails.get_duration(f)})
     return { 'files': rf, 'folders': rd }
 
 @app.route("/thumb/<path:file_path>")

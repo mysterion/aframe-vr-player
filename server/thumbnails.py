@@ -5,11 +5,12 @@ import concurrent.futures
 from multiprocessing import cpu_count
 from flask_app import log
 from hash import hashFile
+from utils import is_video
 
 THUMBNAIL_DIR = Path(Path.home(), '.avrp', 'thumbnails')
 BIN_DIR = Path(Path(__file__).parent, "bin")
 
-pool = concurrent.futures.ThreadPoolExecutor(thread_name_prefix='avrp_thumb_', max_workers=cpu_count())
+pool = concurrent.futures.ThreadPoolExecutor(thread_name_prefix='avrp_thumb_', max_workers=2*cpu_count())
 
 # TODO: Cache this in-memory or not :X
 def get_thumb_dir(file_path):
@@ -20,9 +21,26 @@ def get_thumb_dir(file_path):
     return thumb_dir_name, thumb_dir_path, file_name, file_size
 
 def get_duration(file_path):
+    cur = store.db.cursor()
+    cur.execute('''SELECT duration FROM duration where file_path=?''', (f"""{file_path}"""))
+    row = cur.fetchone()
+    if row != None:
+        log.info(f"duration from cache - {row[0]} - file: {file_path}")
+        return row[0]
     cmd = f''' "{Path(BIN_DIR, 'ffprobe')}" -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "{file_path}" '''
     log.info("executing - " + cmd)
-    return subprocess.getstatusoutput(cmd)
+
+    dur = 0
+    if cmd[0] == 0:
+        dur = cmd[0]
+    else:
+        log.error(f"{cmd} - {cmd[1]}")
+    
+    cur = store.db.cursor()
+    cur.execute('''INSERT INTO duration(file_path, duration) VALUES(?, ?)''', (str(file_path), dur))
+    store.db.commit()
+
+    return dur
 
 
 def is_generating(file_path):
