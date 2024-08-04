@@ -1,4 +1,5 @@
 import { THUMB_ERROR, THUMB_LOADING, V_FILE_GET_URL, V_THUMB_URL } from "../components/Consts";
+import { trimJoin } from "../utils";
 
 export const THUMBNAILS = 'thumbnails'
 
@@ -34,7 +35,8 @@ AFRAME.registerSystem(THUMBNAILS, {
 
     processSrc: function () {
         this.src = this.video.src
-        this.current = `${V_THUMB_URL}/${this.src.replace(new RegExp(`^.*${V_FILE_GET_URL}`), "")}`
+        this.current = trimJoin(V_THUMB_URL, this.src.replace(new RegExp(`^.*${V_FILE_GET_URL}`), ""))
+        console.log(this.current)
         let len = Math.floor(this.video.duration / 60)
         this.loadFromUrl(this.current, len)
     },

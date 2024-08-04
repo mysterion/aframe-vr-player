@@ -1,5 +1,5 @@
 import { El } from '../../main'
-import { createEl, getFileName } from '../../utils'
+import { createEl, getFileName, toTime, trimJoin } from '../../utils'
 import { V_FILE_GET_URL, V_LISTING_URL } from '../Consts'
 import { C_VID_STATE } from '../VideoState'
 import { DHeight, DWidth, isVideo } from './Utils'
@@ -46,9 +46,10 @@ AFRAME.registerComponent(C_FILES, {
 
     fetchFiles: async function (el, url) {
         el.setAttribute('dialog-loading', '')
-        let res = await fetch(V_LISTING_URL + "/" + url)
+        let res = await fetch(trimJoin(V_LISTING_URL, url) + "/")
         let { files, folders } = await res.json()
         this.files = files.map((f) => f.name)
+        this.filesDur = files.map((f) => f.duration)
         this.allFiles = files
         this.folders = folders
         // TODO: add error handling screen for server builds
@@ -74,16 +75,22 @@ AFRAME.registerComponent(C_FILES, {
         for (let i = offsetFiles; i < offsetFiles + itemLimit; i++) {
             if (i < this.files.length) {
                 let tile = createEl("a-plane", {
-                    "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+                    "geometry": `width: ${DWidth * 0.45}; height: ${DHeight * 0.1}`,
                     "material": "color: #801D9F;",
-                    "position": `-${DWidth * 0.25} ${pos} 1`,
+                    "position": `-${DWidth * 0.2} ${pos} 1`,
                     "clickable": "",
                     "button-highlight": "",
                     "marq-text": `value:${getFileName(this.files[i])}; limit:30`,
                 }, [], el)
-                tile.onclick = async () => {
-                    let src = V_FILE_GET_URL + url + "/" + this.files[i]
+                let tileDuration = createEl("a-plane", {
+                    "geometry": `width: ${DWidth * 0.15}; height: ${DHeight * 0.1}`,
+                    "material": "color: #6d4aed;",
+                    "position": `${DWidth * 0.1} ${pos} 1`,
+                    "marq-text": `value:${toTime(this.filesDur[i])}; limit:30`,
+                }, [], el)
 
+                tile.onclick = async () => {
+                    let src = trimJoin(V_FILE_GET_URL, url, this.files[i])
                     El.videoState.setAttribute(C_VID_STATE, {
                         src: src,
                         fileName: this.files[i]
@@ -92,7 +99,7 @@ AFRAME.registerComponent(C_FILES, {
                     let subName = this.files[i].substr(0, this.files[i].lastIndexOf('.')) + '.srt'
                     let sub = this.allFiles.find((f) => f === subName)
                     if (sub) {
-                        El.subtitles.setAttribute('subtitles', `src: ${V_FILE_GET_URL + url + "/" + sub}`)
+                        El.subtitles.setAttribute('subtitles', `src: ${trimJoin(V_FILE_GET_URL, url, sub)}`)
                     } else {
                         El.subtitles.removeAttribute('subtitles')
                     }
@@ -107,9 +114,9 @@ AFRAME.registerComponent(C_FILES, {
         for (let i = offsetFolders; i < offsetFolders + itemLimit; i++) {
             if (i < this.folders.length) {
                 let tile = createEl("a-plane", {
-                    "geometry": `width: ${DWidth * 0.2}; height: ${DHeight * 0.1}`,
+                    "geometry": `width: ${DWidth * 0.25}; height: ${DHeight * 0.1}`,
                     "material": "color: #C39807;",
-                    "position": `${DWidth * 0.35} ${pos} 1`,
+                    "position": `${DWidth * 0.325} ${pos} 1`,
                     "clickable": "",
                     "button-highlight": "",
                     "marq-text": `value:${getFileName(this.folders[i])}; limit:14`,
