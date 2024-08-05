@@ -27,21 +27,25 @@ NOTE: You can generate your own SSL certificates using:
 
 `openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365`
 
-make sure to keep `cert.pem` & `key.pem` on the same folder as the app
-
 OR
 
 you can generate it online: https://www.cryptool.org/en/cto/openssl
 
 
 ## Development
+Install `go` & `nodejs`
 ```
-git clone --depth=1 https://github.com/mysterion/aframe-vr-player.git
+git clone --recurse-submodules https://github.com/mysterion/aframe-vr-player.git
+
+# start dev server 
 npm install 
 npm run devhost
 
 # optional
-# use test/files.py to serve videos from local folder
+# use "server" to serve videos from local folder
+cd server
+# make sure ffmpeg and ffprobe are available on `PATH`   
+./bake run # or export DEV=1 && go run avrp.go
 # don't forget to set VITE_LISTING_URL & VITE_FILE_GET_URL in .env file
 ```
 ## Compatibility

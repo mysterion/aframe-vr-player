@@ -8,6 +8,15 @@ export default defineConfig(({ mode }) => {
         ],
         build: {
             assetsDir: 'static',
+
+            rollupOptions: {
+                output: {
+                    manualChunks: () => null,
+                    entryFileNames: 'static/[name].js',
+                    chunkFileNames: 'static/[name].js',
+                    assetFileNames: 'static/[name].[ext]',
+                },
+            }
         },
     }
     if (mode === "web") {

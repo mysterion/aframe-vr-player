@@ -15,7 +15,23 @@ export function toTime(seconds) {
 }
 
 export function getFileName(link) {
-    return link.replace(/^.*[\\/]/, '')
+    let fileName = 'unknown'
+    try {
+        fileName = link.replace(/^.*[\\/]/, '')
+    } catch (error) {
+        console.log("Error getting filename from : ", link)
+    }
+    return fileName
+}
+
+// before - //hello.mp4///
+// after  - hello.mp4
+export function trimSlash(str) {
+    return str.trim().replace(/^\/+|\/+$/g, '');
+}
+
+export function trimJoin(...args) {
+    return (args.filter((v) => v.trim().length !== 0).map(trimSlash)).join("/")
 }
 
 export function createEl(tagName = 'a-entity', attributes = {}, children = [], parent = null) {

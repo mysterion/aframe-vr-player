@@ -1,4 +1,7 @@
+import { THUMBNAILS } from "../systems/Thumbnails";
 import { adjustColor, createEl, toTime } from "../utils";
+
+const DEFAULT_THUMB_URL = '/static/loading.jpg'
 
 function createBg(el) {
     let { width, height } = el.getAttribute('geometry')
@@ -30,11 +33,17 @@ AFRAME.registerComponent('timeline', {
             position: `${-width / 2} 0 0`
         }, [], el)
 
+        this.hoverThumb = createEl('a-image', {
+            width: width * 0.30,
+            height: width * 0.30 / 2,
+            position: '0 11 1'
+        });
+
         this.hoverEl = createEl('a-entity', {
             geometry: `primitive: box; width: ${width * 0.01}; height: ${height + 1}; depth: 0.5; `,
             visible: false,
             material: 'color: #00FF00'
-        }, [], el)
+        }, [this.hoverThumb], el)
 
         this.hoverTextEl = createEl('a-text', {
             'position': '0 5 0',
@@ -114,11 +123,15 @@ AFRAME.registerComponent('timeline', {
         let percentGazed = intersection.uv.x;
         let timelineWidth = timeline.getAttribute("geometry").width;
         let possibleNew = percentGazed * timelineWidth - timelineWidth / 2;
-        let possibleTime = Math.floor(percentGazed * video.duration);
-        let { y, z } = this.hoverEl.getAttribute("position")
+        let possibleTime = Math.floor(percentGazed * this.video.duration);
+        let { y, z } = this.hoverEl.getAttribute("position");
+        
+        if (isNaN(possibleTime) || !possibleTime) possibleTime = 0
+        
+        this.hoverThumb.getObject3D('mesh').material.map = this.el.sceneEl.systems[THUMBNAILS].getThumb(Math.floor(possibleTime / 60))
 
         this.hoverEl.setAttribute("position", `${possibleNew} ${y} ${z}`);
-        this.hoverTextEl.setAttribute("value", toTime(possibleTime))
+        this.hoverTextEl.setAttribute("value", toTime(possibleTime));
         // for next tick
         this.previousIntersection = intersection.point;
     },

@@ -59,7 +59,7 @@ const videoExtensions = [
 
 export function isVideo(fileName) {
     for (let i in videoExtensions) {
-        if (fileName.endsWith(videoExtensions[i]))
+        if (fileName.toLowerCase().endsWith(videoExtensions[i]))
             return true
     }
     return false

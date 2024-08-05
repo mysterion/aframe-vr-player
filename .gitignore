@@ -24,6 +24,9 @@ dist-ssr
 *.sw?
 
 
+# python
+*.pyc
+
 # vrp
 
 test/cert.pem
@@ -32,6 +35,8 @@ test/key.pem
 server/dist/
 server/.venv/
 server/build/
-server/key.pem
-server/cert.pem
 server/avrp.spec
+server/bin/ff*
+server/.thumbnails
+server/store.sqlite
+

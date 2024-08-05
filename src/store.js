@@ -1,3 +1,4 @@
+
 export const Store = (function () {
     const get = (key) => {
         return JSON.parse(localStorage.getItem(key))
