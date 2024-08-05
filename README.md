@@ -2,7 +2,7 @@
 A versatile web application that allows you to immerse yourself in virtual reality experiences right from your browser. Whether you want to stream videos from your PC or play videos from your local storage, AFRAME VR Player has got you covered
 
 ## Features
-#### Streaming Mode ([Server](https://github.com/mysterion/aframe-vr-player/releases))
+#### Streaming Mode ([Server](https://github.com/mysterion/avrp/releases))
 - **Stream from PC**: Utilize the server mode to stream videos directly from your PC to your VR headset. Simply set up your PC as the server and enjoy seamless playback in VR.
 
 #### Local Storage Mode ([Web App](https://mysterion.github.io/aframe-vr-player/))
@@ -17,7 +17,7 @@ A versatile web application that allows you to immerse yourself in virtual reali
 Use the [online version](https://mysterion.github.io/aframe-vr-player/) on your web browser. Choose the video with file picker. 
 
 ### CLI
-0) Download from the latest version from [releases](https://github.com/mysterion/aframe-vr-player/releases) section
+0) Download from the latest version from [releases](https://github.com/mysterion/avrp/releases) section
 1) Choose the `videos` folder and launch an instance on your PC.
 2) Make sure your device and PC are connected on the same wifi/network
 3) go to the URL specified on the cli (192.168.X.X) on web browser of your device(I recommend Chrome on cardboard or firefox reality on oculus quest)
