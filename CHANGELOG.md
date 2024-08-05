@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### 🚀 Features
+
+- Thumbnails (#7)
+- Show duration on files
+
+### 🚜 Refactor
+
+- Server rewrite to go
+
+### ⚙️ Miscellaneous Tasks
+
+- Separated server code to https://github.com/mysterion/avrp/
+
 ## [1.3.2] - 2024-04-04
 
 ### 🐛 Bug Fixes
@@ -40,7 +55,6 @@ All notable changes to this project will be documented in this file.
 
 ### 🚜 Refactor
 
-- UI scale (for consistent viewing experience)
 - UI scale (for consistent viewing experience)
 - [**breaking**] Videostate, settings, UI, event dispatch system
 
