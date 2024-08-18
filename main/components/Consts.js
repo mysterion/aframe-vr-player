@@ -1,0 +1,6 @@
+export const LISTING_URL = '/list/'
+export const FILE_GET_URL = '/file/'
+export const THUMB_URL = '/thumb/'
+export const SAMPLE = '/assets/sample.mp4'
+export const THUMB_LOADING = '/assets/loading.jpg'
+export const THUMB_ERROR = '/assets/error.png'
