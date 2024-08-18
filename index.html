@@ -6,7 +6,16 @@
   <link rel="icon" type="image/svg+xml" href="/static/vr.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="/static/aframe-v1.5.0.min.js"></script>
+  <script src="/static/aframe-html.js"></script>
   <script src="/static/aframe-extras.loaders.min.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "vue": "/static/vue.esm-browser.js"
+      }
+    }
+  </script>
+  <script src="/static/vue/files.js"></script>
   <script src="src/main.js" type="module"></script>
   <title>aframe vr player</title>
 </head>
@@ -109,10 +118,40 @@
 
       </a-entity>
 
+      <a-entity html="cursor:#cursor;html:#vue-files" clickable shadow position="0 0 -70" scale="50 50 1"></a-entity>
     </a-entity>
+    
 
 
   </a-scene>
+		<section style="display: inline-block; background: lavenderblush; color: #333333; border-radius: 1em; padding: 1em; margin:0; accent-color: hotpink;" id="vue-files">
+			<h2>Change Color</h2>
+			<fieldset style="border:0 none;border-top: 1px solid grey;">
+				<legend>Colour</legend>
+				<input onclick="handleRadio(this)" type="radio" id="color-red" name="color" value="red" checked><label for="color-red"> Red</label>
+				<input onclick="handleRadio(this)" type="radio" id="color-blue" name="color" value="blue"><label for="color-blue"> Blue</label>
+			</fieldset>
+			<fieldset style="border-width: 0 1px; border-style: solid;border-radius: 0.5em;">
+				<legend>Material:</legend>
+				<input onclick="handleCheckbox(this)" id="material-wireframe" type="checkbox" name="wireframe"><label for="material-wireframe"> Wireframe</label>
+				<input onclick="handleCheckbox(this)" id="material-shiny" type="checkbox" name="shiny" checked><label for="material-shiny"> Shiny</label>
+			</fieldset>
+			<fieldset style="border-radius: 1em;">
+				<legend>Size:</legend>
+				<input oninput="handleRange(this)" type="range" min="0.1" max="2" value="1" step="0.01" id="myRange" style="background-color: transparent;">
+			</fieldset>
+		</section>
 </body>
+<script>
+  function handleRadio() {
+    console.log("click radio")
+  }
+  function handleCheckbox() {
+    console.log("click checkbox")
+  }
+  function handleRange() {
+    console.log("handle rangebox")
+  }
+</script>
 
 </html>
