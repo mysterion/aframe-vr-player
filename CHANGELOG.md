@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.0] - 2024-08-19
+
+### 🐛 Bug Fixes
+
+- Sort files in lexical order and show video files only
+- Fixed subtitles and subtitle-seek
+
+### 🚜 Refactor
+
+- Removed island environment
+- Removed fisheye 190,200 presets
+- Changed `bump` -> `release` script
+
+### ⚙️ Miscellaneous Tasks
+
+- Removed vite. using es6 `imports` (#8)
+- Upgraded to aframe 1.6.0, removed, removed aframe-extras
+- Updated `README.md`
+
 ## [1.4.0] - 2024-08-05
 
 ### 🚀 Features
