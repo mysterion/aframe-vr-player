@@ -7,7 +7,6 @@ VERSION=$1
 
 git tag $VERSION
 git-cliff > CHANGELOG.md
-sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$VERSION\"/g" package.json
 git add CHANGELOG.md
 git commit -m'bump'
 git tag -d $VERSION
