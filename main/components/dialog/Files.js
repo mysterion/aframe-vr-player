@@ -48,8 +48,15 @@ AFRAME.registerComponent(C_FILES, {
         el.setAttribute('dialog-loading', '')
         let res = await fetch(trimJoin(LISTING_URL, url) + "/")
         let { files, folders } = await res.json()
-        this.files = files.map((f) => f.name)
-        this.filesDur = files.map((f) => f.duration)
+        let videoFiles = files.filter((f) => isVideo(f.name)).sort((a,b) => {
+            let x = a.name.toLowerCase()
+            let y = b.name.toLowerCase()
+            if (x < y) return -1;
+            if (x > y) return 1;
+            return 0;
+        })
+        this.files = videoFiles.map((f) => f.name)
+        this.filesDur = videoFiles.map((f) => f.duration)
         this.allFiles = files
         this.folders = folders
         // TODO: add error handling screen for server builds
@@ -97,9 +104,9 @@ AFRAME.registerComponent(C_FILES, {
                     })
 
                     let subName = this.files[i].substr(0, this.files[i].lastIndexOf('.')) + '.srt'
-                    let sub = this.allFiles.find((f) => f === subName)
+                    let sub = this.allFiles.find((f) => f.name === subName)
                     if (sub) {
-                        El.subtitles.setAttribute('subtitles', `src: ${trimJoin(FILE_GET_URL, url, sub)}`)
+                        El.subtitles.setAttribute('subtitles', `src: ${trimJoin(FILE_GET_URL, url, sub.name)}`)
                     } else {
                         El.subtitles.removeAttribute('subtitles')
                     }

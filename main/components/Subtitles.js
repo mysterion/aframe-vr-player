@@ -9,25 +9,30 @@ const SEEK_NEXT_THRESH = 2
 
 AFRAME.registerComponent('subtitles', {
     schema: {
-        src: { type: 'string', default: '' },
-        on: { type: 'boolean', default: false }
+        src: { type: 'string', default: '' }
     },
 
     init: function () {
         this.parser = new Parser()
         
         this.updateSubtitle = AFRAME.utils.bind(this.updateSubtitle, this)
-        this.subsOnHandler = AFRAME.utils.bind(this.subsOnHandler, this)
+
+        this.subsBtnHandler = AFRAME.utils.bind(this.subsBtnHandler, this)
+        this.seekBtnHandler = AFRAME.utils.bind(this.seekBtnHandler, this)
+
         this.getAndPopulateSubs = AFRAME.utils.bind(this.getAndPopulateSubs, this)
-        this.onlySubsHandlers = AFRAME.utils.bind(this.onlySubsHandlers, this)
         this.onEyeChange = AFRAME.utils.bind(this.onEyeChange, this)
         this.bg = this.el.children[0]
+
         setAttr(this.bg, {
             geometry: 'primitive: plane',
             material: 'color: black; opacity: 0.5;'
         })
-        this.onlySubsON = false
-        this.onlySubsBtn = createEl('a-entity', {
+
+        this.seekON = false
+        this.subsON = true
+
+        this.seekBtn = createEl('a-entity', {
             geometry: 'primitive: plane; width: 10; height: 3',
             material: 'color: #808080',
             position: '21 -12 -60',
@@ -42,7 +47,7 @@ AFRAME.registerComponent('subtitles', {
             })]
         )
 
-        this.subsOn = createEl('a-entity', {
+        this.subsBtn = createEl('a-entity', {
             geometry: 'primitive: plane; width: 10; height: 3',
             material: 'color: #808080',
             position: '21 -18 -60',
@@ -51,31 +56,46 @@ AFRAME.registerComponent('subtitles', {
             'button-highlight': ''
         },
             [createEl('a-text', {
-                value: this.data.on ? "ON" : "OFF",
+                value: "ON",
                 width: '40',
                 align: 'center',
                 position: '0 0 0.5'
             })],
         )
 
-        this.subsOn.addEventListener('click', this.subsOnHandler)
+        this.subsBtn.addEventListener('click', this.subsBtnHandler)
 
         this.nextSeek = -2
 
-        this.onlySubsBtn.addEventListener('click', this.onlySubsHandlers)
+        this.seekBtn.addEventListener('click', this.seekBtnHandler)
 
+        this.updateSubtitleListening = true
         El.video.addEventListener('timeupdate', this.updateSubtitle)
         // El.video.addEventListener('seeking', () => { console.log('seeking start'), isSeeking = true })
         // El.video.addEventListener('seeked', () => { console.log('seeking fin'), isSeeking = false })
 
-        El.controls.append(this.onlySubsBtn, this.subsOn)
+        El.controls.append(this.seekBtn, this.subsBtn)
         El.events.addEventListener(EV.SETTINGS, this.onEyeChange)
 
         this.subtitles = []
     },
 
     update: function (od) {
-        this.subsOn.children[0].setAttribute('value', this.data.on ? "ON" : "OFF")
+
+        if (!(this.subsON || this.seekON)) {
+            this.updateSubtitleListening
+            El.video.removeEventListener('timeupdate', this.updateSubtitle)
+            this.updateSubtitleListening = false
+        }
+
+        if (this.subsON || this.seekON) {
+            if (!this.updateSubtitleListening) {
+                El.video.addEventListener('timeupdate', this.updateSubtitle)
+
+            }
+
+        }
+
         if (this.data.src !== od.src) {
             this.getAndPopulateSubs(this.data.src)
             this.onEyeChange({
@@ -86,16 +106,18 @@ AFRAME.registerComponent('subtitles', {
         }
     },
 
-    subsOnHandler: function () {
-        let on = !this.data.on
-        this.el.setAttribute('subtitles', { on: on })
-        if (on) {
+    subsBtnHandler: function () {
+        this.subsON = !this.subsON
+
+        this.subsBtn.children[0].setAttribute('value', this.subsON ? "ON" : "OFF")
+        
+        if (this.subsON) {
             this.el.object3D.visible = true
-            El.video.addEventListener('timeupdate', this.updateSubtitle)
         } else {
             this.el.object3D.visible = false
-            El.video.removeEventListener('timeupdate', this.updateSubtitle)
         }
+
+        this.update(this.data)
     },
 
     onEyeChange: function (e) {
@@ -110,50 +132,59 @@ AFRAME.registerComponent('subtitles', {
         this.subtitles = this.parser.fromSrt(data)
     },
 
-    onlySubsHandlers: function () {
-        this.onlySubsON = !this.onlySubsON
+    seekBtnHandler: function () {
+        this.seekON = !this.seekON
 
-        if (this.onlySubsON) {
-            setAttr(this.onlySubsBtn, {
+        if (this.seekON) {
+            setAttr(this.seekBtn, {
                 material: 'color: #00008b',
             })
         } else {
-            setAttr(this.onlySubsBtn, {
+            setAttr(this.seekBtn, {
                 material: 'color: #808080',
             })
         }
+
+        this.update(this.data)
     },
 
     updateSubtitle: function () {
         // console.log(new Date(), 'currentTime', El.video.currentTime, "timeupdate: rs - ", this.nextSeek);
         const currentTime = El.video.currentTime
         const currentSubtitle = this.subtitles.find(subtitle => currentTime >= subtitle.startSeconds && currentTime <= subtitle.endSeconds)
+
         if (currentSubtitle) {
-            this.el.object3D.visible = true
-            this.bg.object3D.visible = true
-            let lines = currentSubtitle.text.split(/\r?\n/)
-            let height = lines.length
-            let width = lines[0].length
-            if (lines.length > 1) {
-                for (let i in lines) {
-                    width = Math.max(width, lines[i].length)
-                }
-            }
             this.latestSub = currentSubtitle
-            this.el.setAttribute('value', currentSubtitle.text)
-            this.bg.setAttribute('geometry', {
-                height: 0.25 * height,
-                width: 0.1 * (width + 2)
-            })
-        } else {
-            this.el.object3D.visible = false
-            this.bg.object3D.visible = true
-            // this.el.setAttribute('value', '')
         }
-        // ONLY_SUBS_NEXT = 4 seconds
+
+        if (this.subsON) {
+            if (currentSubtitle) {
+                this.el.object3D.visible = true
+                this.bg.object3D.visible = true
+
+                let lines = currentSubtitle.text.split(/\r?\n/)
+                let height = lines.length
+                let width = lines[0].length
+                if (lines.length > 1) {
+                    for (let i in lines) {
+                        width = Math.max(width, lines[i].length)
+                    }
+                }
+
+                this.el.setAttribute('value', currentSubtitle.text)
+                this.bg.setAttribute('geometry', {
+                    height: 0.25 * height,
+                    width: 0.1 * (width + 2)
+                })
+            } else {
+                this.el.object3D.visible = false
+                this.bg.object3D.visible = true
+            }
+        }
+        // SEEK_NEXT_THRESH = 4 seconds
         // if two subs are more than 8 seconds apart.
         // - seek-to '4 seconds before' the next sub
-        if (this.onlySubsON) {
+        if (this.seekON) {
             let nextSub = this.subtitles.find(subtitle => currentTime <= subtitle.startSeconds)
             if (!this.latestSub || currentTime - this.latestSub.endSeconds > SEEK_NEXT_THRESH) {
                 if (nextSub.startSeconds - currentTime >= SEEK_NEXT_THRESH) {
@@ -172,8 +203,8 @@ AFRAME.registerComponent('subtitles', {
     },
 
     remove: function () {
-        El.controls.removeChild(this.onlySubsBtn)
-        El.controls.removeChild(this.subsOn)
+        El.controls.removeChild(this.seekBtn)
+        El.controls.removeChild(this.subsBtn)
         El.video.removeEventListener('timeupdate', this.updateSubtitle)
         this.bg.object3D.visible = false
     },
