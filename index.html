@@ -3,11 +3,10 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/static/vr.png" />
+  <link rel="icon" type="image/svg+xml" href="/assets/vr.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="/static/aframe-v1.5.0.min.js"></script>
-  <script src="/static/aframe-extras.loaders.min.js"></script>
-  <script src="src/main.js" type="module"></script>
+  <script src="/libs/aframe.min.js"></script>
+  <script src="/main/main.js" type="module"></script>
   <title>aframe vr player</title>
 </head>
 
@@ -21,32 +20,31 @@
     <a-entity id="video-state" video-state></a-entity>
 
     <a-assets>
-      <img id="asset-vp-play" src="static/play.png">
-      <img id="asset-vp-pause" src="static/pause.png">
-      <img id="asset-vp-stop" src="static/stop.png">
-      <img id="asset-vp-seek-forward" src="static/seek-forward.png">
-      <img id="asset-vp-seek-backward" src="static/seek-backward.png">
-      <img id="asset-vp-hide-ui" src="static/hide-ui.png">
-      <img id="asset-vp-open-file" src="static/open-file.png">
-      <img id="asset-vp-voli" src="static/vol-incr.png">
-      <img id="asset-vp-vold" src="static/vol-decr.png">
-      <img id="asset-back" src="static/back.png">
-      <img id="asset-loading" src="static/loading.gif">
-      <img id="asset-up" src="static/up.png">
-      <img id="asset-hide-files" src="static/hide-files-ui.png">
-      <img id="asset-folder" src="static/folder.png">
-      <img id="asset-movie-icon" src="static/movie.png">
-      <img id="asset-unknown" src="static/unknown.png">
-      <img id="asset-refresh" src="static/refresh.png">
-      <img id="asset-settings" src="static/settings.png">
-      <img id="asset-close" src="static/close.png">
-      <img id="asset-check" src="static/check.png">
-      <img id="asset-uncheck" src="static/uncheck.png">
+      <img id="asset-vp-play" src="assets/play.png">
+      <img id="asset-vp-pause" src="assets/pause.png">
+      <img id="asset-vp-stop" src="assets/stop.png">
+      <img id="asset-vp-seek-forward" src="assets/seek-forward.png">
+      <img id="asset-vp-seek-backward" src="assets/seek-backward.png">
+      <img id="asset-vp-hide-ui" src="assets/hide-ui.png">
+      <img id="asset-vp-open-file" src="assets/open-file.png">
+      <img id="asset-vp-voli" src="assets/vol-incr.png">
+      <img id="asset-vp-vold" src="assets/vol-decr.png">
+      <img id="asset-back" src="assets/back.png">
+      <img id="asset-loading" src="assets/loading.gif">
+      <img id="asset-up" src="assets/up.png">
+      <img id="asset-hide-files" src="assets/hide-files-ui.png">
+      <img id="asset-folder" src="assets/folder.png">
+      <img id="asset-movie-icon" src="assets/movie.png">
+      <img id="asset-unknown" src="assets/unknown.png">
+      <img id="asset-refresh" src="assets/refresh.png">
+      <img id="asset-settings" src="assets/settings.png">
+      <img id="asset-check" src="assets/check.png">
+      <img id="asset-uncheck" src="assets/uncheck.png">
     </a-assets>
 
     <!-- <a-entity environment="preset: starry"></a-entity> -->
 
-    <video id="video" src="static/sample.mp4"></video>
+    <video id="video" src="assets/sample.mp4"></video>
     <!-- camera stuff -->
     <a-entity id="cameraRig" adjust-camera position="0 0 0">
       <!-- camera-wrapper rotates around camera-rig for recenter -->
