@@ -3,26 +3,8 @@ import { createEl, setAttr } from "../../utils.js";
 
 const bgs = [
     {
-        name: 'island',
-        src: '/assets/gltf/tropical_island/scene.gltf',
-        poi: [
-            {
-                tv: {
-                    geometry: { height: 60 }, // width calculated from aspect ratio of the video
-                    position: '0 0 -65'
-                },
-                bg: {
-                    position: '230 -35 -100',
-                    scale: '20 20 20',
-                    rotation: '0 -80 0',
-                    'animation-mixer': ''
-                }
-            }
-        ]
-    },
-    {
         name: 'sky tower',
-        src: '/static/gltf/mountain_movie_lounge/scene.gltf',
+        src: '/assets/gltf/mountain_movie_lounge/scene.gltf',
         poi: [
             {
                 tv: {
@@ -82,7 +64,7 @@ AFRAME.registerComponent('flat', {
     init: function () {
         this.onVideoChange = AFRAME.utils.bind(this.onVideoChange, this)
         El.video.addEventListener("loadedmetadata", this.onVideoChange)
-        this.i = 1
+        this.i = 0
         this.p = 0
         this.tvAttr = {
             geometry: `primitive: plane; height: ${bgs[this.i].poi[this.p].tv.geometry.height}; width: ${1.77 * bgs[this.i].poi[this.p].tv.geometry.height}`,
