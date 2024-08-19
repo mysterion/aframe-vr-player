@@ -1,6 +1,7 @@
 # AFRAME VR PLAYER
 VR Video player built using html & js.
 - [Screenshots](#screenshots)
+- [Feedback/Suggestions](#feedbacksuggestions)
 - [Usage/Installation](#usageinstallation)
    * [Online](#online)
    * [CLI](#cli)
@@ -13,6 +14,12 @@ VR Video player built using html & js.
 ![screenshot](./docs/screenshot-pc.jpg)
 ![cardboard with timeline](./docs/cardboard-with-timeline.jpg)
 ![cardboard with file manager](./docs/cardboard-with-file-manager.jpg)
+
+## Feedback/Suggestions
+
+Google group: https://groups.google.com/g/avrplayer/
+
+Github issues: https://github.com/mysterion/aframe-vr-player/issues
 
 ## Usage/Installation
 ### Online
@@ -51,3 +58,4 @@ It should be run on WebXR compatible Web Browsers([More Info.](https://aframe.io
 
 ## Contributing
 We welcome contributions from the community to enhance AFRAME VR Player and make it even better. If you have any suggestions, bug reports, or feature requests, please feel free to open an issue or submit a pull request.
+
