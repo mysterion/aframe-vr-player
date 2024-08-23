@@ -86,6 +86,7 @@ AFRAME.registerComponent(C_VID_STATE, {
         if (getSettings(ST.SAVE_PRESET)) {
             let p = Store.get(this.presetKey)
             if (p !== null && p !== undefined) {
+                p = Number(p)
                 setAttr(this.el, { [C_VID_STATE]: { presetId: p } })
             }
         }

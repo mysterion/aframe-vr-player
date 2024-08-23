@@ -64,7 +64,7 @@ AFRAME.registerComponent('fe-sphere', {
 AFRAME.registerComponent('fisheye', {
     schema: {
         fov: { type: 'number', default: 180 }, // 180-235
-        detail: { type: 'number', default: 32 },
+        detail: { type: 'number', default: 64 },
         defaultEye: { type: 'string', default: 'left' },
         uiHidden: { type: 'boolean', default: false }
     },

@@ -75,12 +75,6 @@ AFRAME.registerComponent('env-manager', {
             case PRESET.FE_180_SBS:
                 el.setAttribute(ENVS.FE, { uiHidden: d.uiHidden, defaultEye: d.defaultEye })
                 break
-            case PRESET.FE_190_SBS:
-                el.setAttribute(ENVS.FE, { uiHidden: d.uiHidden, defaultEye: d.defaultEye, fov: 190 })
-                break
-            case PRESET.FE_200_SBS:
-                el.setAttribute(ENVS.FE, { uiHidden: d.uiHidden, defaultEye: d.defaultEye, fov: 200 })
-                break
             case PRESET.FLAT_2D:
                 el.setAttribute(ENVS.FLAT, '')
                 break
