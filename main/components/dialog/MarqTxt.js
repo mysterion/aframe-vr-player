@@ -42,6 +42,7 @@ AFRAME.registerComponent('marq-text', {
     },
 
     startAnim: function () {
+        clearInterval(this.timerId)
         this.timerId = setInterval(this.marquee, 200)
     },
 

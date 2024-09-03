@@ -60,8 +60,8 @@ export function setAttr(element, attributes = {}) {
 }
 
 export function remAttr(element, attributes = []) {
-    for (let attr in attributes) {
-        element.removeAttribute(attr)
+    for (let i = 0; i < attributes.length; i++) {
+        element.removeAttribute(attributes[i])
     }
 }
 

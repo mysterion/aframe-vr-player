@@ -1,6 +1,7 @@
 import { El } from "../../main.js";
 import { Store } from "../../store.js"
 import { isObjectEmpty } from "../../utils.js";
+import { CUR_TYPE } from "../CursorUtil.js";
 import { EV } from "../Events.js";
 
 export const SETTINGS = 'settings'
@@ -11,12 +12,30 @@ export const ST = {
     SAVE_PRESET: 'savePreset',
     DEF_EYE: 'defaultEye',
     VIEW_ANG: 'viewAngle',
-    UI_ANG: 'uiAngle'
+    UI_ANG: 'uiAngle',
+    CUR_TYPE: 'cursorType',
 }
 
 export const getSettings = (key) => {
     return El.settings.getAttribute(SETTINGS)[key]
 }
+
+/*
+
+usage:
+ 0) on `component` init, use `Store.get(ST.KEY_NAME)` to get the settings settings
+ 1) buttons/interactions should use - 
+    El.settings.setAttribute(SETTINGS, {
+        ST.`KEY NAME`: `VALUE`
+    })
+ 2) settings is saved in persistent storage
+ 3) an event is fired,
+    use
+    El.events.addEventListener(EV.SETTINGS, this.onSettingsChange)
+    to implement your logic
+
+    Example: CursorUtil.js
+*/
 
 AFRAME.registerComponent(SETTINGS, {
     schema: {
@@ -26,6 +45,7 @@ AFRAME.registerComponent(SETTINGS, {
         [ST.DEF_EYE]: { type: 'string', default: 'left' },
         [ST.VIEW_ANG]: { type: 'number', default: 0 },
         [ST.UI_ANG]: { type: 'number', default: 0 },
+        [ST.CUR_TYPE]: { type: 'string', default: CUR_TYPE.TAP },
     },
 
     init: function () {

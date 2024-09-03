@@ -11,3 +11,16 @@ AFRAME.registerComponent('button-highlight', {
         });
     },
 });
+
+AFRAME.registerComponent('button-highlight-text', {
+    init: function () {
+        this.text = this.el.children[0].getAttribute("text").value
+        this.el.addEventListener('raycaster-intersected', (e) => {
+            this.el.children[0].setAttribute("text", { value: `[${this.text}]` })
+        });
+        this.el.addEventListener('raycaster-intersected-cleared', (e) => {
+            this.el.children[0].setAttribute("text", { value: this.text })
+        });
+    },
+});
+

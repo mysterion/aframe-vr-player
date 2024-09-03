@@ -1,6 +1,7 @@
 import { El } from "../../main.js"
 import { createEl, getAttr } from "../../utils.js"
-import { SETTINGS, ST } from "../settings/Settings.js"
+import { CUR_TYPE } from "../CursorUtil.js"
+import { getSettings, SETTINGS, ST } from "../settings/Settings.js"
 
 import { DHeight, DWidth } from "./Utils.js"
 
@@ -128,29 +129,102 @@ function resumeVideoChk(el, y, val) {
     el.appendChild(tile)
 }
 
-function uiPosTgl(el, y) {
-    var i = 0
-    var vars = ["OFF", "ON"]
+function toggleCursorType(el, y, val) {
 
-    let tile = document.createElement("a-plane")
-    tile.setAttribute("geometry", `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`)
-    tile.setAttribute("material", "color: #A15807;")
-    tile.setAttribute("position", `1.2 ${y} 0.01`)
-    tile.setAttribute("clickable", "")
-    tile.setAttribute("button-highlight", "")
+    var colorActive = "#5e74a7"
+    var colorInActive = "#554b4a"
+
+    let width = DWidth * 0.40
+    let height = DHeight * 0.1
+
+    let Hpos = DWidth * 0.25
+    let Vgap = width * 0.1
+
+    let BtnHeight = height - 0.01
+    let BtnWidth = (width - Vgap) / 3
+
+    let tile = createEl("a-plane", {
+        "geometry": `width: ${width}; height: ${height}`,
+        "material": "color: #A15807;",
+        "position": `${Hpos} ${y} 0.2`,
+        "clickable": "",
+    }, [], el)
 
 
-    let text = document.createElement("a-text")
-    text.setAttribute("value", vars[0])
-    text.setAttribute("align", "center")
-    text.setAttribute("width", "2")
+    let Btap = createEl("a-plane", {
+        "geometry": `width: ${BtnWidth}; height: ${BtnHeight}`,
+        "material": `color: ${colorInActive};`,
+        "position": `-7.75 0 0.2`,
+        "clickable": "",
+        "button-highlight-text": "",
+    }, [
+        createEl("a-text", {
+            "value": "tap",
+            "align": "center",
+            "width": "35",
+            "position": `0 0 0.5`,
+        }, []),
+    ], tile)
 
-    tile.appendChild(text)
-    tile.onclick = () => {
-        text.setAttribute("value", vars[++i % vars.length])
+    let Bgaze = createEl("a-plane", {
+        "geometry": `width: ${BtnWidth}; height: ${BtnHeight}`,
+        "material": `color: ${colorInActive};`,
+        "position": `0 0 0.2`,
+        "clickable": "",
+        "button-highlight-text": "",
+    }, [
+        createEl("a-text", {
+            "value": "gaze",
+            "align": "center",
+            "width": "35",
+            "position": `0 0 0.5`,
+        }, []),
+    ], tile)
+
+    let Blaser = createEl("a-plane", {
+        "geometry": `width: ${BtnWidth}; height: ${BtnHeight}`,
+        "material": `color: ${colorInActive};`,
+        "position": `7.75 0 0.2`,
+        "clickable": "",
+        "button-highlight-text": "",
+    }, [
+        createEl("a-text", {
+            "value": "laser",
+            "align": "center",
+            "width": "35",
+            "position": `0 0 0.5`,
+        }, []),
+    ], tile)
+
+    const updateColor = (j) => {
+        Btap.setAttribute("material", `color: ${j === CUR_TYPE.TAP ? colorActive : colorInActive};`)
+        Bgaze.setAttribute("material", `color: ${j === CUR_TYPE.GAZE ? colorActive : colorInActive};`)
+        Blaser.setAttribute("material", `color: ${j === CUR_TYPE.LASER ? colorActive : colorInActive};`)
     }
 
-    el.appendChild(tile)
+    updateColor(getSettings(ST.CUR_TYPE))
+
+    Btap.onclick = () => {
+        updateColor(CUR_TYPE.TAP)
+        El.settings.setAttribute(SETTINGS, {
+            [ST.CUR_TYPE]: CUR_TYPE.TAP
+        })
+    }
+
+    Bgaze.onclick = () => {
+        updateColor(CUR_TYPE.GAZE)
+        El.settings.setAttribute(SETTINGS, {
+            [ST.CUR_TYPE]: CUR_TYPE.GAZE
+        })
+    }
+
+    Blaser.onclick = () => {
+        updateColor(CUR_TYPE.LASER)
+        El.settings.setAttribute(SETTINGS, {
+            [ST.CUR_TYPE]: CUR_TYPE.LASER
+        })
+    }
+
 }
 
 function seekTimeTgl(el, y) {
@@ -183,6 +257,7 @@ const settings = [
     { name: "save preset per video", render: savePresetChk, storeKey: ST.SAVE_PRESET },
     { name: "resume video", render: resumeVideoChk, storeKey: ST.RESUME_VIDEO },
     { name: "default eye", render: defaultEyeTgl, storeKey: ST.DEF_EYE },
+    { name: "toggle cursor type", render: toggleCursorType, storeKey: ST.CUR_TYPE },
     // { name: "ui position", render: uiPosTgl },
     // { name: "default eye", render: defaultEyeTgl },
     // { name: "seek time", render: seekTimeTgl },
@@ -277,7 +352,6 @@ function renderSettings(el, offset) {
 AFRAME.registerComponent(DIALOG_SETTINGS, {
     schema: {
         offset: { type: 'number', default: 0 },
-        resumeVideo: { type: 'string', default: 'ON' },
         reRender: { type: 'string', default: '' }
     },
 
