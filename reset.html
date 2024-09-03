@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>reset - aframe vr player</title>
+    <link rel="stylesheet" href="https://unpkg.com/simpledotcss/simple.min.css">
+</head>
+
+<body>
+    <h1>reset - aframe vr player</h1>
+    <h2>Stuff</h2>
+    <p>
+        <input type="checkbox" name="show hidden" id="showhidden" value="">Show Hidden keys</input>
+    </p>
+    <p>
+        <input type="button" name="factoryreset" id="factoryreset" value="Factory Reset"></input>
+    </p>
+    <h2>Configuration keys</h2>
+    <figure>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Action</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </figure>
+    <script>
+        function loadTable(exclude = []) {
+            const el = document.querySelector('tbody');
+            el.replaceChildren();
+            let names = Object.keys(localStorage);
+
+            names = names.filter(name => {
+                for (var i = 0; i < exclude.length; i++) {
+                    if (name.startsWith(exclude[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            for (var i = 0; i < names.length; i++) {
+                let name = names[i];
+                let tr = document.createElement('tr');
+
+                let td1 = document.createElement('td');
+                let td2 = document.createElement('td');
+                let td3 = document.createElement('td');
+                td1.innerText = name;
+                let actionBtn = document.createElement('button');
+                actionBtn.innerText = 'delete';
+                actionBtn.addEventListener('click', () => {
+                    confirm(`delete ${name}?`) && localStorage.removeItem(name) && location.reload()
+                });
+                td2.appendChild(actionBtn);
+                td3.innerText = localStorage.getItem(name);
+                tr.append(td1, td2, td3);
+
+                el.appendChild(tr);
+            }
+        }
+
+        const excludeKeys = ['VID_'];
+        const showHidden = document.querySelector('#showhidden');
+        loadTable(excludeKeys);
+        showHidden.addEventListener('change', () => {
+            showHidden.checked ? loadTable() : loadTable(excludeKeys);
+        });
+
+        const factoryResetBtn = document.querySelector('#factoryreset');
+        factoryResetBtn.addEventListener('click', () => {
+            if (confirm('This will delete all settings/data in aframe-vr-player')) {
+                localStorage.clear();
+                location.reload();
+            }
+        });
+    </script>
+</body>
+
+</html>
