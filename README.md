@@ -14,6 +14,8 @@ VR Video player built using html & js.
 ![screenshot](./docs/screenshot-pc.jpg)
 ![cardboard with timeline](./docs/cardboard-with-timeline.jpg)
 ![cardboard with file manager](./docs/cardboard-with-file-manager.jpg)
+![quest 3](./docs/quest3-emul.jpg)
+![reset page](./docs/reset-page.JPG)
 
 ## Feedback/Suggestions
 
