@@ -8,17 +8,26 @@ import { ST } from "../settings/Settings.js";
 export const ENVS = {
     EQ: 'equirectangular',
     FE: 'fisheye',
+    EAC: 'equiangularcubemap',
     FLAT: 'flat'
 }
 
 export const PRESET = {
     EQ_180_SBS: 'EQ_180_SBS',
     FE_180_SBS: 'FE_180_SBS',
+    EAC_180: 'EAC_180',
+    EAC_180_SBS: 'EAC_180_SBS',
     FLAT_2D: 'FLAT_2D'
 }
 
 
 export const videoPresets = [
+    {
+        "text": "180 EAC", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.EAC_180}` }) }
+    },
+    {
+        "text": "180 EAC 180", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.EAC_180_SBS}` }) }
+    },
     {
         "text": "180 SBS EQR", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.EQ_180_SBS}` }) }
     },
@@ -67,7 +76,7 @@ AFRAME.registerComponent('env-manager', {
 
         if (presetToEnv(od.preset) !== presetToEnv(d.preset))
             el.removeAttribute(presetToEnv(od.preset))
-
+        console.log(d.preset, PRESET.EAC_180, d.preset === PRESET.EAC_180)
         switch (d.preset) {
             case PRESET.EQ_180_SBS:
                 el.setAttribute(ENVS.EQ, { uiHidden: d.uiHidden, defaultEye: d.defaultEye })
@@ -77,6 +86,9 @@ AFRAME.registerComponent('env-manager', {
                 break
             case PRESET.FLAT_2D:
                 el.setAttribute(ENVS.FLAT, '')
+                break
+            case PRESET.EAC_180:
+                el.setAttribute(ENVS.EAC, '')
                 break
             default:
                 console.error('preset not found')
