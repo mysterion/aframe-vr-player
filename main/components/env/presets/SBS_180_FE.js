@@ -1,4 +1,6 @@
-import { createEl } from "../../utils.js";
+import { createEl } from "../../../utils.js";
+import { PRESET } from "../constants.js";
+
 
 AFRAME.registerComponent('fe-sphere', {
     schema: {
@@ -61,7 +63,7 @@ AFRAME.registerComponent('fe-sphere', {
     },
 });
 
-AFRAME.registerComponent('fisheye', {
+AFRAME.registerComponent(PRESET.SBS_180_FE, {
     schema: {
         fov: { type: 'number', default: 180 }, // 180-235
         detail: { type: 'number', default: 64 },

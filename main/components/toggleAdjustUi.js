@@ -2,7 +2,7 @@ import { El } from "../main.js";
 import { Store } from "../store.js";
 import { createEl, setAttr } from "../utils.js";
 import { EV } from "./Events.js";
-import { ENVS, presetToEnv } from "./env/EnvManager.js";
+import { PRESET } from "./env/constants.js";
 
 export const ViewAngles = [90, 60, 45, 30, 0, -30, -45, -60, -90]
 
@@ -20,6 +20,7 @@ function showBtn(element) {
     element.setAttribute('visible', true)
 
 }
+
 AFRAME.registerComponent('toggle-adjust-ui', {
     init: function () {
 
@@ -178,7 +179,7 @@ AFRAME.registerComponent('toggle-adjust-ui', {
         }
         // D:
 
-        if (this.curEnv === ENVS.FLAT) {
+        if (this.curEnv === PRESET.FLAT_2D) {
             hideBtn(this.uiDown)
             hideBtn(this.uiUp)
             this.uiAngleIdx = 4 // set to 0
@@ -187,23 +188,34 @@ AFRAME.registerComponent('toggle-adjust-ui', {
             this.uiAngle.setAttribute('visible', true)
         }
 
+        if (this.curEnv === PRESET.M_360_EQR) {
+            hideBtn(this.viewDown)
+            hideBtn(this.viewUp)
+            this.viewAngleIdx = 4 // set to 0
+            this.viewAngle.setAttribute('visible', false)
+        } else {
+            this.viewAngle.setAttribute('visible', true)
+        }
+
 
         El.cameraRig.setAttribute('rotation', `${-1 * ViewAngles[this.viewAngleIdx]} 0 0`)
         setAttr(this.viewAngle.children[0], {
             value: `view\n${ViewAngles[this.viewAngleIdx]}`
         })
-        Store.set('viewAngleIdx', this.viewAngleIdx)
 
         El.controls.setAttribute('rotation', `${uiAngles[this.uiAngleIdx]} 0 0`)
         setAttr(this.uiAngle.children[0], {
             value: `ui\n${uiAngles[this.uiAngleIdx]}`
         })
-        if (this.curEnv !== ENVS.FLAT)
+        if (this.curEnv !== PRESET.FLAT_2D)
             Store.set('uiAngleIdx', this.uiAngleIdx)
+
+        if (this.curEnv !== PRESET.M_360_EQR)
+            Store.set('viewAngleIdx', this.viewAngleIdx)
     },
 
     onEnvChange: function (e) {
-        this.curEnv = presetToEnv(e.detail.preset)
+        this.curEnv = e.detail.preset
         this.update()
     },
 

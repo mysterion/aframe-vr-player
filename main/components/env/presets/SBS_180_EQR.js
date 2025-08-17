@@ -1,17 +1,18 @@
-import { createEl } from "../../utils.js";
+import { createEl } from "../../../utils.js";
+import { PRESET } from "../constants.js";
 
-AFRAME.registerComponent('eq-sphere', {
+
+AFRAME.registerComponent('eq-sphere-180', {
     schema: {
-        eye: { type: 'string', default: 'left' }, // L,R,Both
-        fov: { type: 'number', default: 180 }, // 180, 360 TODO: 360
-        side: { type: 'string', default: 'left' }, // LRTB TODO: TB
+        eye: { type: 'string', default: 'left' },
+        side: { type: 'string', default: 'left' },
+        detail: {type: 'number', default: 32 }
     },
 
     init: function () {
         let object3D = this.el.object3D.children[0]
         let d = this.data
-        let og = this.el.getAttribute("geometry")
-        let geometry = new THREE.SphereGeometry(og.radius || 100, og.segmentsWidth || 32, og.segmentsHeight || 32, Math.PI, Math.PI, 0, Math.PI)
+        let geometry = new THREE.SphereGeometry(100, d.detail, d.detail, Math.PI, Math.PI, 0, Math.PI)
         let t = { repeat: { x: -0.5, y: 1 }, offset: { x: 0.5, y: 0 } }
 
         if (d.side === "right") {
@@ -25,6 +26,7 @@ AFRAME.registerComponent('eq-sphere', {
             uv.setXY(i, u * t.repeat.x + t.offset.x, v * t.repeat.y + t.offset.y);
         }
         uv.needsUpdate = true;
+        object3D.geometry.dispose()
         object3D.geometry = geometry
     },
 
@@ -42,21 +44,21 @@ AFRAME.registerComponent('eq-sphere', {
     },
 });
 
-AFRAME.registerComponent('equirectangular', {
+AFRAME.registerComponent(PRESET.SBS_180_EQR, {
     schema: {
         defaultEye: { type: 'string', default: 'left' },
         detail: { type: 'number', default: 32 },
-        uiHidden: { type: 'boolean', default: false }
+        uiHidden: { type: 'boolean', default: false },
     },
 
     init: function () {
         this.leftEye = createEl('a-entity', {
-            geometry: `primitive:sphere; radius: 100; segmentsWidth: ${this.data.detail}; segmentsHeight: ${this.data.detail};`,
+            geometry: `primitive:sphere;`,
             material: "shader: flat; src: #video; side: back;",
         })
 
         this.rightEye = createEl('a-entity', {
-            geometry: `primitive:sphere; radius: 100; segmentsWidth: ${this.data.detail}; segmentsHeight: ${this.data.detail};`,
+            geometry: `primitive:sphere;`,
             material: "shader: flat; src: #video; side: back;",
         })
 
@@ -78,8 +80,8 @@ AFRAME.registerComponent('equirectangular', {
             }
         }
 
-        this.leftEye.setAttribute('eq-sphere', { eye: le, fov: 180, side: 'left' })
-        this.rightEye.setAttribute('eq-sphere', { eye: re, fov: 180, side: 'right' })
+        this.leftEye.setAttribute('eq-sphere-180', { eye: le, side: 'left' })
+        this.rightEye.setAttribute('eq-sphere-180', { eye: re, side: 'right' })
 
         this.leftEye.object3D.visible = lev
         this.rightEye.object3D.visible = rev

@@ -50,10 +50,18 @@ AFRAME.registerComponent('recenter', {
             if (this.recenterCamera) {
                 el.setAttribute("rotation", { y: -(this.camera.getAttribute("rotation").y) });
             }
-            if (this.recenterEnv) {
-                el.setAttribute("rotation", { y: -(this.env.getAttribute("rotation").y) });
+            if (this.recenterCamera && this.recenterEnv) {
+                El.env.setAttribute("rotation", { y: -(this.camera.getAttribute("rotation").y) });
             }
-
         })
+        
+        El.events.addEventListener(EV.ENVIRONMENT, (e) => {
+            if (String(e.detail.preset).includes("360")) {
+                this.recenterEnv = true
+            } else {
+                this.recenterEnv = false
+            }
+        })
+
     },
 });

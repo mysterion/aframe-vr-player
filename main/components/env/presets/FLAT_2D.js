@@ -1,5 +1,7 @@
-import { El } from "../../main.js";
-import { createEl, setAttr } from "../../utils.js";
+
+import { El } from "../../../main.js";
+import { createEl, setAttr } from "../../../utils.js";
+import { PRESET } from "../constants.js";
 
 const bgs = [
     {
@@ -22,45 +24,7 @@ const bgs = [
 
 ]
 
-AFRAME.registerComponent('flat-2d', {
-    schema: {
-        eye: { type: 'string', default: 'left' },
-    },
-
-    update: function (od) {
-        let d = this.data
-        let object3D = this.el.object3D.children[0]
-        // layers
-        if (d.eye === "left") {
-            object3D.layers.set(1);
-        } else if (d.eye === "right") {
-            object3D.layers.set(2);
-        } else {
-            object3D.layers.set(0);
-        }
-    },
-});
-
-AFRAME.registerComponent('flat-3d', {
-    schema: {
-        eye: { type: 'string', default: 'left' },
-    },
-
-    update: function (od) {
-        let d = this.data
-        let object3D = this.el.object3D.children[0]
-        // layers
-        if (d.eye === "left") {
-            object3D.layers.set(1);
-        } else if (d.eye === "right") {
-            object3D.layers.set(2);
-        } else {
-            object3D.layers.set(0);
-        }
-    },
-});
-
-AFRAME.registerComponent('flat', {
+AFRAME.registerComponent(PRESET.FLAT_2D, {
     init: function () {
         this.onVideoChange = AFRAME.utils.bind(this.onVideoChange, this)
         El.video.addEventListener("loadedmetadata", this.onVideoChange)

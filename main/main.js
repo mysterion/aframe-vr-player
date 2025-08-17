@@ -45,9 +45,12 @@ import './components/settings/Settings.js'
 
 // components:env
 import './components/env/EnvManager.js'
-import './components/env/Equirectangular.js'
-import './components/env/Fisheye.js'
-import './components/env/Flat.js'
+import './components/env/presets/FLAT_2D.js'
+import './components/env/presets/SBS_180_EQR.js'
+import './components/env/presets/SBS_180_FE.js'
+import './components/env/presets/M_360_EQR.js'
+import './components/env/presets/M_180_EQR.js'
+import './components/env/presets/M_180_FE.js'
 
 
 // buttons
