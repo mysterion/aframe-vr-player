@@ -37,7 +37,6 @@ AFRAME.registerComponent('env-manager', {
         this.onUIHide = AFRAME.utils.bind(this.onUIHide, this)
         El.events.addEventListener(CONTROLS, this.onUIHide)
         El.events.addEventListener(EV.SETTINGS, this.onEyeChange)
-        this.preset = d.preset
     },
 
     onEyeChange: function (e) {

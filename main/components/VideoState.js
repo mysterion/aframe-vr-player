@@ -26,16 +26,11 @@ AFRAME.registerComponent(C_VID_STATE, {
             clickable: '',
             controls: '',
             material: 'color: #808080; opacity: 1',
-            geometry: 'primitive:plane; width:15; height: 3',
+            geometry: 'primitive:plane; width:18; height: 3',
             'button-highlight': '',
+            text: `width: 40; zOffset: 0.1; align: center`,
         }, [], El.controls)
 
-        this.toggleModeBtnTxt = createEl('a-text', {
-            value: videoPresets[this.data.presetId].text,
-            width: 40,
-            align: 'center',
-            position: '0 0 0.5'
-        }, [], this.toggleModeBtn)
 
         this.toggleBtnHandler = AFRAME.utils.bind(this.toggleBtnHandler, this)
         this.toggleModeBtn.addEventListener('click', this.toggleBtnHandler)
@@ -70,7 +65,8 @@ AFRAME.registerComponent(C_VID_STATE, {
         }
 
         videoPresets[d.presetId].fn()
-        this.toggleModeBtnTxt.setAttribute("value", videoPresets[d.presetId].text)
+        let txt = `(${this.data.presetId + 1}/${videoPresets.length}) ${videoPresets[this.data.presetId].text}`
+        this.toggleModeBtn.setAttribute("text", `value: ${txt}`)
     },
 
     onVideoLoad: function () {
