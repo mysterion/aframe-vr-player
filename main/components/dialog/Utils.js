@@ -1,4 +1,4 @@
-import { El } from "../../main.js";
+import { El } from "../../elems.js";
 import { CTL_HIDDEN, CONTROLS } from "../../systems/Controls.js";
 
 AFRAME.registerComponent('dialog-utils', {

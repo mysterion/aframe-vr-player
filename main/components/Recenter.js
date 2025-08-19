@@ -1,4 +1,4 @@
-import { El } from "../main.js";
+import { El } from "../elems.js";
 import { CTL_HIDDEN, CTL_SHOWN, CONTROLS } from "../systems/Controls.js";
 import { EV } from "./Events.js";
 
@@ -12,8 +12,6 @@ AFRAME.registerComponent('recenter', {
 
     init: function () {
         var el = this.el
-        this.camera = document.getElementById('camera')
-        this.env = document.getElementById('env')
         this.recenterCamera = false
         this.recenterEnv = false
         this.controlsVisible = true
@@ -48,17 +46,17 @@ AFRAME.registerComponent('recenter', {
                 return
             }
             if (this.recenterCamera) {
-                el.setAttribute("rotation", { y: -(this.camera.getAttribute("rotation").y) });
+                el.setAttribute("rotation", { y: -(El.camera.getAttribute("rotation").y) });
             }
             if (this.recenterCamera && this.recenterEnv) {
-                El.env.setAttribute("rotation", { y: -(this.camera.getAttribute("rotation").y) });
+                El.env.setAttribute("rotation", { y: -(El.camera.getAttribute("rotation").y) });
             }
         })
         
         El.events.addEventListener(EV.ENVIRONMENT, (e) => {
             if (String(e.detail.preset).includes("360")) {
                 this.recenterEnv = true
-                El.env.setAttribute("rotation", { y: -(this.camera.getAttribute("rotation").y) });
+                El.env.setAttribute("rotation", { y: -(El.camera.getAttribute("rotation").y) });
             } else {
                 this.recenterEnv = false
                 El.env.setAttribute("rotation", "0 0 0");

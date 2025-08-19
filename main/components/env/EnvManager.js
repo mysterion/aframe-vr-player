@@ -1,4 +1,4 @@
-import { El } from "../../main.js";
+import { El } from "../../elems.js";
 import { CTL_HIDDEN, CTL_SHOWN, CONTROLS } from "../../systems/Controls.js";
 import { setAttr } from "../../utils.js";
 import { EV } from "../Events.js";

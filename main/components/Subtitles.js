@@ -1,5 +1,5 @@
 import { Parser } from "../libs/srt-parser2.js";
-import { El } from "../main.js";
+import { El } from "../elems.js";
 import { createEl, setAttr } from "../utils.js";
 
 import { EV } from "./Events.js";
@@ -37,15 +37,9 @@ AFRAME.registerComponent('subtitles', {
             material: 'color: #808080',
             position: '21 -12 -60',
             clickable: '',
-            controls: ''
-        },
-            [createEl('a-text', {
-                value: 'SUBS SEEK',
-                width: '40',
-                align: 'center',
-                position: '0 0 0.5'
-            })]
-        )
+            controls: '',
+            text: 'value: SUBS SEEK; align: center; width: 40; zOffset: 0.5;',
+        }, [], El.controls)
 
         this.subsBtn = createEl('a-entity', {
             geometry: 'primitive: plane; width: 10; height: 3',
@@ -53,15 +47,9 @@ AFRAME.registerComponent('subtitles', {
             position: '21 -18 -60',
             clickable: '',
             controls: '',
-            'button-highlight': ''
-        },
-            [createEl('a-text', {
-                value: "ON",
-                width: '40',
-                align: 'center',
-                position: '0 0 0.5'
-            })],
-        )
+            'button-highlight': '',
+            text: 'value: ON; align: center; width: 40; zOffset: 0.5;',
+        }, [], El.controls)
 
         this.subsBtn.addEventListener('click', this.subsBtnHandler)
 
@@ -74,7 +62,6 @@ AFRAME.registerComponent('subtitles', {
         // El.video.addEventListener('seeking', () => { console.log('seeking start'), isSeeking = true })
         // El.video.addEventListener('seeked', () => { console.log('seeking fin'), isSeeking = false })
 
-        El.controls.append(this.seekBtn, this.subsBtn)
         El.events.addEventListener(EV.SETTINGS, this.onEyeChange)
 
         this.subtitles = []
@@ -109,7 +96,7 @@ AFRAME.registerComponent('subtitles', {
     subsBtnHandler: function () {
         this.subsON = !this.subsON
 
-        this.subsBtn.children[0].setAttribute('value', this.subsON ? "ON" : "OFF")
+        this.subsBtn.setAttribute('text', `value: ${this.subsON ? "ON" : "OFF"}`)
         
         if (this.subsON) {
             this.el.object3D.visible = true

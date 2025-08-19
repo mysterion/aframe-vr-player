@@ -1,5 +1,5 @@
 import { C_VID_STATE } from "../components/VideoState.js";
-import { El } from "../main.js";
+import { El } from "../elems.js";
 
 export function setupWebFileInput() {
     function handleFileSelect(event) {

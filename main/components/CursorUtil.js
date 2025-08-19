@@ -1,4 +1,4 @@
-import { El } from "../main.js";
+import { El } from "../elems.js";
 import { createEl } from "../utils.js";
 import { EV } from "./Events.js";
 import { getSettings, ST } from "./settings/Settings.js";

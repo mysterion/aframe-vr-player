@@ -28,6 +28,7 @@ AFRAME.registerComponent('dialog-loading', {
             'width': 2,
             'align': 'center',
             'position': '0 -0.5 0.1',
+            'z-offset': '0.2',
         })
         loader.append(img, txt)
     },

@@ -30,17 +30,14 @@ AFRAME.registerComponent('timeline', {
         }, [this.hoverThumb], el)
 
         this.hoverTextEl = createEl('a-text', {
+            'geometry': 'primitive: plane; width: 8; height: 2.5;',
+            'material': 'color: #808080',
             'position': '0 5 0',
             'align': 'center',
+            'width': '40',
+            'z-offset': '0.5',
             'value': '00:00:00',
-            'width': '40'
-        }, [
-            createEl('a-entity', {
-                'geometry': 'primitive: plane; width: 8; height: 2.5;',
-                'position': '0 0 -0.5',
-                'material': 'color: #808080',
-            })
-        ], this.hoverEl)
+        }, [], this.hoverEl)
 
         this.bg = createEl('a-entity', {
             geometry: `primitive: plane; width: ${width + 1.5}; height: ${height + 1} `,
@@ -50,15 +47,10 @@ AFRAME.registerComponent('timeline', {
 
         this.videoText = createEl('a-entity', {
             position: '0 0 0.5',
-            text: 'value: 00:00:00/00:00:00; width: 40; align: center;',
-            material: 'color: #333; opacity: 0.5;'
-        }, [
-            createEl('a-plane', {
-                geometry: 'primitive: plane; width: 15; height: 2.5;',
-                position: '0 0 -0.1',
-                material: 'color: black; opacity: 0.5'
-            })
-        ], el)
+            text: 'value: 00:00:00/00:00:00; width: 40; align: center; zOffset: 0.2;',
+            material: 'color: #333; opacity: 0.5;',
+            geometry: 'primitive: plane; width: 15; height: 2.5;',
+        }, [], el)
 
         this.updateElems = () => {
             var newPosition = (this.video.currentTime / this.video.duration) * width - width / 2;

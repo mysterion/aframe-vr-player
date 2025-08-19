@@ -1,4 +1,4 @@
-import { El } from "../main.js";
+import { El } from "../elems.js";
 import { Store } from "../store.js";
 import { createEl, setAttr } from "../utils.js";
 import { EV } from "./Events.js";

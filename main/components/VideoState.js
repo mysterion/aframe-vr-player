@@ -1,4 +1,4 @@
-import { El } from "../main.js";
+import { El } from "../elems.js";
 import { Store } from "../store.js"
 import { createEl, getFileName, setAttr } from "../utils.js";
 import { videoPresets } from "./env/EnvManager.js";
@@ -28,7 +28,7 @@ AFRAME.registerComponent(C_VID_STATE, {
             material: 'color: #808080; opacity: 1',
             geometry: 'primitive:plane; width:18; height: 3',
             'button-highlight': '',
-            text: `width: 40; zOffset: 0.1; align: center`,
+            text: `width: 40; zOffset: 0.2; align: center`,
         }, [], El.controls)
 
 

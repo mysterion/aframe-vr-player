@@ -1,4 +1,4 @@
-import { El } from "../main.js";
+import { El } from "../elems.js";
 
 export const CTL_HIDDEN = 'controls-hidden'
 export const CTL_SHOWN = 'controls-shown'

@@ -16,7 +16,8 @@ AFRAME.registerComponent('marq-text', {
         this.txt = createEl("a-text", {
             "align": "center",
             "width": "35",
-            "position": "0 0 1"
+            "position": "0 0 1",
+            "z-offset": "0.2"
         })
 
         this.el.appendChild(this.txt)

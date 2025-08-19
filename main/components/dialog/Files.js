@@ -1,4 +1,4 @@
-import { El } from '../../main.js'
+import { El } from '../../elems.js'
 import { createEl, getFileName, toTime, trimJoin } from '../../utils.js'
 import { FILE_GET_URL, LISTING_URL } from '../Consts.js'
 import { C_VID_STATE } from '../VideoState.js'
@@ -139,7 +139,6 @@ AFRAME.registerComponent(C_FILES, {
         this.insertFolderUI()
     },
 
-
     insertFolderUI: function () {
 
         const el = this.el
@@ -154,22 +153,18 @@ AFRAME.registerComponent(C_FILES, {
             "geometry": `primitive:plane; width:${p.width}; height: 3`,
             "position": `0 ${p.height / 2} 0.2`,
             "material": "color: #808080",
-        }, [
-            createEl('a-entity', {
-                text: `value: folder:/${url}; align: center; width: 30;`,
-                position: '0 0 0.2'
-            })
-        ], el)
+            "text": `value: folder:/${url}; align: center; width: 30; zOffset: 0.2;`
+        }, [], el)
 
         createEl("a-image", {
             'src': "#asset-movie-icon",
-            'position': `-${p.width / 2} 0 0.1`,
+            'position': `-${p.width / 2} 0 0.2`,
             'background-color': "blue",
             'scale': "4 4 1"
         }, [], el)
         createEl("a-image", {
             'src': "#asset-folder",
-            'position': `${p.width / 2} 0 0.1`,
+            'position': `${p.width / 2} 0 0.2`,
             'background-color': "blue",
             'scale': "4 4 1"
         }, [], el)

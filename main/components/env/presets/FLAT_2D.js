@@ -1,5 +1,5 @@
 
-import { El } from "../../../main.js";
+import { El } from "../../../elems.js";
 import { createEl, setAttr } from "../../../utils.js";
 import { PRESET } from "../constants.js";
 
@@ -43,13 +43,13 @@ AFRAME.registerComponent(PRESET.FLAT_2D, {
 
         // bg toggle >>>
         this.bgToggleHandler = AFRAME.utils.bind(this.bgToggleHandler, this)
-        this.bgToggleTxt = createEl('a-text', { position: '0 0 0.5', align: 'center', width: 40, value: bgs[this.i].name })
         this.bgToggle = createEl('a-entity', {
             position: '0 -16 -60',
             geometry: 'primitive:plane; width:15; height: 3',
             material: 'color: #808080; opacity: 1',
             clickable: '', controls: '', 'button-highlight': '',
-        }, [this.bgToggleTxt])
+            text: `value: ${bgs[this.i].name}; align: center; width: 40; zOffset: 0.5;`,
+        }, [])
 
         this.bgToggle.addEventListener('click', this.bgToggleHandler)
 
@@ -57,25 +57,24 @@ AFRAME.registerComponent(PRESET.FLAT_2D, {
 
         // poi toggle >>>
         this.poiToggleHandler = AFRAME.utils.bind(this.poiToggleHandler, this)
-        this.poiToggleTxt = createEl('a-text', { position: '0 0 0.5', align: 'center', width: 40, value: this.p })
 
         this.poiToggle = createEl('a-entity', {
             position: '10 -16 -60',
             geometry: 'primitive:plane; width:3; height: 3',
             material: 'color: #808080; opacity: 1',
             clickable: '', controls: '', 'button-highlight': '',
-        }, [this.poiToggleTxt])
+            text: `value: ${this.p}; align: center; width: 40; zOffset: 0.5;`,
+        }, [])
 
         this.bgToggle.addEventListener('click', this.poiToggleHandler)
-
         // poi toggle <<<
 
         this.el.append(this.eye, this.bg, this.bgToggle, this.poiToggle)
     },
 
     update: function (od) {
-        setAttr(this.bgToggleTxt, { value: bgs[this.i].name })
-        setAttr(this.poiToggleTxt, { value: this.p })
+        setAttr(this.bgToggle, { text: `value: ${bgs[this.i].name}` })
+        setAttr(this.poiToggle, { text: `value: ${this.p}` })
 
         if (this.bg.getAttribute('src') !== bgs[this.i].src) {
             setAttr(this.bg, {

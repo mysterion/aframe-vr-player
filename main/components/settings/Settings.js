@@ -1,4 +1,4 @@
-import { El } from "../../main.js";
+import { El } from "../../elems.js";
 import { Store } from "../../store.js"
 import { isObjectEmpty } from "../../utils.js";
 import { CUR_TYPE } from "../CursorUtil.js";

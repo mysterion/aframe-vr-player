@@ -1,9 +1,9 @@
+import { El } from "../../elems.js";
+
 AFRAME.registerComponent('btn-seek-forw', {
     init: function () {
-        let el = this.el
-        this.video = document.getElementById("video")
-        el.addEventListener('click', () => {
-            this.video.currentTime += 15
+        this.el.addEventListener('click', () => {
+            El.video.currentTime += 15
         })
     },
 });

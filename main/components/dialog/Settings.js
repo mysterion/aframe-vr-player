@@ -1,4 +1,4 @@
-import { El } from "../../main.js"
+import { El } from "../../elems.js"
 import { createEl, getAttr } from "../../utils.js"
 import { CUR_TYPE } from "../CursorUtil.js"
 import { getSettings, SETTINGS, ST } from "../settings/Settings.js"
@@ -10,38 +10,10 @@ export const DIALOG_SETTINGS = 'dialog-settings'
 const itemLimit = 5
 const space = -DHeight * 0.125
 const initialPosition = DHeight * 0.15
-const ascene = document.querySelector('a-scene')
 
-
-// -1.2 ${pos} 0.01
-function selectionModeTgl(el, y) {
-    var id = 0
-    // TODO: Add reverting back in 15 seconds logic
-    var ids = ["tap (recommended)", "fuse 1.5s", "fuse 2s", "fuse 3s"]
-
-    let tile = document.createElement("a-plane")
-    tile.setAttribute("geometry", `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`)
-    tile.setAttribute("material", "color: #A15807;")
-    tile.setAttribute("position", `1.2 ${y} 0.01`)
-    tile.setAttribute("clickable", "")
-    tile.setAttribute("button-highlight", "")
-
-
-    let text = document.createElement("a-text")
-    text.setAttribute("value", ids[id])
-    text.setAttribute("align", "center")
-    text.setAttribute("width", "2")
-
-    tile.appendChild(text)
-    tile.onclick = () => {
-        text.setAttribute("value", ids[(++id) % ids.length])
-    }
-
-    el.appendChild(tile)
-}
 
 function defaultEyeTgl(el, y, val) {
-    var vars = ['left', 'right']
+    const vars = ['left', 'right']
     var i = vars.indexOf(val)
 
     let tile = createEl("a-plane", {
@@ -50,27 +22,20 @@ function defaultEyeTgl(el, y, val) {
         "position": `${DWidth * 0.25} ${y} 0.2`,
         "clickable": "",
         "button-highlight": "",
-    }, [
-        createEl('a-entity', {
-            text: `value: ${val}; align: center; width: 35;`,
-            position: '0 0 0.2'
-        })
-    ])
-
-    let text = tile.children[0]
+        "text": `value: ${val}; align: center; width: 35; zOffset: 0.2;`,
+    }, [], el)
 
     tile.onclick = () => {
         i = (i + 1) % vars.length
-        text.setAttribute("text", `value: ${vars[i]}`)
+        tile.setAttribute("text", `value: ${vars[i]}`)
         El.settings.setAttribute(SETTINGS, {
             defaultEye: vars[i]
         })
     }
-    el.appendChild(tile)
 }
 
 function savePresetChk(el, y, val) {
-    var vars = [false, true]
+    const vars = [false, true]
     var i = vars.indexOf(val)
 
     let tile = createEl("a-plane", {
@@ -79,28 +44,20 @@ function savePresetChk(el, y, val) {
         "position": `${DWidth * 0.25} ${y} 0.2`,
         "clickable": "",
         "button-highlight": "",
-    }, [
-        createEl('a-entity', {
-            text: `value: ${val ? "ON" : "OFF"}; align: center; width: 35;`,
-            position: '0 0 0.2'
-        })
-    ])
-
-    let text = tile.children[0]
+        "text": `value: ${val ? "ON" : "OFF"}; align: center; width: 35; zOffset: 0.2;`,
+    }, [], el)
 
     tile.onclick = () => {
         let newVal = vars[++i % vars.length]
-        text.setAttribute("text", `value: ${newVal ? "ON" : "OFF"}`)
+        tile.setAttribute("text", `value: ${newVal ? "ON" : "OFF"}`)
         El.settings.setAttribute(SETTINGS, {
             savePreset: newVal
         })
     }
-
-    el.appendChild(tile)
 }
 
 function resumeVideoChk(el, y, val) {
-    var vars = [false, true]
+    const vars = [false, true]
     var i = vars.indexOf(val)
 
     let tile = createEl("a-plane", {
@@ -109,24 +66,16 @@ function resumeVideoChk(el, y, val) {
         "position": `${DWidth * 0.25} ${y} 0.2`,
         "clickable": "",
         "button-highlight": "",
-    }, [
-        createEl('a-entity', {
-            text: `value: ${val ? "ON" : "OFF"}; align: center; width: 35;`,
-            position: '0 0 0.2'
-        })
-    ])
-
-    let text = tile.children[0]
+        "text": `value: ${val ? "ON" : "OFF"}; align: center; width: 35; zOffset: 0.2;`,
+    }, [], el)
 
     tile.addEventListener('click', () => {
         let newVal = vars[++i % vars.length]
-        text.setAttribute("text", `value: ${newVal ? "ON" : "OFF"}`)
+        tile.setAttribute("text", `value: ${newVal ? "ON" : "OFF"}`)
         El.settings.setAttribute(SETTINGS, {
             resumeVideo: newVal
         })
     })
-
-    el.appendChild(tile)
 }
 
 function toggleCursorType(el, y, val) {
@@ -156,14 +105,9 @@ function toggleCursorType(el, y, val) {
         "material": `color: ${colorInActive};`,
         "position": `-7.75 0 0.2`,
         "clickable": "",
-        "button-highlight-text": "",
+        "button-highlight": "",
+        "text": `value: tap; align: center; width: 35; zOffset: 0.4;`,
     }, [
-        createEl("a-text", {
-            "value": "tap",
-            "align": "center",
-            "width": "35",
-            "position": `0 0 0.5`,
-        }, []),
     ], tile)
 
     let Bgaze = createEl("a-plane", {
@@ -171,30 +115,18 @@ function toggleCursorType(el, y, val) {
         "material": `color: ${colorInActive};`,
         "position": `0 0 0.2`,
         "clickable": "",
-        "button-highlight-text": "",
-    }, [
-        createEl("a-text", {
-            "value": "gaze",
-            "align": "center",
-            "width": "35",
-            "position": `0 0 0.5`,
-        }, []),
-    ], tile)
+        "button-highlight": "",
+        "text": `value: gaze; align: center; width: 35; zOffset: 0.4;`,
+    }, [], tile)
 
     let Blaser = createEl("a-plane", {
         "geometry": `width: ${BtnWidth}; height: ${BtnHeight}`,
         "material": `color: ${colorInActive};`,
         "position": `7.75 0 0.2`,
         "clickable": "",
-        "button-highlight-text": "",
-    }, [
-        createEl("a-text", {
-            "value": "laser",
-            "align": "center",
-            "width": "35",
-            "position": `0 0 0.5`,
-        }, []),
-    ], tile)
+        "button-highlight": "",
+        "text": `value: laser; align: center; width: 35; zOffset: 0.4;`,
+    }, [], tile)
 
     const updateColor = (j) => {
         Btap.setAttribute("material", `color: ${j === CUR_TYPE.TAP ? colorActive : colorInActive};`)
@@ -253,14 +185,10 @@ function seekTimeTgl(el, y) {
 }
 
 const settings = [
-    // { name: "select mode", render: selectionModeTgl },
     { name: "save preset per video", render: savePresetChk, storeKey: ST.SAVE_PRESET },
     { name: "resume video", render: resumeVideoChk, storeKey: ST.RESUME_VIDEO },
     { name: "default eye", render: defaultEyeTgl, storeKey: ST.DEF_EYE },
     { name: "toggle cursor type", render: toggleCursorType, storeKey: ST.CUR_TYPE },
-    // { name: "ui position", render: uiPosTgl },
-    // { name: "default eye", render: defaultEyeTgl },
-    // { name: "seek time", render: seekTimeTgl },
 ]
 
 function insertSettingsUI(el, offset) {
@@ -328,26 +256,13 @@ function renderSettings(el, offset) {
                 "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
                 "material": "color: #801D9F;",
                 "position": `-${DWidth * 0.25} ${pos} 0.2`,
-            }, [
-                createEl('a-entity', {
-                    text: `value: ${settings[i].name}; align: center; width: 35`,
-                    position: '0 0 0.2'
-                })
-            ])
+                "text": `value: ${settings[i].name}; align: center; width: 35; zOffset: 0.2;`,
+            }, [], el)
             settings[i].render(el, pos, currentSettings[settings[i].storeKey])
-            el.appendChild(tile)
             pos += space
         }
     }
 }
-
-// { name: "select mode", render: selectionModeTgl },
-// { name: "default preset", render: defaultPresetTgl },
-// { name: "save preset for video", render: savePresetChk },
-// { name: "resume video", render: resumeVideoChk },
-// { name: "ui position", render: uiPosTgl },
-// { name: "default eye", render: defaultEyeTgl },
-// { name: "seek time", render: seekTimeTgl },
 
 AFRAME.registerComponent(DIALOG_SETTINGS, {
     schema: {

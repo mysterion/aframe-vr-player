@@ -1,8 +1,10 @@
+import { El } from "../../elems.js";
+
 AFRAME.registerComponent('btn-pause-play', {
     init: function () {
         let el = this.el
 
-        this.video = document.getElementById("video")
+        this.video = El.video
 
         this.pausePlay = () => {
             if (this.video.paused) {
@@ -19,7 +21,7 @@ AFRAME.registerComponent('btn-pause-play', {
         this.video.addEventListener("pause", this.onPause)
     },
     remove: function () {
-        el.removeEventListener('click', this.pausePlay)
+        this.el.removeEventListener('click', this.pausePlay)
         this.video.removeEventListener("playing", this.onPlay)
         this.video.removeEventListener("pause", this.onPause)
     }
