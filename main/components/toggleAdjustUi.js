@@ -35,7 +35,7 @@ AFRAME.registerComponent('toggle-adjust-ui', {
             'button-highlight': ''
         }, [
             createEl('a-entity', {
-                position: '0 0 -0.25',
+                position: '0 0 -0.3',
                 geometry: 'primitive: triangle; vertexA: 0 1 0; vertexB: -2.5 -1.5 0; vertexC: 2.5 -1.5 0;',
                 material: 'side: double; color: #006cd8; opacity: 1;',
                 'button-highlight': ''
@@ -49,7 +49,7 @@ AFRAME.registerComponent('toggle-adjust-ui', {
             'button-highlight': ''
         }, [
             createEl('a-entity', {
-                position: '0 0 -0.25',
+                position: '0 0 -0.3',
                 geometry: 'primitive: triangle; vertexA: 2.5 1.5 0; vertexB: 0 -1 0; vertexC: -2.5 1.5 0;',
                 material: 'side: double; color: #006cd8; opacity: 1;',
                 'button-highlight': ''
@@ -66,7 +66,7 @@ AFRAME.registerComponent('toggle-adjust-ui', {
                 align: 'center',
                 value: `view\n0`,
                 width: '40',
-                position: '0 0 0.2'
+                position: '0 0 0.3'
             }),
             createEl('a-entity', {
                 position: '0 0 -0.2',
@@ -85,7 +85,7 @@ AFRAME.registerComponent('toggle-adjust-ui', {
             'button-highlight': ''
         }, [
             createEl('a-entity', {
-                position: '0 0 -0.25',
+                position: '0 0 -0.3',
                 geometry: 'primitive: triangle; vertexA: 0 1 0; vertexB: -2.5 -1.5 0; vertexC: 2.5 -1.5 0;',
                 material: 'side: double; color: #006cd8; opacity: 1;',
                 'button-highlight': ''
@@ -99,7 +99,7 @@ AFRAME.registerComponent('toggle-adjust-ui', {
             'button-highlight': ''
         }, [
             createEl('a-entity', {
-                position: '0 0 -0.25',
+                position: '0 0 -0.3',
                 geometry: 'primitive: triangle; vertexA: 2.5 1.5 0; vertexB: 0 -1 0; vertexC: -2.5 1.5 0;',
                 material: 'side: double; color: #006cd8; opacity: 1;',
                 'button-highlight': ''
@@ -115,7 +115,7 @@ AFRAME.registerComponent('toggle-adjust-ui', {
                 align: 'center',
                 value: 'ui\n0',
                 width: '40',
-                position: '0 0 0.2'
+                position: '0 0 0.3'
             }),
             createEl('a-entity', {
                 position: '0 0 -0.2',
