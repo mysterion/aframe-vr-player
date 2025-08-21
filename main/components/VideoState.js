@@ -21,19 +21,56 @@ AFRAME.registerComponent(C_VID_STATE, {
 
         this.video = document.querySelector("#video")
 
+
+
         this.toggleModeBtn = createEl('a-entity', {
             position: '0 -12 -60',
-            clickable: '',
             controls: '',
             material: 'color: #808080; opacity: 1',
             geometry: 'primitive:plane; width:18; height: 3',
-            'button-highlight': '',
             text: `width: 40; zOffset: 0.2; align: center`,
         }, [], El.controls)
 
+        this.toggleModeNextBtn = createEl('a-image', {
+            src: '#asset-arrow',
+            position: '11 0 0',
+            scale: '3.5 3.5 1',
+            clickable: '',
+            controls: '',
+            'button-highlight': '',
+        }, [], this.toggleModeBtn)
 
-        this.toggleBtnHandler = AFRAME.utils.bind(this.toggleBtnHandler, this)
-        this.toggleModeBtn.addEventListener('click', this.toggleBtnHandler)
+        this.toggleModePrevBtn = createEl('a-image', {
+            src: '#asset-arrow',
+            position: '-11 0 0',
+            rotation: '0 180 0',
+            scale: '3.5 3.5 1',
+            clickable: '',
+            controls: '',
+            'button-highlight': '',
+        }, [], this.toggleModeBtn)
+
+        this.toggleModeNextBtn.addEventListener('click', () => {
+            if (this.video.readyState >= 1) {
+                let p = (this.data.presetId + 1) % videoPresets.length
+                setAttr(this.el, { [C_VID_STATE]: { presetId: p } })
+                if (getSettings(ST.SAVE_PRESET)) {
+                    Store.set(this.presetKey, p)
+                }
+            }
+        })
+
+        this.toggleModePrevBtn.addEventListener('click', () => {
+            if (this.video.readyState >= 1) {
+                const len = videoPresets.length
+                let p = (this.data.presetId - 1 + len) % len
+                setAttr(this.el, { [C_VID_STATE]: { presetId: p } })
+                if (getSettings(ST.SAVE_PRESET)) {
+                    Store.set(this.presetKey, p)
+                }
+            }
+        })
+
 
         this.setupKeys(this.data.src)
         this.lastUpdate = Date.now()
@@ -84,16 +121,6 @@ AFRAME.registerComponent(C_VID_STATE, {
             if (p !== null && p !== undefined) {
                 p = Number(p)
                 setAttr(this.el, { [C_VID_STATE]: { presetId: p } })
-            }
-        }
-    },
-
-    toggleBtnHandler: function () {
-        if (this.video.readyState >= 1) {
-            let p = (this.data.presetId + 1) % videoPresets.length
-            setAttr(this.el, { [C_VID_STATE]: { presetId: p } })
-            if (getSettings(ST.SAVE_PRESET)) {
-                Store.set(this.presetKey, p)
             }
         }
     },

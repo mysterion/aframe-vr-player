@@ -69,7 +69,7 @@ AFRAME.registerComponent('toggle-adjust-ui', {
                 position: '0 0 0.3'
             }),
             createEl('a-entity', {
-                position: '0 0 -0.2',
+                position: '0 0 -0.3',
                 material: 'color: #006cd8; opacity: 1',
                 geometry: 'primitive:plane; width:5; height: 5',
             }),
@@ -118,7 +118,7 @@ AFRAME.registerComponent('toggle-adjust-ui', {
                 position: '0 0 0.3'
             }),
             createEl('a-entity', {
-                position: '0 0 -0.2',
+                position: '0 0 -0.3',
                 material: 'color: #006cd8; opacity: 1',
                 geometry: 'primitive:plane; width:5; height: 5',
             }),
