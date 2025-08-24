@@ -33,6 +33,25 @@ Use the [online version](https://mysterion.github.io/aframe-vr-player/) on your 
 3) Make sure your device and PC are connected on the same wifi/network
 4) go to the URL specified on the cli (192.168.X.X) on web browser of your device(I recommend Chrome on cardboard or firefox reality on oculus quest)
 5) Accept SSL certificate and enjoy
+#### Update to latest version
+```sh
+avrp --update
+# 2025/08/24 18:51:08 update.go:101: Current version: d80b4871a63b1c4bfd098ef75237cc43f6f85798
+# 2025/08/24 18:51:08 update.go:102: Checking for updates
+# 2025/08/24 18:51:09 update.go:109: Commit Details :-
+
+# Date: 2025-08-21 16:17:37 +0000 UTC
+# Message:
+# feat: 2way switch video presets
+# fix: ui/view angle z offset
+
+
+
+# Press Enter to update
+
+```
+[More info](https://github.com/mysterion/avrp?tab=readme-ov-file#usage)
+
 
 
 ## Development
