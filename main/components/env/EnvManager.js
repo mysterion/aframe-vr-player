@@ -13,6 +13,9 @@ export const videoPresets = [
         "text": "SBS 180 FE", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.SBS_180_FE}` }) }
     },
     {
+        "text": "TB 360 EQR", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.TB_360_EQR}` }) }
+    },
+    {
         "text": "FLAT 2D", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.FLAT_2D}` }) }
     },
     {

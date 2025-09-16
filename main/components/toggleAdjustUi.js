@@ -188,7 +188,7 @@ AFRAME.registerComponent('toggle-adjust-ui', {
             this.uiAngle.setAttribute('visible', true)
         }
 
-        if (this.curEnv === PRESET.M_360_EQR) {
+        if (String(this.curEnv).includes("360")) {
             hideBtn(this.viewDown)
             hideBtn(this.viewUp)
             this.viewAngleIdx = 4 // set to 0
