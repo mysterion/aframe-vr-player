@@ -67,15 +67,21 @@ avrp --dev
 ## Compatibility
 VR Player is compatible with a wide range of VR headsets, including:
 
-- Oculus Quest
 - Google Cardboard
 - HTC Vive
-- PlayStation VR
-- Samsung Gear VR
+- Oculus Rift
+- Meta Quest
+- Meta Quest 2
+- Meta Quest 3
+- Meta Quest Pro
+- Oculus Go
+- Valve Index
+- Vive Focus
+- Apple Vision Pro
 - And more!
 
 As this project uses [AFRAME](https://github.com/aframevr/aframe) which uses [WebXR API](https://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API)
-It should be run on WebXR compatible Web Browsers([More Info.](https://aframe.io/docs/1.5.0/introduction/vr-headsets-and-webxr-browsers.html#which-vr-headsets-does-a-frame-support)) 
+It should be run on WebXR compatible Web Browsers([More Info.](https://aframe.io/docs/1.7.0/introduction/vr-headsets-and-webxr-browsers.html#which-browsers-does-a-frame-support)) 
 
 ## Contributing
 We welcome contributions from the community to enhance AFRAME VR Player and make it even better. If you have any suggestions, bug reports, or feature requests, please feel free to open an issue or submit a pull request.
