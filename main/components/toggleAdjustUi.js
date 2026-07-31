@@ -179,7 +179,7 @@ AFRAME.registerComponent('toggle-adjust-ui', {
         }
         // D:
 
-        if (this.curEnv === PRESET.FLAT_2D) {
+        if (this.curEnv === PRESET.FLAT) {
             hideBtn(this.uiDown)
             hideBtn(this.uiUp)
             this.uiAngleIdx = 4 // set to 0
@@ -207,7 +207,7 @@ AFRAME.registerComponent('toggle-adjust-ui', {
         setAttr(this.uiAngle.children[0], {
             value: `ui\n${uiAngles[this.uiAngleIdx]}`
         })
-        if (this.curEnv !== PRESET.FLAT_2D)
+        if (this.curEnv !== PRESET.FLAT)
             Store.set('uiAngleIdx', this.uiAngleIdx)
 
         if (this.curEnv !== PRESET.M_360_EQR)

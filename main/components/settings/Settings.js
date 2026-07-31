@@ -14,25 +14,35 @@ export const ST = {
     VIEW_ANG: 'viewAngle',
     UI_ANG: 'uiAngle',
     CUR_TYPE: 'cursorType',
+
+    FLAT_ENV_POI: 'flatEnv_poi',
+    FLAT_ENV_BG: 'flatEnv_bg',
+    FLAT_ENV_VTYPE: 'flatEnv_vtype',
 }
 
 export const getSettings = (key) => {
     return El.settings.getAttribute(SETTINGS)[key]
 }
 
+export const setSettings = (key, value) => {
+    El.settings.setAttribute(SETTINGS, {
+        [key]: value
+    })
+}
+
 /*
 
 usage:
- 0) on `component` init, use `Store.get(ST.KEY_NAME)` to get the settings settings
+ 0) on `component` init, use `getSettings(ST.KEY_NAME)` to update the component's attribute (dont worry , it doesn't change the other lifecycle funcs)
  1) buttons/interactions should use - 
-    El.settings.setAttribute(SETTINGS, {
-        ST.`KEY NAME`: `VALUE`
-    })
- 2) settings is saved in persistent storage
- 3) an event is fired,
-    use
-    El.events.addEventListener(EV.SETTINGS, this.onSettingsChange)
-    to implement your logic
+    `setSettings(ST.KEY_NAME, value)`
+   BTS:-
+    --- settings is saved in persistent storage
+    --- an event is fired,
+    --- use
+    --- El.events.addEventListener(EV.SETTINGS, this.onSettingsChange)
+    --- to implement your logic
+
 
     Example: CursorUtil.js
 */
@@ -46,6 +56,10 @@ AFRAME.registerComponent(SETTINGS, {
         [ST.VIEW_ANG]: { type: 'number', default: 0 },
         [ST.UI_ANG]: { type: 'number', default: 0 },
         [ST.CUR_TYPE]: { type: 'string', default: CUR_TYPE.TAP },
+
+        [ST.FLAT_ENV_BG]: { type: 'number', default: 0 },
+        [ST.FLAT_ENV_POI]: { type: 'number', default: 0 },
+        [ST.FLAT_ENV_VTYPE]: { type: 'string', default: "2D" },
     },
 
     init: function () {

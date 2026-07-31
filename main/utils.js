@@ -53,9 +53,17 @@ export function getAttr(element, key) {
     return element.getAttribute(key)
 }
 
-export function setAttr(element, attributes = {}) {
-    for (let key in attributes) {
-        element.setAttribute(key, attributes[key])
+export function setAttr(elems, attributes = {}) {
+    let elements = []
+    if (elems instanceof NodeList) {
+        elements = Array.from(elems)
+    } else if (elems instanceof Node) {
+        elements.push(elems)
+    }
+    for (let i = 0; i < elements.length; i++) {
+        for (let key in attributes) {
+            elements[i].setAttribute(key, attributes[key])
+        }
     }
 }
 

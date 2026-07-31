@@ -5,5 +5,5 @@ export const PRESET = {
     M_360_EQR: 'mono_360_eqr',
     M_180_EQR: 'm_180_eqr',
     M_180_FE: 'm_180_fe',
-    FLAT_2D: 'flat_2d',
+    FLAT: 'flat_2d_3d',
 }

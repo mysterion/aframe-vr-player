@@ -31,7 +31,7 @@ import './components/settings/Settings.js'
 
 // components:env
 import './components/env/EnvManager.js'
-import './components/env/presets/FLAT_2D.js'
+import './components/env/presets/FLAT.js'
 import './components/env/presets/SBS_180_EQR.js'
 import './components/env/presets/SBS_180_FE.js'
 import './components/env/presets/TB_360_EQR.js'
