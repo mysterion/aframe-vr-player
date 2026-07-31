@@ -76,6 +76,7 @@ AFRAME.registerComponent(PRESET.FLAT, {
         poiIdx: { type: 'number', default: 0 },
         bgIdx: { type: 'number', default: 0 },
         videoType: { type: 'string', default: '2D' },
+        lights: { type: 'boolean', default: true },
     },
     init: function () {
         this.onVideoChange = AFRAME.utils.bind(this.onVideoChange, this)
@@ -94,9 +95,9 @@ AFRAME.registerComponent(PRESET.FLAT, {
             text: `value: ${this.data.poiIdx}; align: center; width: 40; zOffset: 0.5;`,
         }, [], this.el),
 
-            this.poiToggle.addEventListener('click', () => {
-                setSettings(ST.FLAT_ENV_POI, (this.data.poiIdx + 1) % bgs[this.data.bgIdx].poi.length)
-            })
+        this.poiToggle.addEventListener('click', () => {
+            setSettings(ST.FLAT_ENV_POI, (this.data.poiIdx + 1) % bgs[this.data.bgIdx].poi.length)
+        })
         // poi toggle <<<
 
 
@@ -143,6 +144,25 @@ AFRAME.registerComponent(PRESET.FLAT, {
             setSettings(ST.FLAT_ENV_VTYPE, newType)
         })
         // video type <<<
+
+
+        // lights >>>
+
+
+        this.lightsToggle = createEl('a-entity', {
+            position: '18 -16 -60',
+            geometry: 'primitive:plane; width:10; height: 3',
+            material: 'color: #808080; opacity: 1',
+            controls: '', 'button-highlight': '',
+            text: `align: center; width: 40; zOffset: 0.5;`,
+        }, [], this.el)
+
+        this.lightsToggle.addEventListener('click', () => {
+            setAttr(this.el, { [PRESET.FLAT]: {lights: !this.data.lights} })
+        })
+
+        // lights <<<
+
     },
 
     update: function (od) {
@@ -163,7 +183,7 @@ AFRAME.registerComponent(PRESET.FLAT, {
                     material: this.viewAttr.material + ' offset: 0 0; repeat: 0.5 1;',
                     stereo: 'eye: left',
                 }, [], this.el)
-    
+
                 this.right = createEl('a-entity', {
                     ...this.viewAttr,
                     material: this.viewAttr.material + ' offset: 0.5 0; repeat: 0.5 1;',
@@ -172,7 +192,21 @@ AFRAME.registerComponent(PRESET.FLAT, {
             }
         }
 
-
+        if (bgs[this.data.bgIdx].name === 'cinema hall') {
+            this.lightsToggle.setAttribute('clickable', '')
+            this.lightsToggle.object3D.visible = true
+        } else {
+            this.lightsToggle.removeAttribute('clickable')
+            this.lightsToggle.object3D.visible = false
+        }
+        if (this.data.lights) {
+            this.el.sceneEl.systems['light-controls'].on()
+            setAttr(this.lightsToggle, { text: `value: Lights - ON` })
+        }
+        else {
+            this.el.sceneEl.systems['light-controls'].off()
+            setAttr(this.lightsToggle, { text: `value: Lights - OFF` })
+        }
 
         if (this.bg.getAttribute('src') !== bgs[this.data.bgIdx].src) {
             setAttr(this.bg, {
@@ -211,10 +245,12 @@ AFRAME.registerComponent(PRESET.FLAT, {
     },
 
     remove: function () {
+        this.el.sceneEl.systems['light-controls'].on()
         this.el.removeChild(this.bg)
         this.el.removeChild(this.bgToggle)
         this.el.removeChild(this.poiToggle)
         this.el.removeChild(this.VTypeToggle)
+        this.el.removeChild(this.lightsToggle)
         viewEls(this.el).forEach(v => this.el.removeChild(v))
         El.video.removeEventListener("loadedmetadata", this.onVideoChange)
     },

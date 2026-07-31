@@ -1,4 +1,5 @@
 // systems
+import './systems/LightControls.js'
 import './systems/Controls.js'
 import './systems/Thumbnails.js'
 
