@@ -67,8 +67,6 @@ const bgs = [
 
 ]
 
-window.bgs = bgs
-
 const viewEls = (el) => {
     return el.querySelectorAll(".view")
 }
@@ -154,7 +152,6 @@ AFRAME.registerComponent(PRESET.FLAT, {
 
         if (od.videoType !== this.data.videoType) {
             viewEls(this.el).forEach(v => {
-                console.log("REMOVING", v)
                 this.el.removeChild(v)
             })
             if (this.data.videoType === '2D') {
