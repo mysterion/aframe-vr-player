@@ -116,7 +116,9 @@ AFRAME.registerComponent(PRESET.FLAT, {
         }, [], this.el)
 
         this.bgToggle.addEventListener('click', () => {
-            setSettings(ST.FLAT_ENV_BG, (this.data.bgIdx + 1) % bgs.length)
+            let newIdx = (this.data.bgIdx + 1) % bgs.length
+            setSettings(ST.FLAT_ENV_POI, 0)
+            setSettings(ST.FLAT_ENV_BG, newIdx)
         })
 
         // bg toggle <<<
