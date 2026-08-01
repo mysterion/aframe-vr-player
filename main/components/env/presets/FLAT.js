@@ -175,7 +175,6 @@ AFRAME.registerComponent(PRESET.FLAT, {
                 this.el.removeChild(v)
             })
             if (this.data.videoType === '2D') {
-                console.log(this.data.videoType)
                 this.view = createEl('a-entity', this.viewAttr, [], this.el)
             } else if (this.data.videoType === '3D') {
                 this.left = createEl('a-entity', {
