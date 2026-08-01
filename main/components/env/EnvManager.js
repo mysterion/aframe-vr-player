@@ -16,7 +16,7 @@ export const videoPresets = [
         "text": "TB 360 EQR", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.TB_360_EQR}` }) }
     },
     {
-        "text": "FLAT 2D", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.FLAT_2D}` }) }
+        "text": "FLAT", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.FLAT}` }) }
     },
     {
         "text": "MONO 180 EQR", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.M_180_EQR}` }) }
