@@ -17,80 +17,85 @@ const EAC_TILES = {
 // BoxGeometry face order: +X, -X, +Y, -Y, +Z, -Z
 const FACE_ORDER = ['right', 'left', 'top', 'bottom', 'front', 'back'];
 
+// BoxGeometry vertex order inside a face: 0=TL, 1=TR, 2=BL, 3=BR
+const FACE_UV_ORDER = [3, 2, 0, 1];
+
+// How far each face is pulled in from its atlas tile, in source texels.
+// 0.5 puts every sample exactly on a texel centre: the smallest crop that
+// keeps bilinear filtering from blending the neighbouring face. The crop is
+// symmetric, so faces stay aligned at the cube edges. Raise it (via
+// `crop:1` in the material) if a source still shows a boundary line.
+const EDGE_CROP = 0.5;
+
 AFRAME.registerShader('youtube-eac', {
     schema: {
         src: { type: 'map', is: 'uniform' },
         faceWH: { type: 'vec2', default: { x: 1 / 3, y: 1 / 2 }, is: 'uniform' },
         vidWH: { type: 'vec2', default: { x: 1, y: 1 }, is: 'uniform' },
-        seam: { type: 'number', default: 0, is: 'uniform' },
+        crop: { type: 'number', default: EDGE_CROP, is: 'uniform' },
     },
     vertexShader: /* glsl */ `
+        attribute vec2 tile; // atlas tile origin for this face
         varying vec2 vUv;
+        varying vec2 vTile;
         void main() {
             vUv = uv;
+            vTile = tile;
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
     `,
     fragmentShader: /* glsl */ `
         varying vec2 vUv;
+        varying vec2 vTile;
         uniform sampler2D src;
         uniform vec2 faceWH;
         uniform vec2 vidWH;
+        uniform float crop;
         const float PI = 3.141592653589793;
-        uniform float seam;
 
         void main() {
-            vec2 inset = vec2(seam) / vidWH;
-            vec2 corner = vUv - mod(vUv, faceWH) + inset;
-            vec2 faceWHadj = faceWH - inset * 2.0;
-            vec2 p = (vUv - corner) / faceWHadj - 0.5;
+            // Undo the EAC atan warp within this face. The tile origin comes
+            // from a per-vertex attribute instead of mod(), so a UV landing
+            // exactly on a tile boundary can never select the wrong tile.
+            vec2 inset = vec2(crop) / vidWH;
+            vec2 span = max(faceWH - inset * 2.0, vec2(0.0));
+
+            vec2 p = (vUv - vTile) / faceWH - 0.5;
             vec2 q = (2.0 / PI) * atan(2.0 * p) + 0.5;
-            gl_FragColor = texture2D(src, corner + q * faceWHadj);
+
+            // q = 0 / 1 lands on the first / last texel centre of the tile,
+            // so filtering never reaches across into the next face.
+            gl_FragColor = texture2D(src, vTile + inset + q * span);
         }
     `,
 });
 
-const CONT_CORRECT = 2; // px, truncate discontinuous edges like videojs-vr
-
-function applyEacUvs(geometry, vidW, vidH) {
-    if (!(vidW > 0) || !(vidH > 0)) return;
-
-    const insetX = CONT_CORRECT / vidW;
-    const insetY = CONT_CORRECT / vidH;
+function applyEacUvs(geometry) {
     const uv = geometry.attributes.uv;
+
+    let tile = geometry.attributes.tile;
+    if (!tile || tile.count !== uv.count) {
+        tile = new THREE.Float32BufferAttribute(new Float32Array(uv.count * 2), 2);
+        geometry.setAttribute('tile', tile);
+    }
 
     for (let f = 0; f < 6; f++) {
         const t = EAC_TILES[FACE_ORDER[f]];
         const i = f * 4;
 
-        // Keep UVs off the exact tile boundary so mod() always picks
-        // this face's tile and bilinear filtering cannot bleed across.
-        let minX = 1, maxX = 0, minY = 1, maxY = 0;
-        for (const p of t) {
-            minX = Math.min(minX, p.x);
-            maxX = Math.max(maxX, p.x);
-            minY = Math.min(minY, p.y);
-            maxY = Math.max(maxY, p.y);
+        // Tile origin in UV space; the shader maps each face from here.
+        const originX = Math.min(t[0].x, t[1].x, t[2].x, t[3].x);
+        const originY = Math.min(t[0].y, t[1].y, t[2].y, t[3].y);
+
+        for (let k = 0; k < 4; k++) {
+            const p = t[FACE_UV_ORDER[k]];
+            uv.setXY(i + k, p.x, p.y);
+            tile.setXY(i + k, originX, originY);
         }
-
-        const inset = (p) => ({
-            x: Math.min(Math.max(p.x, minX + insetX), maxX - insetX),
-            y: Math.min(Math.max(p.y, minY + insetY), maxY - insetY),
-        });
-
-        const p0 = inset(t[3]);
-        const p1 = inset(t[2]);
-        const p2 = inset(t[0]);
-        const p3 = inset(t[1]);
-
-        // BoxGeometry verts: 0=TL, 1=TR, 2=BL, 3=BR
-        uv.setXY(i + 0, p0.x, p0.y);
-        uv.setXY(i + 1, p1.x, p1.y);
-        uv.setXY(i + 2, p2.x, p2.y);
-        uv.setXY(i + 3, p3.x, p3.y);
     }
 
     uv.needsUpdate = true;
+    tile.needsUpdate = true;
 }
 
 AFRAME.registerComponent(PRESET.M_360_EAC, {
@@ -101,35 +106,34 @@ AFRAME.registerComponent(PRESET.M_360_EAC, {
     init: function () {
         this.onMeta = AFRAME.utils.bind(this.onMeta, this);
 
-        // minFilter: linear disables mipmap generation; mipmaps would
-        // blend across the atlas tile boundaries at lower mip levels.
+        // minFilter: linear keeps mipmaps off; lower mip levels blend across
+        // the atlas tiles at grazing angles.
         this.eye = createEl('a-entity', {
             geometry: 'primitive:box; width:200; height:200; depth:200;',
-            material: 'shader:youtube-eac; src:#video; side:back; seam:0; minFilter:linear;',
+            material: 'shader:youtube-eac; src:#video; side:back; minFilter:linear;',
             rotation: '0 180 0',
         }, [], this.el);
 
-        this.eye.addEventListener('loaded', () => {
+        this.apply = () => {
             const mesh = this.eye.getObject3D('mesh');
-            if (mesh && mesh.geometry) {
-                applyEacUvs(mesh.geometry, El.video.videoWidth, El.video.videoHeight);
-            }
-        });
+            if (mesh && mesh.geometry) applyEacUvs(mesh.geometry);
+        };
+
+        this.eye.addEventListener('loaded', this.apply);
 
         El.video.addEventListener('loadedmetadata', this.onMeta);
         if (El.video.videoWidth) this.onMeta();
     },
 
     onMeta: function () {
-        const w = El.video.videoWidth;
-        const h = El.video.videoHeight;
-
         this.eye.setAttribute('material', {
-            vidWH: { x: w || 1, y: h || 1 },
+            vidWH: {
+                x: El.video.videoWidth || 1,
+                y: El.video.videoHeight || 1,
+            },
         });
 
-        const mesh = this.eye.getObject3D('mesh');
-        if (mesh && mesh.geometry) applyEacUvs(mesh.geometry, w, h);
+        this.apply();
     },
 
     remove: function () {
