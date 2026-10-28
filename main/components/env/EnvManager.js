@@ -27,6 +27,9 @@ export const videoPresets = [
     {
         "text": "MONO 180 FE", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.M_180_FE}` }) }
     },
+    {
+        "text": "MONO 360 EAC", fn: () => { setAttr(El.env, { 'env-manager': `preset: ${PRESET.M_360_EAC}` }) }
+    },
 ]
 
 AFRAME.registerComponent('env-manager', {

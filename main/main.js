@@ -39,6 +39,7 @@ import './components/env/presets/TB_360_EQR.js'
 import './components/env/presets/M_360_EQR.js'
 import './components/env/presets/M_180_EQR.js'
 import './components/env/presets/M_180_FE.js'
+import './components/env/presets/M_360_EAC.js'
 
 
 // buttons
