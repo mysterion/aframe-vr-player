@@ -204,6 +204,63 @@ function camQualityTgl(el, y, val) {
     })
 }
 
+const camFacings = ['environment', 'user', 'any']
+
+function camFacingTgl(el, y, val) {
+    var i = Math.max(0, camFacings.indexOf(val))
+
+    let tile = createEl("a-plane", {
+        "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+        "material": "color: #A15807;",
+        "position": `${DWidth * 0.25} ${y} 0.2`,
+        "clickable": "",
+        "button-highlight": "",
+        "text": `value: ${camFacings[i]}; align: center; width: 35; zOffset: 0.2;`,
+    }, [], el)
+
+    tile.addEventListener('click', () => {
+        i = (i + 1) % camFacings.length
+        tile.setAttribute("text", `value: ${camFacings[i]}`)
+        El.settings.setAttribute(SETTINGS, {
+            [ST.CAM_FACING]: camFacings[i]
+        })
+    })
+}
+
+function camMirrorChk(el, y, val) {
+    const vars = [false, true]
+    var i = vars.indexOf(!!val)
+
+    let tile = createEl("a-plane", {
+        "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+        "material": "color: #A15807;",
+        "position": `${DWidth * 0.25} ${y} 0.2`,
+        "clickable": "",
+        "button-highlight": "",
+        "text": `value: ${val ? "ON" : "OFF"}; align: center; width: 35; zOffset: 0.2;`,
+    }, [], el)
+
+    tile.addEventListener('click', () => {
+        let newVal = vars[++i % vars.length]
+        tile.setAttribute("text", `value: ${newVal ? "ON" : "OFF"}`)
+        El.settings.setAttribute(SETTINGS, {
+            [ST.CAM_MIRROR]: newVal
+        })
+    })
+}
+
+function camZoomTgl(el, y, val) {
+    cycleNumberTgl(el, y, [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5], ST.CAM_ZOOM, (v) => `${v}x`)
+}
+
+function camPanTgl(el, y, val) {
+    cycleNumberTgl(el, y, [-30, -20, -10, 0, 10, 20, 30], ST.CAM_PAN, (v) => `${v}%`)
+}
+
+function camTiltTgl(el, y, val) {
+    cycleNumberTgl(el, y, [-30, -20, -10, 0, 10, 20, 30], ST.CAM_TILT, (v) => `${v}%`)
+}
+
 const keyColorPresets = [
     { name: "green", value: "#00FF00" },
     { name: "blue", value: "#0000FF" },
@@ -353,6 +410,11 @@ const settings = [
     { name: "toggle cursor type", render: toggleCursorType, storeKey: ST.CUR_TYPE },
     { name: "camera passthrough", render: passthroughChk, storeKey: ST.PASSTHROUGH },
     { name: "camera quality", render: camQualityTgl, storeKey: ST.CAM_QUALITY },
+    { name: "camera facing", render: camFacingTgl, storeKey: ST.CAM_FACING },
+    { name: "camera zoom", render: camZoomTgl, storeKey: ST.CAM_ZOOM },
+    { name: "camera horizontal", render: camPanTgl, storeKey: ST.CAM_PAN },
+    { name: "camera vertical", render: camTiltTgl, storeKey: ST.CAM_TILT },
+    { name: "camera mirror", render: camMirrorChk, storeKey: ST.CAM_MIRROR },
     { name: "chroma key color", render: keyColorTgl, storeKey: ST.KEY_COLOR },
     { name: "key tolerance", render: keySimilarityTgl, storeKey: ST.KEY_SIMILARITY },
     { name: "key softness", render: keySmoothnessTgl, storeKey: ST.KEY_SMOOTHNESS },

@@ -21,6 +21,11 @@ export const ST = {
 
     PASSTHROUGH: 'passthrough',
     CAM_QUALITY: 'camQuality',
+    CAM_FACING: 'camFacing',
+    CAM_ZOOM: 'camZoom',
+    CAM_PAN: 'camPan',
+    CAM_TILT: 'camTilt',
+    CAM_MIRROR: 'camMirror',
     KEY_COLOR: 'keyColor',
     KEY_SIMILARITY: 'keySimilarity',
     KEY_SMOOTHNESS: 'keySmoothness',
@@ -69,6 +74,11 @@ AFRAME.registerComponent(SETTINGS, {
 
         [ST.PASSTHROUGH]: { type: 'boolean', default: false },
         [ST.CAM_QUALITY]: { type: 'string', default: 'medium' },
+        [ST.CAM_FACING]: { type: 'string', default: 'environment' },
+        [ST.CAM_ZOOM]: { type: 'number', default: 1 },
+        [ST.CAM_PAN]: { type: 'number', default: 0 },
+        [ST.CAM_TILT]: { type: 'number', default: 0 },
+        [ST.CAM_MIRROR]: { type: 'boolean', default: false },
         [ST.KEY_COLOR]: { type: 'string', default: '#00FF00' },
         [ST.KEY_SIMILARITY]: { type: 'number', default: 0.35 },
         [ST.KEY_SMOOTHNESS]: { type: 'number', default: 0.12 },
