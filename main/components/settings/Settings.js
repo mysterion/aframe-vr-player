@@ -18,6 +18,12 @@ export const ST = {
     FLAT_ENV_POI: 'flatEnv_poi',
     FLAT_ENV_BG: 'flatEnv_bg',
     FLAT_ENV_VTYPE: 'flatEnv_vtype',
+
+    PASSTHROUGH: 'passthrough',
+    CAM_QUALITY: 'camQuality',
+    KEY_COLOR: 'keyColor',
+    KEY_SIMILARITY: 'keySimilarity',
+    KEY_SMOOTHNESS: 'keySmoothness',
 }
 
 export const getSettings = (key) => {
@@ -60,6 +66,12 @@ AFRAME.registerComponent(SETTINGS, {
         [ST.FLAT_ENV_BG]: { type: 'number', default: 0 },
         [ST.FLAT_ENV_POI]: { type: 'number', default: 0 },
         [ST.FLAT_ENV_VTYPE]: { type: 'string', default: "2D" },
+
+        [ST.PASSTHROUGH]: { type: 'boolean', default: false },
+        [ST.CAM_QUALITY]: { type: 'string', default: 'medium' },
+        [ST.KEY_COLOR]: { type: 'string', default: '#00FF00' },
+        [ST.KEY_SIMILARITY]: { type: 'number', default: 0.35 },
+        [ST.KEY_SMOOTHNESS]: { type: 'number', default: 0.12 },
     },
 
     init: function () {

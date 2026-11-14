@@ -1,5 +1,6 @@
 import { El } from "../../../elems.js";
 import { createEl } from "../../../utils.js";
+import { registerVideoView } from "../../videoMaterial.js";
 import { PRESET } from "../constants.js";
 
 // videojs-vr EAC tiles: [bl, br, tr, tl]
@@ -33,6 +34,10 @@ AFRAME.registerShader('youtube-eac', {
         faceWH: { type: 'vec2', default: { x: 1 / 3, y: 1 / 2 }, is: 'uniform' },
         vidWH: { type: 'vec2', default: { x: 1, y: 1 }, is: 'uniform' },
         crop: { type: 'number', default: EDGE_CROP, is: 'uniform' },
+        keyColor: { type: 'color', default: '#00FF00', is: 'uniform' },
+        similarity: { type: 'number', default: 0.35, is: 'uniform' },
+        smoothness: { type: 'number', default: 0.12, is: 'uniform' },
+        enabled: { type: 'number', default: 0, is: 'uniform' },
     },
     vertexShader: /* glsl */ `
         attribute vec2 tile; // atlas tile origin for this face
@@ -51,6 +56,10 @@ AFRAME.registerShader('youtube-eac', {
         uniform vec2 faceWH;
         uniform vec2 vidWH;
         uniform float crop;
+        uniform vec3 keyColor;
+        uniform float similarity;
+        uniform float smoothness;
+        uniform float enabled;
         const float PI = 3.141592653589793;
 
         void main() {
@@ -65,7 +74,16 @@ AFRAME.registerShader('youtube-eac', {
 
             // q = 0 / 1 lands on the first / last texel centre of the tile,
             // so filtering never reaches across into the next face.
-            gl_FragColor = texture2D(src, vTile + inset + q * span);
+            vec4 texel = texture2D(src, vTile + inset + q * span);
+
+            float alpha = 1.0;
+            if (enabled > 0.5) {
+                float d = distance(texel.rgb, keyColor);
+                float edge = max(smoothness, 0.0001);
+                alpha = smoothstep(similarity, similarity + edge, d);
+            }
+
+            gl_FragColor = vec4(texel.rgb, texel.a * alpha);
         }
     `,
 });
@@ -113,6 +131,13 @@ AFRAME.registerComponent(PRESET.M_360_EAC, {
             material: 'shader:youtube-eac; src:#video; side:back; minFilter:linear;',
             rotation: '0 180 0',
         }, [], this.el);
+
+        registerVideoView(this.eye, {
+            shader: 'youtube-eac',
+            src: '#video',
+            side: 'back',
+            minFilter: 'linear',
+        });
 
         this.apply = () => {
             const mesh = this.eye.getObject3D('mesh');

@@ -4,6 +4,7 @@ import { Store } from "../../../store.js";
 import { createEl, setAttr } from "../../../utils.js";
 import { EV } from "../../Events.js";
 import { getSettings, setSettings, ST } from "../../settings/Settings.js";
+import { registerVideoView } from "../../videoMaterial.js";
 import { PRESET } from "../constants.js";
 
 const bgs = [
@@ -77,6 +78,7 @@ AFRAME.registerComponent(PRESET.FLAT, {
         bgIdx: { type: 'number', default: 0 },
         videoType: { type: 'string', default: '2D' },
         lights: { type: 'boolean', default: true },
+        passthrough: { type: 'boolean', default: false },
     },
     init: function () {
         this.onVideoChange = AFRAME.utils.bind(this.onVideoChange, this)
@@ -132,6 +134,7 @@ AFRAME.registerComponent(PRESET.FLAT, {
             position: '0 0 -25',
             class: 'view',
         }
+        this.viewBase = { src: '#video', side: 'front' }
 
         this.VTypeToggle = createEl('a-entity', {
             position: '16 -12 -60',
@@ -178,28 +181,44 @@ AFRAME.registerComponent(PRESET.FLAT, {
             })
             if (this.data.videoType === '2D') {
                 this.view = createEl('a-entity', this.viewAttr, [], this.el)
+                registerVideoView(this.view, { ...this.viewBase })
             } else if (this.data.videoType === '3D') {
                 this.left = createEl('a-entity', {
                     ...this.viewAttr,
                     material: this.viewAttr.material + ' offset: 0 0; repeat: 0.5 1;',
                     stereo: 'eye: left',
                 }, [], this.el)
+                registerVideoView(this.left, {
+                    ...this.viewBase,
+                    offset: { x: 0, y: 0 },
+                    repeat: { x: 0.5, y: 1 },
+                })
 
                 this.right = createEl('a-entity', {
                     ...this.viewAttr,
                     material: this.viewAttr.material + ' offset: 0.5 0; repeat: 0.5 1;',
                     stereo: 'eye: right',
                 }, [], this.el)
+                registerVideoView(this.right, {
+                    ...this.viewBase,
+                    offset: { x: 0.5, y: 0 },
+                    repeat: { x: 0.5, y: 1 },
+                })
             }
         }
 
-        if (bgs[this.data.bgIdx].name === 'cinema hall') {
+        if (bgs[this.data.bgIdx].name === 'cinema hall' && !this.data.passthrough) {
             this.lightsToggle.setAttribute('clickable', '')
             this.lightsToggle.object3D.visible = true
         } else {
             this.lightsToggle.removeAttribute('clickable')
             this.lightsToggle.object3D.visible = false
         }
+
+        const showEnv = !this.data.passthrough
+        this.bg.object3D.visible = showEnv
+        this.bgToggle.object3D.visible = showEnv
+        this.poiToggle.object3D.visible = showEnv
         if (this.data.lights) {
             this.el.sceneEl.systems['light-controls'].on()
             setAttr(this.lightsToggle, { text: `value: Lights - ON` })
@@ -231,6 +250,7 @@ AFRAME.registerComponent(PRESET.FLAT, {
                     [ST.FLAT_ENV_BG]: getSettings(ST.FLAT_ENV_BG),
                     [ST.FLAT_ENV_POI]: getSettings(ST.FLAT_ENV_POI),
                     [ST.FLAT_ENV_VTYPE]: getSettings(ST.FLAT_ENV_VTYPE),
+                    [ST.PASSTHROUGH]: getSettings(ST.PASSTHROUGH),
                 }
             }
         }
@@ -240,6 +260,7 @@ AFRAME.registerComponent(PRESET.FLAT, {
                 bgIdx: e.detail[ST.FLAT_ENV_BG],
                 poiIdx: e.detail[ST.FLAT_ENV_POI],
                 videoType: e.detail[ST.FLAT_ENV_VTYPE],
+                passthrough: !!e.detail[ST.PASSTHROUGH],
             }
         })
 

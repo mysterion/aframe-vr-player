@@ -159,6 +159,168 @@ function toggleCursorType(el, y, val) {
 
 }
 
+function passthroughChk(el, y, val) {
+    const vars = [false, true]
+    var i = vars.indexOf(!!val)
+
+    let tile = createEl("a-plane", {
+        "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+        "material": "color: #A15807;",
+        "position": `${DWidth * 0.25} ${y} 0.2`,
+        "clickable": "",
+        "button-highlight": "",
+        "text": `value: ${val ? "ON" : "OFF"}; align: center; width: 35; zOffset: 0.2;`,
+    }, [], el)
+
+    tile.addEventListener('click', () => {
+        let newVal = vars[++i % vars.length]
+        tile.setAttribute("text", `value: ${newVal ? "ON" : "OFF"}`)
+        El.settings.setAttribute(SETTINGS, {
+            [ST.PASSTHROUGH]: newVal
+        })
+    })
+}
+
+const camQualities = ['low', 'medium', 'high']
+
+function camQualityTgl(el, y, val) {
+    var i = Math.max(0, camQualities.indexOf(val))
+
+    let tile = createEl("a-plane", {
+        "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+        "material": "color: #A15807;",
+        "position": `${DWidth * 0.25} ${y} 0.2`,
+        "clickable": "",
+        "button-highlight": "",
+        "text": `value: ${camQualities[i]}; align: center; width: 35; zOffset: 0.2;`,
+    }, [], el)
+
+    tile.addEventListener('click', () => {
+        i = (i + 1) % camQualities.length
+        tile.setAttribute("text", `value: ${camQualities[i]}`)
+        El.settings.setAttribute(SETTINGS, {
+            [ST.CAM_QUALITY]: camQualities[i]
+        })
+    })
+}
+
+const keyColorPresets = [
+    { name: "green", value: "#00FF00" },
+    { name: "blue", value: "#0000FF" },
+]
+
+function keyColorTgl(el, y, val) {
+    const colorActive = "#5e74a7"
+    const colorInActive = "#554b4a"
+
+    let width = DWidth * 0.40
+    let height = DHeight * 0.1
+    let Hpos = DWidth * 0.25
+    let Vgap = width * 0.1
+
+    let BtnHeight = height - 0.01
+    let BtnWidth = (width - Vgap * 2) / 3
+
+    let tile = createEl("a-plane", {
+        "geometry": `width: ${width}; height: ${height}`,
+        "material": "color: #A15807;",
+        "position": `${Hpos} ${y} 0.2`,
+        "clickable": "",
+    }, [], el)
+
+    const makeBtn = (label, x) => createEl("a-plane", {
+        "geometry": `width: ${BtnWidth}; height: ${BtnHeight}`,
+        "material": `color: ${colorInActive};`,
+        "position": `${x} 0 0.2`,
+        "clickable": "",
+        "button-highlight": "",
+        "text": `value: ${label}; align: center; width: 26; zOffset: 0.4;`,
+    }, [], tile)
+
+    let Bgreen = makeBtn("green", -(BtnWidth + Vgap))
+    let Bblue = makeBtn("blue", 0)
+    let Bcustom = makeBtn("hex", BtnWidth + Vgap)
+
+    const updateColor = (color) => {
+        let preset = keyColorPresets.find((p) => p.value.toLowerCase() === String(color).toLowerCase())
+        Bgreen.setAttribute("material", `color: ${preset && preset.name === "green" ? colorActive : colorInActive};`)
+        Bblue.setAttribute("material", `color: ${preset && preset.name === "blue" ? colorActive : colorInActive};`)
+        Bcustom.setAttribute("material", `color: ${preset ? colorInActive : colorActive};`)
+    }
+
+    updateColor(getSettings(ST.KEY_COLOR))
+
+    Bgreen.onclick = () => {
+        updateColor(keyColorPresets[0].value)
+        El.settings.setAttribute(SETTINGS, {
+            [ST.KEY_COLOR]: keyColorPresets[0].value
+        })
+    }
+
+    Bblue.onclick = () => {
+        updateColor(keyColorPresets[1].value)
+        El.settings.setAttribute(SETTINGS, {
+            [ST.KEY_COLOR]: keyColorPresets[1].value
+        })
+    }
+
+    Bcustom.onclick = () => {
+        let current = getSettings(ST.KEY_COLOR) || "#00FF00"
+        let input = window.prompt("Chroma key color hex (#RRGGBB)", current)
+        if (!input) { return }
+
+        input = input.trim()
+        if (!input.startsWith("#")) { input = "#" + input }
+        if (!/^#[0-9a-fA-F]{6}$/.test(input)) {
+            window.alert("Invalid hex color, expected #RRGGBB")
+            return
+        }
+
+        let color = input.toUpperCase()
+        updateColor(color)
+        El.settings.setAttribute(SETTINGS, {
+            [ST.KEY_COLOR]: color
+        })
+    }
+}
+
+function cycleNumberTgl(el, y, values, key, format) {
+    var i = 0
+    let current = Math.abs(values[0] - Number(getSettings(key)))
+    for (let j = 1; j < values.length; j++) {
+        let d = Math.abs(values[j] - Number(getSettings(key)))
+        if (d < current) {
+            current = d
+            i = j
+        }
+    }
+
+    let tile = createEl("a-plane", {
+        "geometry": `width: ${DWidth * 0.40}; height: ${DHeight * 0.1}`,
+        "material": "color: #A15807;",
+        "position": `${DWidth * 0.25} ${y} 0.2`,
+        "clickable": "",
+        "button-highlight": "",
+        "text": `value: ${format(values[i])}; align: center; width: 35; zOffset: 0.2;`,
+    }, [], el)
+
+    tile.addEventListener('click', () => {
+        i = (i + 1) % values.length
+        tile.setAttribute("text", `value: ${format(values[i])}`)
+        El.settings.setAttribute(SETTINGS, {
+            [key]: values[i]
+        })
+    })
+}
+
+function keySimilarityTgl(el, y, val) {
+    cycleNumberTgl(el, y, [0.2, 0.3, 0.35, 0.4, 0.5], ST.KEY_SIMILARITY, (v) => v.toFixed(2))
+}
+
+function keySmoothnessTgl(el, y, val) {
+    cycleNumberTgl(el, y, [0.05, 0.1, 0.15, 0.25, 0.4], ST.KEY_SMOOTHNESS, (v) => v.toFixed(2))
+}
+
 function seekTimeTgl(el, y) {
     var i = 0
     var vars = ["10s", "15s", "30s", "120s"]
@@ -189,6 +351,11 @@ const settings = [
     { name: "resume video", render: resumeVideoChk, storeKey: ST.RESUME_VIDEO },
     { name: "default eye", render: defaultEyeTgl, storeKey: ST.DEF_EYE },
     { name: "toggle cursor type", render: toggleCursorType, storeKey: ST.CUR_TYPE },
+    { name: "camera passthrough", render: passthroughChk, storeKey: ST.PASSTHROUGH },
+    { name: "camera quality", render: camQualityTgl, storeKey: ST.CAM_QUALITY },
+    { name: "chroma key color", render: keyColorTgl, storeKey: ST.KEY_COLOR },
+    { name: "key tolerance", render: keySimilarityTgl, storeKey: ST.KEY_SIMILARITY },
+    { name: "key softness", render: keySmoothnessTgl, storeKey: ST.KEY_SMOOTHNESS },
 ]
 
 function insertSettingsUI(el, offset) {
@@ -216,7 +383,7 @@ function insertSettingsUI(el, offset) {
                 "button-highlight": "",
             })
             upBtn.addEventListener("click", () => {
-                el.setAttribute(SETTINGS, {
+                el.setAttribute(DIALOG_SETTINGS, {
                     offset: offset - 1
                 })
             })
@@ -231,7 +398,7 @@ function insertSettingsUI(el, offset) {
                 "button-highlight": "",
             })
             downBtn.addEventListener("click", () => {
-                el.setAttribute(SETTINGS, {
+                el.setAttribute(DIALOG_SETTINGS, {
                     offset: offset + 1
                 })
             })

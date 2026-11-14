@@ -1,6 +1,7 @@
 export const El = {
     ascene: document.querySelector('a-scene'),
     video: document.getElementById('video'),
+    passthroughVideo: document.getElementById('passthroughVideo'),
     env: document.getElementById('env'),
     file: document.getElementById('fileInput'),
     camera: document.getElementById('camera'),

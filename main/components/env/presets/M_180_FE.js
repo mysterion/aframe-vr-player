@@ -1,4 +1,5 @@
 import { createEl } from "../../../utils.js";
+import { registerVideoView } from "../../videoMaterial.js";
 import { PRESET } from "../constants.js";
 
 
@@ -66,6 +67,8 @@ AFRAME.registerComponent(PRESET.M_180_FE, {
                 rotation: "90 0 0"
 
             })
+
+        registerVideoView(this.eye, { src: '#video', side: 'back' })
 
         this.el.append(this.eye, this.hideA)
     },

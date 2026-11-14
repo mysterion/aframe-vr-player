@@ -12,6 +12,7 @@
 
 <body>
   <input type="file" id="fileInput" style="display: none;">
+  <video id="passthroughVideo" autoplay playsinline muted style="display: none;"></video>
 
   <a-scene background="color: grey">
 
@@ -68,6 +69,9 @@
         </a-entity>
       </a-entity>
     </a-entity>
+
+    <!-- camera passthrough backdrop -->
+    <a-entity id="passthrough" passthrough></a-entity>
 
     <!-- video player -->
     <a-entity id="env" env-manager></a-entity>
