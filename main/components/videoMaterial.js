@@ -4,6 +4,7 @@ import { getSettings, ST } from "./settings/Settings.js"
 import { CHROMA_SHADER } from "./chroma.js"
 
 const views = new Set()
+const hiders = new Set()
 let lastState = null
 
 const state = () => [
@@ -54,6 +55,10 @@ const applyVideoMaterial = (el) => {
     }
 }
 
+const applyPassthroughVisibility = (el) => {
+    el.object3D.visible = !getSettings(ST.PASSTHROUGH)
+}
+
 const refreshVideoViews = () => {
     const next = JSON.stringify(state())
     if (next === lastState) { return }
@@ -66,6 +71,25 @@ const refreshVideoViews = () => {
         }
         applyVideoMaterial(el)
     }
+
+    for (const el of Array.from(hiders)) {
+        if (!el.isConnected) {
+            hiders.delete(el)
+            continue
+        }
+        applyPassthroughVisibility(el)
+    }
+}
+
+// Elements that should only exist when passthrough is off (e.g. artifact masks).
+export const registerPassthroughHider = (el) => {
+    hiders.add(el)
+    applyPassthroughVisibility(el)
+    return el
+}
+
+export const unregisterPassthroughHider = (el) => {
+    hiders.delete(el)
 }
 
 // `base` holds the material properties that belong to the preset, e.g.

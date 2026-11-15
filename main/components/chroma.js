@@ -3,8 +3,8 @@ export const CHROMA_SHADER = 'chromakey'
 AFRAME.registerShader(CHROMA_SHADER, {
     schema: {
         src: { type: 'map', is: 'uniform' },
-        offset: { type: 'vec2', default: { x: 0, y: 0 } },
-        repeat: { type: 'vec2', default: { x: 1, y: 1 } },
+        offset: { type: 'vec2', default: { x: 0, y: 0 }, is: 'uniform' },
+        repeat: { type: 'vec2', default: { x: 1, y: 1 }, is: 'uniform' },
         keyColor: { type: 'color', default: '#00FF00', is: 'uniform' },
         similarity: { type: 'number', default: 0.35, is: 'uniform' },
         smoothness: { type: 'number', default: 0.12, is: 'uniform' },
@@ -21,6 +21,8 @@ AFRAME.registerShader(CHROMA_SHADER, {
 
     fragmentShader: /* glsl */ `
         uniform sampler2D src;
+        uniform vec2 offset;
+        uniform vec2 repeat;
         uniform vec3 keyColor;
         uniform float similarity;
         uniform float smoothness;
@@ -28,7 +30,7 @@ AFRAME.registerShader(CHROMA_SHADER, {
         varying vec2 vUv;
 
         void main() {
-            vec4 texel = texture2D(src, vUv);
+            vec4 texel = texture2D(src, vUv * repeat + offset);
 
             float alpha = 1.0;
             if (enabled > 0.5) {

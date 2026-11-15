@@ -128,8 +128,9 @@ AFRAME.registerComponent(PRESET.FLAT, {
 
         // video type >>>
 
+        const tvHeight = bgs[this.data.bgIdx].poi[this.data.poiIdx].tv.geometry.height
         this.viewAttr = {
-            geometry: `primitive: plane; height: ${bgs[this.data.bgIdx].poi[this.data.poiIdx].tv.geometry.height}; width: ${1.77 * bgs[this.data.bgIdx].poi[this.data.poiIdx].tv.geometry.height}`,
+            geometry: `primitive: plane; height: ${tvHeight}; width: ${this.viewWidth(tvHeight)}`,
             material: `shader: flat; src: #video; side: front;`,
             position: '0 0 -25',
             class: 'view',
@@ -168,6 +169,22 @@ AFRAME.registerComponent(PRESET.FLAT, {
 
         // lights <<<
 
+    },
+
+    videoAspect: function () {
+        const w = El.video.videoWidth
+        const h = El.video.videoHeight
+        return w && h ? w / h : 16 / 9
+    },
+
+    viewWidth: function (height) {
+        const perEye = this.data.videoType === '3D' ? 2 : 1
+        return this.videoAspect() * height / perEye
+    },
+
+    applyAspect: function () {
+        const height = bgs[this.data.bgIdx].poi[this.data.poiIdx].tv.geometry.height
+        setAttr(viewEls(this.el), { geometry: { width: this.viewWidth(height) } })
     },
 
     update: function (od) {
@@ -235,12 +252,12 @@ AFRAME.registerComponent(PRESET.FLAT, {
         }
         setAttr(this.bg, bgs[this.data.bgIdx].poi[this.data.poiIdx].bg)
         setAttr(viewEls(this.el), bgs[this.data.bgIdx].poi[this.data.poiIdx].tv)
+        this.applyAspect()
 
     },
 
     onVideoChange: function (e) {
-        let w = El.video.videoWidth / El.video.videoHeight * bgs[this.data.bgIdx].poi[this.data.poiIdx].tv.geometry.height
-        setAttr(viewEls(this.el), `width: ${w};`)
+        this.applyAspect()
     },
 
     onSettingsChange: function (e) {
@@ -275,5 +292,6 @@ AFRAME.registerComponent(PRESET.FLAT, {
         this.el.removeChild(this.lightsToggle)
         viewEls(this.el).forEach(v => this.el.removeChild(v))
         El.video.removeEventListener("loadedmetadata", this.onVideoChange)
+        El.events.removeEventListener(EV.SETTINGS, this.onSettingsChange)
     },
 });

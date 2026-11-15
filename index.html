@@ -52,7 +52,7 @@
     <a-entity id="cameraRig" adjust-camera position="0 0 0">
       <!-- camera-wrapper rotates around camera-rig for recenter -->
       <a-entity recenter clickable geometry="primitive: sphere; radius: 80; segmentsWidth: 8; segmentsHeight: 8"
-        material="opacity: 0; side: back">
+        material="opacity: 0; side: back; depthWrite: false">
         <a-entity id="cameraWrapper">
           <!-- camera rotation controlled by vrheadset/mousekeyboard -->
           <a-entity id="camera" camera look-controls stereocam="eye:left">

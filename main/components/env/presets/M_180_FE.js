@@ -1,5 +1,5 @@
 import { createEl } from "../../../utils.js";
-import { registerVideoView } from "../../videoMaterial.js";
+import { registerPassthroughHider, registerVideoView, unregisterPassthroughHider } from "../../videoMaterial.js";
 import { PRESET } from "../constants.js";
 
 
@@ -71,6 +71,8 @@ AFRAME.registerComponent(PRESET.M_180_FE, {
         registerVideoView(this.eye, { src: '#video', side: 'back' })
 
         this.el.append(this.eye, this.hideA)
+
+        registerPassthroughHider(this.hideA)
     },
 
     update: function (od) {
@@ -84,6 +86,7 @@ AFRAME.registerComponent(PRESET.M_180_FE, {
     },
 
     remove: function () {
+        unregisterPassthroughHider(this.hideA)
         this.el.removeChild(this.eye)
         this.el.removeChild(this.hideA)
     },

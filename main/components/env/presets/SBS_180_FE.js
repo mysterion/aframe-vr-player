@@ -1,5 +1,5 @@
 import { createEl } from "../../../utils.js";
-import { registerVideoView } from "../../videoMaterial.js";
+import { registerPassthroughHider, registerVideoView, unregisterPassthroughHider } from "../../videoMaterial.js";
 import { PRESET } from "../constants.js";
 
 
@@ -98,6 +98,8 @@ AFRAME.registerComponent(PRESET.SBS_180_FE, {
         registerVideoView(this.rightEye, { src: '#video', side: 'back' })
 
         this.el.append(this.leftEye, this.rightEye, this.hideA)
+
+        registerPassthroughHider(this.hideA)
     },
 
     update: function (od) {
@@ -127,6 +129,7 @@ AFRAME.registerComponent(PRESET.SBS_180_FE, {
     },
 
     remove: function () {
+        unregisterPassthroughHider(this.hideA)
         this.el.removeChild(this.leftEye)
         this.el.removeChild(this.rightEye)
         this.el.removeChild(this.hideA)
