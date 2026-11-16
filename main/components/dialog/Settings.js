@@ -1,7 +1,8 @@
 import { El } from "../../elems.js"
 import { createEl, getAttr } from "../../utils.js"
 import { CUR_TYPE } from "../CursorUtil.js"
-import { getSettings, SETTINGS, ST } from "../settings/Settings.js"
+import { openKeyColorPicker } from "../KeyColorPicker.js"
+import { getSettings, setSettings, SETTINGS, ST } from "../settings/Settings.js"
 
 import { DHeight, DWidth } from "./Utils.js"
 
@@ -264,19 +265,35 @@ function camTiltTgl(el, y, val) {
 const keyColorPresets = [
     { name: "green", value: "#00FF00" },
     { name: "blue", value: "#0000FF" },
+    { name: "grey", value: "#808080" },
 ]
 
+const keyColorText = (color) => {
+    const value = String(color).replace("#", "")
+    if (value.length !== 6) { return "#fff" }
+
+    const r = parseInt(value.slice(0, 2), 16)
+    const g = parseInt(value.slice(2, 4), 16)
+    const b = parseInt(value.slice(4, 6), 16)
+    const luminance = (r * 299 + g * 587 + b * 114) / 1000
+    return luminance > 128 ? "#111" : "#fff"
+}
+
 function keyColorTgl(el, y, val) {
-    const colorActive = "#5e74a7"
     const colorInActive = "#554b4a"
 
     let width = DWidth * 0.40
     let height = DHeight * 0.1
     let Hpos = DWidth * 0.25
-    let Vgap = width * 0.1
+    let gap = width * 0.04
 
     let BtnHeight = height - 0.01
-    let BtnWidth = (width - Vgap * 2) / 3
+    let controls = [
+        ...keyColorPresets.map((preset) => ({ label: preset.name, preset })),
+        { label: "pick", action: "pick" },
+        { label: "hex", action: "hex" },
+    ]
+    let BtnWidth = (width - gap * (controls.length - 1)) / controls.length
 
     let tile = createEl("a-plane", {
         "geometry": `width: ${width}; height: ${height}`,
@@ -285,59 +302,100 @@ function keyColorTgl(el, y, val) {
         "clickable": "",
     }, [], el)
 
-    const makeBtn = (label, x) => createEl("a-plane", {
-        "geometry": `width: ${BtnWidth}; height: ${BtnHeight}`,
-        "material": `color: ${colorInActive};`,
-        "position": `${x} 0 0.2`,
-        "clickable": "",
-        "button-highlight": "",
-        "text": `value: ${label}; align: center; width: 26; zOffset: 0.4;`,
-    }, [], tile)
+    const buttons = controls.map((control, i) => {
+        const x = -width / 2 + BtnWidth / 2 + i * (BtnWidth + gap)
+        const color = control.preset ? control.preset.value : colorInActive
+        const textColor = control.preset ? keyColorText(color) : "#fff"
 
-    let Bgreen = makeBtn("green", -(BtnWidth + Vgap))
-    let Bblue = makeBtn("blue", 0)
-    let Bcustom = makeBtn("hex", BtnWidth + Vgap)
+        return {
+            control,
+            el: createEl("a-plane", {
+                "geometry": `width: ${BtnWidth}; height: ${BtnHeight}`,
+                "material": `color: ${color};`,
+                "position": `${x} 0 0.2`,
+                "clickable": "",
+                "button-highlight": "",
+                "text": `value: ${control.label}; align: center; width: ${Math.round(BtnWidth * 4)}; zOffset: 0.4; color: ${textColor};`,
+            }, [], tile),
+        }
+    })
+
+    const setHighlightColor = (button, color) => {
+        const highlight = button.el.components["button-highlight"]
+        if (highlight) { highlight.color = color }
+    }
 
     const updateColor = (color) => {
-        let preset = keyColorPresets.find((p) => p.value.toLowerCase() === String(color).toLowerCase())
-        Bgreen.setAttribute("material", `color: ${preset && preset.name === "green" ? colorActive : colorInActive};`)
-        Bblue.setAttribute("material", `color: ${preset && preset.name === "blue" ? colorActive : colorInActive};`)
-        Bcustom.setAttribute("material", `color: ${preset ? colorInActive : colorActive};`)
+        const normalized = String(color || "#00FF00").toUpperCase()
+        const preset = keyColorPresets.find((p) => p.value.toUpperCase() === normalized)
+
+        for (const button of buttons) {
+            if (button.control.preset) {
+                const selected = preset && preset.name === button.control.preset.name
+                button.el.setAttribute("material", {
+                    color: button.control.preset.value,
+                    opacity: selected ? 1 : 0.55,
+                    transparent: true,
+                })
+                button.el.setAttribute("text", {
+                    color: keyColorText(button.control.preset.value),
+                })
+                setHighlightColor(button, button.control.preset.value)
+            } else if (button.control.action === "pick") {
+                const custom = !preset
+                button.el.setAttribute("material", {
+                    color: custom ? normalized : colorInActive,
+                    opacity: 1,
+                    transparent: false,
+                })
+                button.el.setAttribute("text", {
+                    color: custom ? keyColorText(normalized) : "#fff",
+                })
+                setHighlightColor(button, custom ? normalized : colorInActive)
+            } else {
+                button.el.setAttribute("material", {
+                    color: colorInActive,
+                    opacity: 1,
+                    transparent: false,
+                })
+                button.el.setAttribute("text", {
+                    color: "#fff",
+                })
+                setHighlightColor(button, colorInActive)
+            }
+        }
     }
 
     updateColor(getSettings(ST.KEY_COLOR))
 
-    Bgreen.onclick = () => {
-        updateColor(keyColorPresets[0].value)
-        El.settings.setAttribute(SETTINGS, {
-            [ST.KEY_COLOR]: keyColorPresets[0].value
-        })
-    }
+    for (const button of buttons) {
+        if (button.control.preset) {
+            button.el.onclick = () => {
+                setSettings(ST.KEY_COLOR, button.control.preset.value)
+                updateColor(button.control.preset.value)
+            }
+        } else if (button.control.action === "pick") {
+            button.el.onclick = () => {
+                openKeyColorPicker((color) => updateColor(color))
+            }
+        } else {
+            button.el.onclick = () => {
+                let current = getSettings(ST.KEY_COLOR) || "#00FF00"
+                let input = window.prompt("Chroma key color hex (#RRGGBB)", current)
+                if (!input) { return }
 
-    Bblue.onclick = () => {
-        updateColor(keyColorPresets[1].value)
-        El.settings.setAttribute(SETTINGS, {
-            [ST.KEY_COLOR]: keyColorPresets[1].value
-        })
-    }
+                input = input.trim()
+                if (!input.startsWith("#")) { input = "#" + input }
+                if (!/^#[0-9a-fA-F]{6}$/.test(input)) {
+                    window.alert("Invalid hex color, expected #RRGGBB")
+                    return
+                }
 
-    Bcustom.onclick = () => {
-        let current = getSettings(ST.KEY_COLOR) || "#00FF00"
-        let input = window.prompt("Chroma key color hex (#RRGGBB)", current)
-        if (!input) { return }
-
-        input = input.trim()
-        if (!input.startsWith("#")) { input = "#" + input }
-        if (!/^#[0-9a-fA-F]{6}$/.test(input)) {
-            window.alert("Invalid hex color, expected #RRGGBB")
-            return
+                let color = input.toUpperCase()
+                setSettings(ST.KEY_COLOR, color)
+                updateColor(color)
+            }
         }
-
-        let color = input.toUpperCase()
-        updateColor(color)
-        El.settings.setAttribute(SETTINGS, {
-            [ST.KEY_COLOR]: color
-        })
     }
 }
 
